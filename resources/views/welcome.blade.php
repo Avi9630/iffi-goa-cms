@@ -19,7 +19,7 @@
             </div>
         </div> --}}
 
-        <div class="app-content">
+        {{-- <div class="app-content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-6">
@@ -210,6 +210,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
+
+        <h1>Welcome to IFFI-CMMS</h1>
     </main>
 @endsection
