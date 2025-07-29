@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TickerController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -10,14 +13,24 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'guest'], function () {
     Route::controller(AuthController::class)->group(function () {
-        Route::get('login',     'loginView')->name('login');
-        Route::post('login',    'login')->name('login');
-        Route::get('register',     'registerView')->name('register');
-        Route::post('register',    'register')->name('register');
+        Route::get('login', 'loginView')->name('login');
+        Route::post('login', 'login')->name('login');
+        Route::get('register', 'registerView')->name('register');
+        Route::post('register', 'register')->name('register');
     });
 });
 
-Route::resource('ticker', TickerController::class);
-Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('tickers.toggle');
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('permission', PermissionController::class);
+    Route::resource('user', UserController::class);
+    Route::resource('role', RoleController::class);
 
-Route::get('logout', [AuthController::class, 'logut'])->name('logout');
+    Route::resource('ticker', TickerController::class);
+    Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('tickers.toggle');
+
+    Route::get('logout', [AuthController::class, 'logut'])->name('logout');
+});
+
+Route::fallback(function () {
+    return abort(401, "User can't perform this action.");
+});

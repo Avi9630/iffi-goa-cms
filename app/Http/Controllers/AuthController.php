@@ -14,16 +14,24 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    function register(Request $request)
+    public function register(Request $request)
     {
+        $payload = $request->all();
         $request->validate([
-            'name'      => ['required', 'string'],
-            'email'     => ['required', 'email', 'unique:users,email'],
-            'password'  => ['required', 'string', 'min:8', 'confirmed'],
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'mobile' => ['required', 'regex:/^[0-9]{10}$/', 'unique:users,mobile'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-        $user = User::create($request->all());
+        $data = [
+            'name' => $payload['name'],
+            'email' => $payload['email'],
+            'mobile' => $payload['mobile'],
+            'password' => Hash::make($payload['password']),
+        ];
+        $user = User::create($data);
         if ($user) {
-            return redirect('register')->with('success', 'User Registered Successfully!!');
+            return redirect()->route('user.index')->with('success', 'User Registered Successfully!!');
         } else {
             return redirect('register')->withError('error', 'Something Went Wrong!!');
         }
@@ -37,8 +45,8 @@ class AuthController extends Controller
     function login(Request $request)
     {
         $request->validate([
-            'email'     =>  ['required', 'email'],
-            'password'  =>  'required|string|min:8',
+            'email' => ['required', 'email'],
+            'password' => 'required|string|min:8',
         ]);
         $user = User::where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {

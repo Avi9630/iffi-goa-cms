@@ -50,7 +50,6 @@
                         @csrf @method('post')
 
                         <div class="input-group mb-3">
-                            {{-- <input type="text" class="form-control" placeholder="Full Name"> --}}
                             <input type="text" name="name"
                                 class="form-control form-control @error('name') is-invalid @enderror"
                                 value="{{ old('name') }}" placeholder="Enter your full name" autofocus>
@@ -63,7 +62,6 @@
                         </div>
 
                         <div class="input-group mb-3">
-                            {{-- <input type="email" class="form-control" placeholder="Email"> --}}
                             <input type="email" name="email"
                                 class="form-control form-control @error('email') is-invalid @enderror"
                                 value="{{ old('email') }}" placeholder="Enter your email">
@@ -74,9 +72,20 @@
                                 </span>
                             @enderror
                         </div>
+                        
+                        <div class="input-group mb-3">
+                            <input type="text" name="mobile"
+                                class="form-control form-control @error('mobile') is-invalid @enderror"
+                                value="{{ old('mobile') }}" placeholder="Enter your mobile">
+                            <div class="input-group-text"> <span class="bi bi-envelope"></span> </div>
+                            @error('mobile')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
 
                         <div class="input-group mb-3">
-                            {{-- <input type="password" class="form-control" placeholder="Password"> --}}
                             <input type="password" name="password"
                                 class="form-control form-control @error('password') is-invalid @enderror"
                                 placeholder="password">
@@ -89,7 +98,6 @@
                         </div>
 
                         <div class="input-group mb-3">
-                            {{-- <input type="password" class="form-control" placeholder="Password"> --}}
                             <input type="password" name="password_confirmation"
                                 class="form-control form-control @error('password_confirmation') is-invalid @enderror"
                                 placeholder="Confirm password">
@@ -102,9 +110,6 @@
 
                         <div class="row">
                             <div class="col-8">
-                                {{-- <div class="form-check"> <input class="form-check-input" type="checkbox" value=""
-                                        id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault">
-                                        I agree to the <a href="#">terms</a> </label> </div> --}}
                             </div>
                             <div class="col-4">
                                 <div class="d-grid gap-2">
