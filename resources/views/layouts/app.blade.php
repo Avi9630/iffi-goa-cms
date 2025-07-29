@@ -1,12 +1,11 @@
 @include('layouts.main')
 
-{{-- NAVBAR --}}
 @include('layouts.navbar')
 
-{{-- Sidebar --}}
 @include('layouts.sidebar')
 
-@yield('content')
+<main class="app-main">
+    @yield('content')
+</main>
 
-{{-- Footer --}}
 @include('layouts.footer')
