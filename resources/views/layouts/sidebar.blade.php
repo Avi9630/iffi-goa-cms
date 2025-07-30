@@ -56,6 +56,12 @@
                                     <p>Ticker</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('news-update.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>News-Update</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
