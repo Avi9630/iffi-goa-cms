@@ -21,16 +21,15 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::resource('permission', PermissionController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('role', RoleController::class);
-
-    Route::resource('ticker', TickerController::class);
+    Route::resources([
+        'permission' => PermissionController::class,
+        'ticker' => TickerController::class,
+        'role' => RoleController::class,
+        'user' => UserController::class,
+    ]);
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('tickers.toggle');
-
     Route::get('logout', [AuthController::class, 'logut'])->name('logout');
 });
-
 Route::fallback(function () {
     return abort(401, "User can't perform this action.");
 });

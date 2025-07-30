@@ -15,6 +15,7 @@
                 @endforeach
             </div>
         </div>
+        
         <a href={{ route('role.create') }} class="btn btn-primary btn-flat inline-block m-2">
             Add Role
         </a>
@@ -34,14 +35,17 @@
                         <td>{{ $role->name }}</td>
                         <td>
                             <a href="{{ route('role.edit', $role->id) }}" class="btn btn-info btn-sm">Edit</a>
-                            <form action="{{ route('role.destroy', $role->id) }}" method="POST" style="display:inline;">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                            @if ($role->name != Auth::user()->hasRole($role->name))
+                                <form action="{{ route('role.destroy', $role->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            @endcan
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection

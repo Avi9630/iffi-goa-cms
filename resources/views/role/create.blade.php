@@ -28,10 +28,29 @@
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <label class="form-label">Role Name</label>
-                                        <input type="text" name="role_name" class="form-control @error('role_name') is-invalid @enderror" placeholder="Enter role name" value="{{ old('role_name') }}">
+                                        <input type="text" name="role_name"
+                                            class="form-control @error('role_name') is-invalid @enderror"
+                                            placeholder="Enter role name" value="{{ old('role_name') }}">
                                         @error('role_name')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <h4 class="page-title permissions mt-4 mb-4">Permissions</h4>
+                                        @forelse ($permissions as $permission)
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input ms-0  @error('permissions') is-invalid @enderror"
+                                                    type="checkbox" name="permissions[]"
+                                                    id="permission-{{ $permission->id }}" value="{{ $permission->id }}"
+                                                    {{ in_array($permission->id, old('permissions') ?? []) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="permission-{{ $permission->id }}">
+                                                    {{ $permission->name }}
+                                                </label>
+                                            </div>
+                                        @empty
+                                            <p>No permissions available.</p>
+                                        @endforelse
                                     </div>
                                 </div>
                                 <div class="card-footer">
