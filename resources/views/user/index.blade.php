@@ -45,10 +45,15 @@
                         </td>
                         <td>
                             <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a>
-                            <form action="{{ route('user.destroy', $user->id) }}" method="POST" style="display:inline;">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
+                            @can('delete')
+                                @if ($role->name != Auth::user()->hasRole($role->name))
+                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                        style="display:inline;">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                @endif
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
