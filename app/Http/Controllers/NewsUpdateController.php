@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Google\Cloud\Storage\StorageClient;
 use App\Http\Controllers\Controller;
-use App\Http\Traits\RESPONSETrait;
-use App\Models\PhotoCategory;
+use App\Services\GCSService;
 use Illuminate\Http\Request;
 use App\Models\NewsUpdate;
-use App\Services\GCSService;
-use GuzzleHttp\Client;
 
 class NewsUpdateController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->projectId = env('GOOGLE_CLOUD_PROJECT_ID');
-    //     $this->bucketName = env('GOOGLE_CLOUD_STORAGE_BUCKET');
-    //     $this->keyFilePath = storage_path('app/keys/' . env('GOOGLE_APPLICATION_CREDENTIALS'));
-    //     $this->gcsApi = env('GOOGLE_CLOUD_STORAGE_API_URI');
-    // }
+    protected $bucketName;
+
+    public function __construct()
+    {
+        $this->projectId = config('services.gcs.project_id');
+        $this->keyFilePath = config('services.gcs.key_file');
+        $this->bucketName = config('services.gcs.bucket');
+        $this->publicUrlFormat = config('services.gcs.public_url_format');
+    }
 
     function index()
     {
-        $newsUpdates = NewsUpdate::orderBy('id', 'DESC')->get();
+        $newsUpdates = NewsUpdate::orderBy('id', 'DESC')->paginate(10);
         return view('news_update.index', compact('newsUpdates'));
     }
 
@@ -82,27 +80,7 @@ class NewsUpdateController extends Controller
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
         // Upload to GCS using service
-        $publicUrl = $gcsService->upload($file, 'newsUpdate/' . $originalFilename);
-
-        // OLD CODE - IGNORE BUT KEEP FOR REFERENCE
-
-        // //This is for GOOGLE CLOUD STORAGE
-        // $guzzleClient = new Client([
-        //     'verify' => false,
-        //     'curl' => [
-        //         CURLOPT_SSL_VERIFYPEER => false,
-        //         CURLOPT_SSL_VERIFYHOST => false,
-        //         CURLOPT_CAINFO => 'C:\php\extras\ssl\cacert.pem',
-        //     ],
-        // ]);
-        // $storage = new StorageClient([
-        //     'projectId' => $this->projectId,
-        //     'keyFilePath' => $this->keyFilePath,
-        //     'httpClient' => $guzzleClient,
-        // ]);
-        // $bucket = $storage->bucket($this->bucketName);
-        // $bucket->upload(fopen($tempPath, 'r'), ['name' => 'newsUpdate/' . $originalFilename]);
-        // $publicUrl = sprintf($this->gcsApi, $this->bucketName, $originalFilename);
+        $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
 
         $data = [
             'title' => $payload['title'],
@@ -138,15 +116,22 @@ class NewsUpdateController extends Controller
             'have_popup' => 'required|in:0,1',
         ]);
 
-        // Validate the image file
+        $newsUpdate = NewsUpdate::findOrFail($id);
+
         if ($request->hasFile('image')) {
+            if (!is_null($newsUpdate->image_url)) {
+                $parsedUrl = parse_url($newsUpdate->image_url, PHP_URL_PATH);
+                $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+                $gcsService->deleteImageFromGCS($filePath);
+            }
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             // Upload to GCS using service
-            $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . $originalFilename);
+            $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
         }
 
         $newsUpdate = NewsUpdate::findOrFail($id);
+
         $data = [
             'title' => $payload['title'] ?? $newsUpdate->title,
             'description' => $payload['description'] ?? $newsUpdate->description,
@@ -155,7 +140,9 @@ class NewsUpdateController extends Controller
             'link_title' => $payload['link_title'] ?? $newsUpdate->link_title,
             'have_popup' => $payload['have_popup'] ?? $newsUpdate->have_popup,
         ];
+
         $newsUpdate = $newsUpdate->update($data);
+
         if ($newsUpdate) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
         } else {
@@ -163,10 +150,31 @@ class NewsUpdateController extends Controller
         }
     }
 
-    function destroy($id)
+    public function destroy($id, GCSService $gcsService)
     {
         $newsUpdate = NewsUpdate::findOrFail($id);
+        $parsedUrl = parse_url($newsUpdate->image_url, PHP_URL_PATH);
+        $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+        $gcsService->deleteImageFromGCS($filePath);
         $newsUpdate->delete();
-        return redirect()->route('news-update.index')->with('success', 'News Update deleted successfully.');
+        return redirect()->route('news-update.index')->with('success', 'News update and image deleted.');
+    }
+
+    public function popupImage(GCSService $gcsService)
+    {
+        $images = $gcsService->listImagesFromGCS('uploads/newsUpdate/');
+        return view('news_update.image', compact('images'));
+    }
+
+    function popupImageUpload(Request $request, GCSService $gcsService)
+    {
+        $request->validate([
+            'image' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+        ]);
+        $file = $request->file('image');
+        $originalFilename = $file->getClientOriginalName();
+        // Upload to GCS using service
+        $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
+        return redirect()->back()->with('success', 'Image uploaded successfully.');
     }
 }

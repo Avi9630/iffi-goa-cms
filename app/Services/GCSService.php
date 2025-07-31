@@ -46,4 +46,59 @@ class GCSService
         $bucket->upload(fopen($tempPath, 'r'), ['name' => 'newsUpdate/' . $originalFilename]);
         $publicUrl = sprintf($this->gcsApi, $this->bucketName, $originalFilename);
     }
+
+    public function deleteImageFromGCS($filePath)
+    {
+        $guzzleClient = new \GuzzleHttp\Client([
+            'verify' => false,
+            'curl' => [
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_CAINFO => 'C:\php\extras\ssl\cacert.pem',
+            ],
+        ]);
+
+        $storage = new StorageClient([
+            'projectId' => $this->projectId,
+            'keyFilePath' => $this->keyFilePath,
+            'httpClient' => $guzzleClient,
+        ]);
+
+        $bucket = $storage->bucket($this->bucketName);
+        $object = $bucket->object($filePath);
+
+        if ($object->exists()) {
+            $object->delete();
+            return true;
+        }
+        return false;
+    }
+
+    public function listImagesFromGCS($folderPath = 'uploads/newsUpdate/')
+    {
+        $guzzleClient = new \GuzzleHttp\Client([
+            'verify' => false,
+            'curl' => [
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_CAINFO => 'C:\php\extras\ssl\cacert.pem',
+            ],
+        ]);
+
+        $storage = new StorageClient([
+            'projectId' => $this->projectId,
+            'keyFilePath' => $this->keyFilePath,
+            'httpClient' => $guzzleClient,
+        ]);
+
+        $bucket = $storage->bucket($this->bucketName);
+        $objects = $bucket->objects([
+            'prefix' => $folderPath,
+        ]);
+        $imageUrls = [];
+        foreach ($objects as $object) {
+            $imageUrls[] = sprintf($this->publicUrlFormat, $this->bucketName, $object->name());
+        }
+        return $imageUrls;
+    }
 }

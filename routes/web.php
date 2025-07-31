@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/news-update/{id}/toggle', [NewsUpdateController::class, 'toggleStatus'])->name('newsUpdate.toggle');
     Route::get('/news-update/{id}/popup-toggle', [NewsUpdateController::class, 'popupToggle'])->name('newsUpdate.popupToggle');
     Route::put('/news-update/{id}/popup-update', [NewsUpdateController::class, 'popupUpdate'])->name('newsUpdate.popupUpdate');
+    Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
+    Route::post('/popup_image_upload', [NewsUpdateController::class, 'popupImageUpload'])->name('newsUpdate.popupImageUpload');
 
     Route::get('logout', [AuthController::class, 'logut'])->name('logout');
 });
