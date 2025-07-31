@@ -39,7 +39,7 @@ class UserController extends Controller
                 $users = User::whereHas('roles', function ($query) {
                     $query->where('name', Auth::user()->getRoleNames());
                 })->paginate(10);
-                Role::where('name', Auth::user()->getRoleNames())->get();
+                $roles = Role::where('name', Auth::user()->getRoleNames())->get();
                 break;
         }
         return view('user.index', compact(['users', 'roles']));

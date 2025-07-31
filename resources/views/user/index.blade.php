@@ -19,45 +19,55 @@
             Add User
         </a>
         <table class="table table-striped align-middle">
-            <thead>
-                <tr>
-                    <th>Sr.Nom</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
+            @if (count($users) > 0)
+                <thead>
                     <tr>
-                        <td>{{ $user->id }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>
-                            @if ($user->getRoleNames()->isEmpty())
-                                @can('assign-role')
-                                    <a href="{{ url('assign_role', $user->id) }}" class="btn btn-sm btn-success">ASSIGN-ROLE</a>
-                                @endcan
-                            @else
-                                {{ $user->getRoleNames()->implode('", "') }}
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a>
-                            @can('delete')
-                                @if ($role->name != Auth::user()->hasRole($role->name))
-                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
-                                @endif
-                            @endcan
-                        </td>
+                        <th>Sr.Nom</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
                     </tr>
-                @endforeach
-            </tbody>
+                </thead>
+                <tbody>
+                    @foreach ($users as $user)
+                        <tr>
+                            <td>{{ $user->id }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>
+                                @if ($user->getRoleNames()->isEmpty())
+                                    @can('assign-role')
+                                        <a href="{{ url('assign_role', $user->id) }}"
+                                            class="btn btn-sm btn-success">ASSIGN-ROLE</a>
+                                    @endcan
+                                @else
+                                    {{ $user->getRoleNames()->implode('", "') }}
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a>
+                                @can('delete')
+                                    {{-- @if ($role->name != Auth::user()->hasRole($role->name)) --}}
+                                        <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    {{-- @endif --}}
+                                @endcan
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            @else
+                <p>No record found...!!</p>
+            @endif
         </table>
+        <nav aria-label="...">
+            <ul class="pagination">
+                {{ $users->withQueryString()->links() }}
+            </ul>
+        </nav>
     </div>
 @endsection

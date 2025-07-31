@@ -71,7 +71,7 @@
                                         <select name="have_popup" id="have_popup"
                                             class="form-select @error('role_id') is-invalid @enderror">
                                             <option value="1">Yes</option>
-                                            <option value="2">No</option>
+                                            <option value="0">No</option>
                                         </select>
                                         @error('have_popup')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>

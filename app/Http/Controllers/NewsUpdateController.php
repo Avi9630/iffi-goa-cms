@@ -23,7 +23,7 @@ class NewsUpdateController extends Controller
 
     function index()
     {
-        $newsUpdates = NewsUpdate::all();
+        $newsUpdates = NewsUpdate::orderBy('id', 'DESC')->get();
         return view('news_update.index', compact('newsUpdates'));
     }
 
@@ -74,17 +74,18 @@ class NewsUpdateController extends Controller
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
         ]);
-        // Handle file upload
+        // Validate the image file
         if (!$request->hasFile('image')) {
             return redirect()->back()->with('warning', 'Image file is required.');
         }
+
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
         // Upload to GCS using service
         $publicUrl = $gcsService->upload($file, 'newsUpdate/' . $originalFilename);
-        
+
         // OLD CODE - IGNORE BUT KEEP FOR REFERENCE
-        
+
         // //This is for GOOGLE CLOUD STORAGE
         // $guzzleClient = new Client([
         //     'verify' => false,
@@ -117,5 +118,55 @@ class NewsUpdateController extends Controller
         } else {
             return redirect()->back()->with('error', 'Failed to create News Update. Please try again.');
         }
+    }
+
+    function edit($id)
+    {
+        $newsUpdate = NewsUpdate::findOrFail($id);
+        return view('news_update.edit', compact('newsUpdate'));
+    }
+
+    function update(Request $request, $id, GCSService $gcsService)
+    {
+        $payload = $request->all();
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'link' => 'nullable|url|max:255',
+            'link_title' => 'nullable|string|max:255',
+            'have_popup' => 'required|in:0,1',
+        ]);
+
+        // Validate the image file
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $originalFilename = $file->getClientOriginalName();
+            // Upload to GCS using service
+            $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . $originalFilename);
+        }
+
+        $newsUpdate = NewsUpdate::findOrFail($id);
+        $data = [
+            'title' => $payload['title'] ?? $newsUpdate->title,
+            'description' => $payload['description'] ?? $newsUpdate->description,
+            'image_url' => $publicUrl ?? $newsUpdate->image_url,
+            'link' => $payload['link'] ?? $newsUpdate->link,
+            'link_title' => $payload['link_title'] ?? $newsUpdate->link_title,
+            'have_popup' => $payload['have_popup'] ?? $newsUpdate->have_popup,
+        ];
+        $newsUpdate = $newsUpdate->update($data);
+        if ($newsUpdate) {
+            return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to create News Update. Please try again.');
+        }
+    }
+
+    function destroy($id)
+    {
+        $newsUpdate = NewsUpdate::findOrFail($id);
+        $newsUpdate->delete();
+        return redirect()->route('news-update.index')->with('success', 'News Update deleted successfully.');
     }
 }

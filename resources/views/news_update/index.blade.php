@@ -46,7 +46,6 @@
                                 </button>
                             </form>
                         </td>
-
                         <td>
                             @if ($newsUpdate->have_popup == 1)
                                 <a href="{{ route('newsUpdate.popupToggle', $newsUpdate->id) }}"
@@ -55,7 +54,6 @@
                                 <button class="btn btn-secondary btn-sm" disabled>Deactive</button>
                             @endif
                         </td>
-
                         <td>
                             <a href="{{ route('news-update.edit', $newsUpdate->id) }}" class="btn btn-info btn-sm">Edit</a>
                             @can('delete')
