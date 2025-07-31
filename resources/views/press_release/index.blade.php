@@ -1,10 +1,24 @@
 @extends('layouts.app')
 @section('content')
+    {{-- <div class="app-content-header">
+        <div class="container-fluid">
+            <span>
+                <h4 class="alert-danger"></h4>
+            </span>
+            @foreach (['success', 'info', 'danger', 'warning'] as $msg)
+                @if (Session::has($msg))
+                    <div id="flash-message" class="alert alert-{{ $msg }}" role="alert">
+                        {{ Session::get($msg) }}
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div> --}}
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">News & Update</h3>
+                    <h3 class="mb-0">Press Release</h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -28,11 +42,8 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('news-update.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add NewsUpdate
-                                </a>
-                                <a href={{ route('newsUpdate.popupImage') }} class="btn btn-sm btn-info btn-flat ">
-                                    PopupImage
+                                <a href={{ route('press-release.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Add Press Release
                                 </a>
                             </h3>
                         </div>
@@ -41,43 +52,36 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>title</th>
-                                        <th>description</th>
+                                        <th>Title</th>
+                                        <th>Publish Date</th>
+                                        <th>Description</th>
                                         <th>status</th>
-                                        <th>have_popup</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($newsUpdates as $newsUpdate)
+                                    @foreach ($pressReleases as $pressRelease)
                                         <tr class="align-middle">
-                                            <td>{{ $newsUpdate->id }}</td>
-                                            <td>{{ $newsUpdate->title }}</td>
-                                            <td>{{ $newsUpdate->description }}</td>
+                                            <td>{{ $pressRelease->id }}</td>
+                                            <td>{{ $pressRelease->title }}</td>
+                                            <td>{{ $pressRelease->publish_date }}</td>
+                                            <td>{{ $pressRelease->description }}</td>
                                             <td>
-                                                <form action="{{ route('newsUpdate.toggle', $newsUpdate->id) }}"
+                                                <form action="{{ route('pressRelease.toggle', $pressRelease->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn {{ $newsUpdate->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $newsUpdate->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        class="btn {{ $pressRelease->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $pressRelease->status === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
                                             </td>
                                             <td>
-                                                @if ($newsUpdate->have_popup == 1)
-                                                    <a href="{{ route('newsUpdate.popupToggle', $newsUpdate->id) }}"
-                                                        class="btn btn-primary btn-sm btn-flat">Active</a>
-                                                @else
-                                                    <button class="btn btn-secondary btn-sm" disabled>Deactive</button>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('news-update.edit', $newsUpdate->id) }}"
+                                                <a href="{{ route('press-release.edit', $pressRelease->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form action="{{ route('news-update.destroy', $newsUpdate->id) }}"
+                                                    <form action="{{ route('press-release.destroy', $pressRelease->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -92,7 +96,7 @@
                         </div>
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $newsUpdates->withQueryString()->links() }}
+                                {{ $pressReleases->withQueryString()->links() }}
                             </ul>
                         </div>
                     </div>

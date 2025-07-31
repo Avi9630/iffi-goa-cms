@@ -62,6 +62,12 @@
                                     <p>News-Update</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('press-release.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Press-Release</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
