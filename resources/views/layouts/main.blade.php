@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"> <!--begin::Head-->
+<html lang="en">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -33,5 +33,4 @@
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
-
     <div class="app-wrapper">

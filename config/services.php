@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -35,4 +34,10 @@ return [
         ],
     ],
 
+    'gcs' => [
+        'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+        'key_file' => storage_path('app/keys/' . env('GOOGLE_APPLICATION_CREDENTIALS')),
+        'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET'),
+        'public_url_format' => 'https://storage.googleapis.com/%s/%s',
+    ],
 ];
