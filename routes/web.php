@@ -4,6 +4,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\NewsUpdateController;
 use App\Http\Controllers\TickerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LatestUpdateController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PressReleaseController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -25,14 +27,17 @@ Route::group(['middleware' => 'guest'], function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::resources([
         'press-release' => PressReleaseController::class,
+        'latest-update' => LatestUpdateController::class,
         'news-update' => NewsUpdateController::class,
         'permission' => PermissionController::class,
         'ticker' => TickerController::class,
+        'photo' => PhotoController::class,
         'role' => RoleController::class,
         'user' => UserController::class,
     ]);
 
     Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
+    Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
     Route::put('/news-update/{id}/toggle', [NewsUpdateController::class, 'toggleStatus'])->name('newsUpdate.toggle');
     Route::get('/news-update/{id}/popup-toggle', [NewsUpdateController::class, 'popupToggle'])->name('newsUpdate.popupToggle');

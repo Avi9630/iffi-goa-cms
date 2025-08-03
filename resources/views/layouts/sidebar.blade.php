@@ -68,6 +68,18 @@
                                     <p>Press-Release</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('latest-update.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Latest-Update</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('photo.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Gallery</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
