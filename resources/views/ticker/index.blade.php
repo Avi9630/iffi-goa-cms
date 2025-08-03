@@ -33,8 +33,7 @@
                         <td>{{ $ticker->id }}</td>
                         <td>{{ $ticker->content }}</td>
                         <td>
-                            <form action="{{ route('ticker.toggle', $ticker->id) }}" method="POST"
-                                style="display:inline;">
+                            <form action="{{ route('ticker.toggle', $ticker->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('PUT')
                                 <button type="submit"
