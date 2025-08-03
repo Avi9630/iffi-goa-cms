@@ -38,37 +38,62 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>Content</th>
-                                        <th>Title</th>
-                                        <th>Link</th>
+                                        <th>Category</th>
+                                        <th>Image</th>
+                                        <th>Year</th>
+                                        <th>Active</th>
                                         <th>Status</th>
+                                        <th>Highlights</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($latestUpdates as $latestUpdate)
+                                    @foreach ($photos as $photo)
                                         <tr class="align-middle">
-                                            <td>{{ $latestUpdate->id }}</td>
-                                            <td>{{ $latestUpdate->content }}</td>
-                                            <td>{{ $latestUpdate->title }}</td>
-                                            <td><a href="{{ $latestUpdate->link }}">{{ $latestUpdate->link }}</a></td>
+                                            <td>{{ $photo->id }}</td>
+                                            <td>{{ $photo->category->category }}</td>
+                                            <td><img src="{{ $photo->img_url }}" alt="{{ $photo->img_caption }}"
+                                                    class="img-thumbnail" width="100"></td>
+                                            <td>{{ $photo->year }}</td>
                                             <td>
-                                                <form action="{{ route('latestUpdate.toggle', $latestUpdate->id) }}"
+                                                <form action="{{ route('photo.activeToggle', $photo->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn {{ $latestUpdate->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $latestUpdate->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        class="btn {{ $photo->is_active === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $photo->is_active === 1 ? 'Active' : 'Inactive' }}
                                                     </button>
                                                 </form>
                                             </td>
                                             <td>
-                                                <a href="{{ route('latest-update.edit', $latestUpdate->id) }}"
+                                                <form action="{{ route('photo.toggle', $photo->id) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit"
+                                                        class="btn {{ $photo->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $photo->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('photo.highlightToggle', $photo->id) }}"
+                                                    method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit"
+                                                        class="btn {{ $photo->highlights === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $photo->highlights === 1 ? 'Enabled' : 'Disabled' }}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('photo.edit', $photo->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form action="{{ route('latest-update.destroy', $latestUpdate->id) }}"
-                                                        method="POST" style="display:inline;">
+                                                    <form action="{{ route('photo.destroy', $photo->id) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -82,7 +107,7 @@
                         </div>
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $latestUpdates->withQueryString()->links() }}
+                                {{ $photos->withQueryString()->links() }}
                             </ul>
                         </div>
                     </div>
