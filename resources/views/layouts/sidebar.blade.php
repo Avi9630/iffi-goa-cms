@@ -92,6 +92,12 @@
                                     <p>Peacock</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('international-cinema.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>International Cinema</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

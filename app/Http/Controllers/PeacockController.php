@@ -44,6 +44,7 @@ class PeacockController extends Controller
 
         $peacock = new Peacock();
         $peacock->title = $request->title ?? null;
+        $peacock->year = '2025';
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -126,6 +127,6 @@ class PeacockController extends Controller
             app(GCSService::class)->deleteImageFromGCS($filePath);
         }
         $peacock->delete();
-        return redirect()->route('peacock.index')->with('danger', 'Press Release deleted successfully.!!');
+        return redirect()->route('peacock.index')->with('danger', 'Peacock deleted successfully.!!');
     }
 }

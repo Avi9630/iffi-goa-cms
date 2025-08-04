@@ -41,7 +41,6 @@
                                             <th>Sr.Nom</th>
                                             <th>Title</th>
                                             <th>Image</th>
-                                            <th>Image Name</th>
                                             <th>Poster</th>
                                             <th>status</th>
                                             <th>Action</th>
@@ -52,9 +51,18 @@
                                             <tr class="align-middle">
                                                 <td>{{ $peacock->id }}</td>
                                                 <td>{{ $peacock->title }}</td>
-                                                <td>{{ $peacock->image_url }}</td>
-                                                <td>{{ $peacock->image_name }}</td>
-                                                <td>{{ $peacock->poster_url }}</td>
+                                                <td>
+                                                    @if ($peacock->image_url)
+                                                        <iframe src="{{ $peacock->image_url }}" width="100%"
+                                                            height="100px"></iframe>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($peacock->poster_url)
+                                                        <img src="{{ $peacock->poster_url }}" alt="Current Image"
+                                                            class="img-fluid mt-2" style="max-width: 100px;">
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <form action="{{ route('peacock.toggle', $peacock->id) }}"
                                                         method="POST" style="display:inline;">
