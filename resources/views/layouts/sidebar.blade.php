@@ -80,6 +80,18 @@
                                     <p>Gallery</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('international-media.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Internationa Media</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('peacock.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Peacock</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

@@ -77,7 +77,7 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            <td>
+                                            <td style="white-space: nowrap;">
                                                 <a href="{{ route('press-release.edit', $pressRelease->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')

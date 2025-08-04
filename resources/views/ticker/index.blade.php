@@ -42,7 +42,7 @@
                                 </button>
                             </form>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <a href="{{ route('ticker.edit', $ticker->id) }}" class="btn btn-info btn-sm">Edit</a>
                             <form action="{{ route('ticker.destroy', $ticker->id) }}" method="POST"
                                 style="display:inline;">

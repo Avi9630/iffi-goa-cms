@@ -45,7 +45,7 @@
                                     {{ $user->getRoleNames()->implode('", "') }}
                                 @endif
                             </td>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a>
                                 @can('delete')
                                     {{-- @if ($role->name != Auth::user()->hasRole($role->name)) --}}

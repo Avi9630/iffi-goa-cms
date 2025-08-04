@@ -31,7 +31,7 @@
                     <tr id="ticker-row-{{ $permission->id }}">
                         <td>{{ $permission->id }}</td>
                         <td>{{ $permission->name }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <a href="{{ route('permission.edit', $permission->id) }}" class="btn btn-info btn-sm">Edit</a>
                             <form action="{{ route('permission.destroy', $permission->id) }}" method="POST"
                                 style="display:inline;"> @csrf @method('DELETE')

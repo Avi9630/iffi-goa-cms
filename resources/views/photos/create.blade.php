@@ -38,7 +38,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('role_id')
+                                        @error('category_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -49,6 +49,15 @@
                                             id="image" name="image" />
                                         <small class="form-text text-muted">Upload an image file (jpg, jpeg, png, gif).</small>
                                         @error('image')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="img_caption" class="form-label">Image Caption</label>
+                                        <input type="text" class="form-control @error('img_caption') is-invalid @enderror"
+                                            id="img_caption" name="img_caption"  value="{{ old('image_caption') }}"/>
+                                        @error('img_caption')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>

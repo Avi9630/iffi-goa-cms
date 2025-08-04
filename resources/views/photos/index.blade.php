@@ -40,6 +40,7 @@
                                         <th>Sr.Nom</th>
                                         <th>Category</th>
                                         <th>Image</th>
+                                        <th>Video URL</th>
                                         <th>Year</th>
                                         <th>Active</th>
                                         <th>Status</th>
@@ -51,13 +52,22 @@
                                     @foreach ($photos as $photo)
                                         <tr class="align-middle">
                                             <td>{{ $photo->id }}</td>
-                                            <td>{{ $photo->category->category }}</td>
-                                            <td><img src="{{ $photo->img_url }}" alt="{{ $photo->img_caption }}"
-                                                    class="img-thumbnail" width="100"></td>
+                                            <td>{{ $photo->category->category ?? '' }}</td>
+                                            <td>
+                                                @empty(!$photo->img_url)
+                                                    <img src="{{ $photo->img_url }}" alt="{{ $photo->img_caption }}"
+                                                        class="img-thumbnail" width="100">
+                                                @endempty
+                                            </td>
+                                            <td>
+                                                @empty(!$photo->video_url)
+                                                    {{ $photo->video_url ?? '' }}
+                                                @endempty
+                                            </td>
                                             <td>{{ $photo->year }}</td>
                                             <td>
-                                                <form action="{{ route('photo.activeToggle', $photo->id) }}"
-                                                    method="POST" style="display:inline;">
+                                                <form action="{{ route('photo.activeToggle', $photo->id) }}" method="POST"
+                                                    style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
@@ -88,7 +98,7 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            <td>
+                                            <td style="white-space: nowrap;">
                                                 <a href="{{ route('photo.edit', $photo->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')

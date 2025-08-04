@@ -22,10 +22,11 @@
                         <div class="card-header">
                             <div class="card-title">Photo form</div>
                         </div>
-                        <form action="{{ route('photo.update', $photo->id) }}" method="POST" enctype="multipart/form-data">@csrf
+                        <form action="{{ route('photo.update', $photo->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
                             @method('PUT')
                             <div class="card-body">
-                                <div class="row">
+                                <div class="row">                                    
                                     <div class="col-md-6 mb-3">
                                         <label for="category_id" class="form-label"><strong>Category</strong></label>
                                         <select name="category_id" id="category_id"
@@ -33,12 +34,12 @@
                                             <option value="" selected>Select Category</option>
                                             @foreach ($photoCategories as $category)
                                                 <option value="{{ $category->id }}"
-                                                    {{ $category->id == $photo->category_id ? 'selected' : '' }}>
+                                                    {{ $category->id == $photo['category_id'] ? 'selected' : '' }}>
                                                     {{ $category->category }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('role_id')
+                                        @error('category_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -47,12 +48,23 @@
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" />
-                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png, gif).</small>
-                                        @if ($photo->image_url)
-                                            <img src="{{ $photo->image_url }}" alt="Current Image" class="img-fluid mt-2"
-                                                style="max-width: 200px;">
+                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
+                                            gif).</small>
+                                        @if ($photo->img_url)
+                                            <img src="{{ $photo->img_url }}" alt="Current Image" class="img-fluid mt-2"
+                                                style="max-width: 50px;">
                                         @endif
                                         @error('image')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="img_caption" class="form-label">Image Caption</label>
+                                        <input type="text"
+                                            class="form-control @error('img_caption') is-invalid @enderror" id="img_caption"
+                                            name="img_caption" value="{{ old('image_caption', $photo->img_caption) }}" />
+                                        @error('img_caption')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -72,8 +84,10 @@
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
                                             <option value="" selected>Select Year</option>
-                                            <option value="2024" {{ $photo->year == 2024 ? 'selected' : '' }}>2024</option>
-                                            <option value="2025" {{ $photo->year == 2025 ? 'selected' : '' }}>2025</option>
+                                            <option value="2024" {{ $photo->year == 2024 ? 'selected' : '' }}>2024
+                                            </option>
+                                            <option value="2025" {{ $photo->year == 2025 ? 'selected' : '' }}>2025
+                                            </option>
                                         </select>
                                         @error('year')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>

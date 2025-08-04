@@ -4,7 +4,9 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\NewsUpdateController;
 use App\Http\Controllers\TickerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InternationalMediaController;
 use App\Http\Controllers\LatestUpdateController;
+use App\Http\Controllers\PeacockController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PressReleaseController;
 use App\Http\Controllers\RoleController;
@@ -26,10 +28,12 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resources([
+        'international-media' => InternationalMediaController::class,
         'press-release' => PressReleaseController::class,
         'latest-update' => LatestUpdateController::class,
         'news-update' => NewsUpdateController::class,
         'permission' => PermissionController::class,
+        'peacock' => PeacockController::class,
         'ticker' => TickerController::class,
         'photo' => PhotoController::class,
         'role' => RoleController::class,
@@ -43,6 +47,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
+    
+    Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');
+    
+    Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
 
     Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
     

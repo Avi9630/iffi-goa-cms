@@ -66,7 +66,7 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            <td>
+                                            <td style="white-space: nowrap;">
                                                 <a href="{{ route('latest-update.edit', $latestUpdate->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
