@@ -98,6 +98,12 @@
                                     <p>International Cinema</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('cube.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Cube</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

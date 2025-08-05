@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">International Media</h3>
+                    <h3 class="mb-0">Cube</h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -28,11 +28,8 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('international-cinema.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add International Cinema
-                                </a>
-                                <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-info btn-flat">
-                                    List International Cinema Basic Detail
+                                <a href={{ route('cube.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Add
                                 </a>
                             </h3>
                         </div>
@@ -41,38 +38,38 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>Curated Section</th>
-                                        <th>Title</th>
-                                        <th>Slug</th>
-                                        <th>status</th>
+                                        <th>Image</th>
+                                        <th>Link</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($internationalCinemas as $internationalCinema)
+                                    @foreach ($cubes as $cube)
                                         <tr class="align-middle">
-                                            <td>{{ $internationalCinema->id }}</td>
-                                            <td>{{ $internationalCinema->curatedSection->title  }}</td>
-                                            <td>{{ $internationalCinema->title }}</td>
-                                            <td>{{ $internationalCinema->slug }}</td>
+                                            <td>{{ $cube->id }}</td>
                                             <td>
-                                                <form action="{{ route('internationalCinema.toggle', $internationalCinema->id) }}"
+                                                <img src="{{ $cube->image_url }}" alt="" height="50px" width="100px">
+                                            </td>
+                                            <td>{{ $cube->link }}</td>
+                                            <td>
+                                                <form
+                                                    action="{{ route('cube.toggleStatus', $cube->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn {{ $internationalCinema->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $internationalCinema->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        class="btn {{ $cube->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $cube->status === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
                                             </td>
                                             <td style="white-space: nowrap;">
-                                                <a href="{{ route('internationalCinema.addBasicDetail', $internationalCinema->id) }}"
-                                                    class="btn btn-secondary btn-sm">Add Basic Details</a>
-                                                <a href="{{ route('international-cinema.edit', $internationalCinema->id) }}"
+                                                <a href="{{ route('cube.edit', $cube->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form action="{{ route('international-cinema.destroy', $internationalCinema->id) }}"
+                                                    <form
+                                                        action="{{ route('cube.destroy', $cube->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -84,11 +81,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="card-footer clearfix">
-                            <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $internationalCinemas->withQueryString()->links() }}
-                            </ul>
                         </div>
                     </div>
                 </div>

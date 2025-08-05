@@ -11,6 +11,7 @@ use App\Http\Controllers\PeacockController;
 use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CubeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -42,11 +43,13 @@ Route::group(['middleware' => 'auth'], function () {
         'photo' => PhotoController::class,
         'role' => RoleController::class,
         'user' => UserController::class,
+        'cube' => CubeController::class,
     ]);
 
     Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
+    Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
 
-    Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
+    Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
 
     Route::put('/international-cinema/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('internationalCinema.toggle');
     Route::get('/ic/{id}/add-basic-detail', [InternationalCinemaController::class, 'addBasicDetail'])->name('internationalCinema.addBasicDetail');

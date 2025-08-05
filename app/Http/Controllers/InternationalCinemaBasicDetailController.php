@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 class InternationalCinemaBasicDetailController extends Controller
 {
-    function index ()
+    function index()
     {
         $icBasicDetails = InternationalCinemaBasicDetail::orderBy('id', 'DESC')->paginate(10);
         return view('international_cinema_basic_detail.index', compact('icBasicDetails'));
     }
 
-    function edit ($id)
+    function edit($id)
     {
         $icBasicDetail = InternationalCinemaBasicDetail::findOrFail($id);
         return view('international_cinema_basic_detail.edit', compact('icBasicDetail'));
@@ -60,5 +60,20 @@ class InternationalCinemaBasicDetailController extends Controller
     {
         $icBasicDetail = InternationalCinemaBasicDetail::findOrFail($id);
         return view('international_cinema_basic_detail.show', compact('icBasicDetail'));
+    }
+
+    function toggleStatus($id)
+    {
+        $icBasicDetail = InternationalCinemaBasicDetail::findOrFail($id);
+        $icBasicDetail->status = $icBasicDetail->status === 1 ? 0 : 1;
+        $icBasicDetail->save();
+        return redirect()->back()->with('success', 'Status updated successfully.');
+    }
+
+    function destroy($id)
+    {
+        $icBasicDetail = InternationalCinemaBasicDetail::findOrFail($id);
+        $icBasicDetail->delete();
+        return redirect()->route('ic-basic-detail.index')->with('danger', 'Entry deleted successfully.!!');
     }
 }
