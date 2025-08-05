@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\NewsUpdateController;
-use App\Http\Controllers\TickerController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InternationalCinemaBasicDetailController;
 use App\Http\Controllers\InternationalCinemaController;
 use App\Http\Controllers\InternationalMediaController;
 use App\Http\Controllers\LatestUpdateController;
-use App\Http\Controllers\PeacockController;
-use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PressReleaseController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\NewsUpdateController;
+use App\Http\Controllers\PeacockController;
+use App\Http\Controllers\TickerController;
+use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,7 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resources([
+        'ic-basic-detail' => InternationalCinemaBasicDetailController::class,
         'international-cinema' => InternationalCinemaController::class,
         'international-media' => InternationalMediaController::class,
         'press-release' => PressReleaseController::class,
@@ -43,9 +45,13 @@ Route::group(['middleware' => 'auth'], function () {
     ]);
 
     Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
-    
+
+    Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
+
     Route::put('/international-cinema/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('internationalCinema.toggle');
-    
+    Route::get('/ic/{id}/add-basic-detail', [InternationalCinemaController::class, 'addBasicDetail'])->name('internationalCinema.addBasicDetail');
+    Route::post('/ic/store-basic-detail,...', [InternationalCinemaController::class, 'storeBasicDetail'])->name('internationalCinema.storeBasicDetail');
+
     Route::get('/news-update/{id}/popup-toggle', [NewsUpdateController::class, 'popupToggle'])->name('newsUpdate.popupToggle');
     Route::put('/news-update/{id}/popup-update', [NewsUpdateController::class, 'popupUpdate'])->name('newsUpdate.popupUpdate');
     Route::post('/popup_image_upload', [NewsUpdateController::class, 'popupImageUpload'])->name('newsUpdate.popupImageUpload');
@@ -53,13 +59,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
-    
-    Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');    
+
+    Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');
 
     Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
-    
+
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
-    
+
     Route::put('/photo/{id}/highlight', [PhotoController::class, 'highlightToggle'])->name('photo.highlightToggle');
     Route::put('/photo/{id}/activeToggle', [PhotoController::class, 'activeToggle'])->name('photo.activeToggle');
     Route::put('/photo/{id}/toggle', [PhotoController::class, 'toggleStatus'])->name('photo.toggle');

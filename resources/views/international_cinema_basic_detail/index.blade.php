@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">International Media</h3>
+                    <h3 class="mb-0">International Cinema Basic Details</h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -26,53 +26,47 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <a href={{ route('international-cinema.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add International Cinema
-                                </a>
-                                <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-primary btn-flat">
-                                    List International Cinema Basic Detail
-                                </a>
-                            </h3>
-                        </div>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>Curated Section</th>
-                                        <th>Title</th>
-                                        <th>Slug</th>
-                                        <th>status</th>
+                                        <th>Cinema ID</th>
+                                        <th>Director</th>
+                                        <th>Producer</th>
+                                        <th>Screenplay</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($internationalCinemas as $internationalCinema)
+                                    @foreach ($icBasicDetails as $icBasicDetail)
                                         <tr class="align-middle">
-                                            <td>{{ $internationalCinema->id }}</td>
-                                            <td>{{ $internationalCinema->curatedSection->title  }}</td>
-                                            <td>{{ $internationalCinema->title }}</td>
-                                            <td>{{ $internationalCinema->slug }}</td>
+                                            <td>{{ $icBasicDetail->id }}</td>
+                                            <td>{{ $icBasicDetail->cinema_id }}</td>
+                                            <td>{{ $icBasicDetail->director }}</td>
+                                            <td>{{ $icBasicDetail->producer }}</td>
+                                            <td>{{ $icBasicDetail->screenplay }}</td>
                                             <td>
-                                                <form action="{{ route('internationalCinema.toggle', $internationalCinema->id) }}"
+                                                <form action="{{ route('icBasicDetail.toggle', $icBasicDetail->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn {{ $internationalCinema->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $internationalCinema->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        class="btn {{ $icBasicDetail->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $icBasicDetail->status === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
                                             </td>
                                             <td style="white-space: nowrap;">
-                                                <a href="{{ route('internationalCinema.addBasicDetail', $internationalCinema->id) }}"
-                                                    class="btn btn-secondary btn-sm">Add Basic Details</a>
-                                                <a href="{{ route('international-cinema.edit', $internationalCinema->id) }}"
+                                                <a href="{{ route('ic-basic-detail.show', $icBasicDetail->id) }}"
+                                                    class="btn btn-primary btn-sm">View</a>
+
+                                                <a href="{{ route('ic-basic-detail.edit', $icBasicDetail->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
+                                                
                                                 @can('delete')
-                                                    <form action="{{ route('international-cinema.destroy', $internationalCinema->id) }}"
+                                                    <form action="{{ route('ic-basic-detail.destroy', $icBasicDetail->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -87,7 +81,9 @@
                         </div>
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $internationalCinemas->withQueryString()->links() }}
+                                @isset($icBasicDetails)
+                                    {{ $icBasicDetails->withQueryString()->links() }}
+                                @endisset
                             </ul>
                         </div>
                     </div>
