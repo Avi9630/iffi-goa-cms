@@ -13,6 +13,10 @@ return [
     |
     */
 
+    'example_api' => [
+        'base_url' => env('EXAMPLE_API_BASE_URL'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

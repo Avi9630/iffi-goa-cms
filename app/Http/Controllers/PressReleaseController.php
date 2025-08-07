@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PressRelease;
+use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class PressReleaseController extends Controller
     public function __construct()
     {
         $this->bucketName = config('services.gcs.bucket');
+        $this->destination = env('PRESS_RELEASE');
     }
 
     function index()
@@ -41,8 +43,8 @@ class PressReleaseController extends Controller
             'title' => 'required|string|max:255',
             'publish_date' => 'required|date',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|required_without:link',
-            'link' => 'nullable|required_without:image',
+            'image' => 'required|mimes:jpeg,png,jpg,gif,pdf|max:2048|required_without:link',
+            // 'link' => 'nullable|required_without:image',
         ]);
 
         $pressRelease = new PressRelease();
@@ -54,13 +56,16 @@ class PressReleaseController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             // Upload to GCS using service
-            $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
-            $pressRelease->image_url = $publicUrl;
-        } else {
-            $pressRelease->link = $request->link;
+            // $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
+            // $pressRelease->image_url = $publicUrl;
+            app(ExternalApiService::class)->postData($file, $this->destination);
+            $pressRelease->img_src = $originalFilename;
+            $pressRelease->link = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+            $pressRelease->save();
+            return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
+        }else {
+            return redirect()->route('press-release.index')->with('warning', 'File must be uploaded.!!');
         }
-        $pressRelease->save();
-        return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
     }
 
     function edit($id)
@@ -77,7 +82,7 @@ class PressReleaseController extends Controller
             'publish_date' => 'required|date',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|required_without:link',
-            'link' => 'nullable|required_without:image',
+            // 'link' => 'nullable|required_without:image',
         ]);
 
         $pressRelease->title = $request->title ?? null;
@@ -85,38 +90,42 @@ class PressReleaseController extends Controller
         $pressRelease->description = $request->description ?? null;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            if ($pressRelease->image_url) {
-                $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
-                $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-                $gcsService->deleteImageFromGCS($filePath);
-            }
+            // if ($pressRelease->image_url) {
+            //     $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
+            //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+            //     $gcsService->deleteImageFromGCS($filePath);
+            // }
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             // Upload to GCS using service
-            $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
-            $pressRelease->image_url = $publicUrl ?? null;
-            $pressRelease->link = null;
-        } else {
-            if ($pressRelease->image_url) {
-                $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
-                $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-                $gcsService->deleteImageFromGCS($filePath);
-            }
-            $pressRelease->link = $request->link;
-            $pressRelease->image_url = null;
-        }
+            // $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
+            // $pressRelease->image_url = $publicUrl ?? null;
+            // $pressRelease->link = null;
+            app(ExternalApiService::class)->postData($file, $this->destination);
+            $pressRelease->img_src = $originalFilename;
+            $pressRelease->link = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+        } 
+        // else {
+        //     if ($pressRelease->image_url) {
+        //         $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
+        //         $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+        //         $gcsService->deleteImageFromGCS($filePath);
+        //     }
+        //     $pressRelease->link = $request->link;
+        //     $pressRelease->image_url = null;
+        // }
         $pressRelease->save();
         return redirect()->route('press-release.index')->with('success', 'Press Release updated successfully.');
     }
 
     function destroy($id)
     {
-        $pressRelease = PressRelease::findOrFail($id);        
-        if (!empty($pressRelease->image_url)) {
-            $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
-            $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-            app(GCSService::class)->deleteImageFromGCS($filePath);
-        }
+        $pressRelease = PressRelease::findOrFail($id);
+        // if (!empty($pressRelease->image_url)) {
+        //     $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
+        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+        //     app(GCSService::class)->deleteImageFromGCS($filePath);
+        // }
         $pressRelease->delete();
         return redirect()->route('press-release.index')->with('danger', 'Press Release deleted successfully.!!');
     }

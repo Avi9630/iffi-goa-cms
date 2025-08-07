@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CuratedSection;
 use App\Models\InternationalCinema;
 use App\Models\InternationalCinemaBasicDetail;
+use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ class InternationalCinemaController extends Controller
     public function __construct()
     {
         $this->bucketName = config('services.gcs.bucket');
+        $this->destination = env('INTERNATIONAL_CINEMA');
     }
 
     public function index()
@@ -49,7 +51,7 @@ class InternationalCinemaController extends Controller
             'directed_by' => 'required|string|max:255',
             'country_of_origin' => 'required|string|max:255',
             'language' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'image' => 'required|image|mimes:webp|max:2048',
             'year' => 'required|integer|min:1800|max:' . date('Y'),
             'award_year' => 'required|integer|min:1800|max:' . date('Y'),
         ]);
@@ -69,8 +71,10 @@ class InternationalCinemaController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             // Upload to GCS using service
-            $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
-            $internationalCinema->img_url = $publicUrl;
+            // $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
+            app(ExternalApiService::class)->postData($file, $this->destination);
+            $internationalCinema->img_src = $originalFilename;
+            $internationalCinema->img_url = 'https://www.iffigoa.org/public/images/cureted-section/webp/' . $originalFilename;
         }
 
         $internationalCinema->save();
@@ -96,7 +100,7 @@ class InternationalCinemaController extends Controller
             'directed_by' => 'required|string|max:255',
             'country_of_origin' => 'required|string|max:255',
             'language' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'image' => 'nullable|image|mimes:webp|max:2048',
             'year' => 'required|integer|min:1800|max:' . date('Y'),
             'award_year' => 'required|integer|min:1800|max:' . date('Y'),
         ]);
@@ -120,8 +124,12 @@ class InternationalCinemaController extends Controller
                 $file = $request->file('image');
                 $originalFilename = $file->getClientOriginalName();
                 // Upload new image to GCS
-                $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
-                $internationalCinema->img_url = $publicUrl;
+                // $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
+                // $internationalCinema->img_url = $publicUrl;
+
+                app(ExternalApiService::class)->postData($file, $this->destination);
+                $internationalCinema->img_src = $originalFilename;
+                $internationalCinema->img_url = 'https://www.iffigoa.org/public/images/cureted-section/webp/' . $originalFilename;
             }
 
             $internationalCinema->save();
@@ -134,11 +142,11 @@ class InternationalCinemaController extends Controller
     function destroy($id)
     {
         $internationalCinema = InternationalCinema::findOrFail($id);
-        if (!empty($internationalCinema->img_url)) {
-            $parsedUrl = parse_url($internationalCinema->img_url, PHP_URL_PATH);
-            $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-            app(GCSService::class)->deleteImageFromGCS($filePath);
-        }
+        // if (!empty($internationalCinema->img_url)) {
+        //     $parsedUrl = parse_url($internationalCinema->img_url, PHP_URL_PATH);
+        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+        //     app(GCSService::class)->deleteImageFromGCS($filePath);
+        // }
         $internationalCinema->delete();
         return redirect()->route('international-cinema.index')->with('danger', 'Entry deleted successfully.!!');
     }

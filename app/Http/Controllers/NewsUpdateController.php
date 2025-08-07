@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 use App\Models\NewsUpdate;
@@ -11,12 +12,13 @@ class NewsUpdateController extends Controller
 {
     protected $bucketName;
 
-    public function __construct()
+    public function __construct(ExternalApiService $api)
     {
         $this->projectId = config('services.gcs.project_id');
         $this->keyFilePath = config('services.gcs.key_file');
         $this->bucketName = config('services.gcs.bucket');
         $this->publicUrlFormat = config('services.gcs.public_url_format');
+        $this->destination = env('NEWS_AND_UPDATE');
     }
 
     function index()
@@ -67,7 +69,7 @@ class NewsUpdateController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'required|file|mimes:webp|max:2048',
             'link' => 'nullable|url|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
@@ -79,13 +81,15 @@ class NewsUpdateController extends Controller
 
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
+        app(ExternalApiService::class)->postData($file, $this->destination);
         // Upload to GCS using service
-        $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
+        // $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
 
         $data = [
             'title' => $payload['title'],
             'description' => $payload['description'],
-            'image_url' => $publicUrl,
+            'img_src' => $originalFilename,
+            // 'image_url' => $publicUrl,
             'link' => $payload['link'] ?? null,
             'link_title' => $payload['link_title'] ?? null,
             'have_popup' => $payload['have_popup'],
@@ -127,7 +131,8 @@ class NewsUpdateController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             // Upload to GCS using service
-            $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
+            // $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
+            app(ExternalApiService::class)->postData($file, $this->destination);
         }
 
         $newsUpdate = NewsUpdate::findOrFail($id);
@@ -135,7 +140,8 @@ class NewsUpdateController extends Controller
         $data = [
             'title' => $payload['title'] ?? $newsUpdate->title,
             'description' => $payload['description'] ?? $newsUpdate->description,
-            'image_url' => $publicUrl ?? $newsUpdate->image_url,
+            'img_src' => $originalFilename,
+            // 'image_url' => $publicUrl ?? $newsUpdate->image_url,
             'link' => $payload['link'] ?? $newsUpdate->link,
             'link_title' => $payload['link_title'] ?? $newsUpdate->link_title,
             'have_popup' => $payload['have_popup'] ?? $newsUpdate->have_popup,
@@ -153,28 +159,30 @@ class NewsUpdateController extends Controller
     public function destroy($id, GCSService $gcsService)
     {
         $newsUpdate = NewsUpdate::findOrFail($id);
-        $parsedUrl = parse_url($newsUpdate->image_url, PHP_URL_PATH);
-        $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        $gcsService->deleteImageFromGCS($filePath);
+        // $parsedUrl = parse_url($newsUpdate->image_url, PHP_URL_PATH);
+        // $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+        // $gcsService->deleteImageFromGCS($filePath);
         $newsUpdate->delete();
         return redirect()->route('news-update.index')->with('success', 'News update and image deleted.');
     }
 
     public function popupImage(GCSService $gcsService)
     {
-        $images = $gcsService->listImagesFromGCS('uploads/newsUpdate/');
+        $response = app(ExternalApiService::class)->getImageList($this->destination);
+        $images = $response['files'];
         return view('news_update.image', compact('images'));
     }
 
     function popupImageUpload(Request $request, GCSService $gcsService)
     {
         $request->validate([
-            'image' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'required|file|mimes:webp|max:2048',
         ]);
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
         // Upload to GCS using service
-        $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
+        // $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
+        app(ExternalApiService::class)->postData($file, $this->destination);
         return redirect()->back()->with('success', 'Image uploaded successfully.');
     }
 }

@@ -42,8 +42,7 @@
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" value="{{ old('image') }}"
                                             placeholder="Upload image." />
-                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
-                                            gif).</small>
+                                        <small class="form-text text-muted">Upload an image file (Only webp allowed).</small>
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cube;
+use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class CubeController extends Controller
     public function __construct()
     {
         $this->bucketName = config('services.gcs.bucket');
+        $this->destination = env('CUBE_DESTINATION');
     }
 
     function index()
@@ -30,7 +32,7 @@ class CubeController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:webp|max:2048',
             'link' => 'required|string',
         ]);
 
@@ -41,9 +43,12 @@ class CubeController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             //UPLOAD TO GCS USING SERVICE
-            $publicUrl = app(GCSService::class)->upload($file, 'uploads/cubes/' . time() . $originalFilename);
+            // $publicUrl = app(GCSService::class)->upload($file, 'uploads/cubes/' . time() . $originalFilename);
+            // $cube->image_name = $originalFilename;
+            // $cube->image_url = $publicUrl;
+            app(ExternalApiService::class)->postData($file, $this->destination);
             $cube->image_name = $originalFilename;
-            $cube->image_url = $publicUrl;
+            $cube->image_url = 'https://www.iffigoa.org/public/images/cube/webp/' . $originalFilename;
         }
         $cube->save();
         return redirect()->route('cube.index')->with('success', 'Cube uploaded successfully.!!');
@@ -59,7 +64,7 @@ class CubeController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:webp|max:2048',
             'link' => 'required|string',
         ]);
 
@@ -69,18 +74,19 @@ class CubeController extends Controller
             $cube->link = $payload['link'] ?? null;
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                if (!empty($cube->image_url)) {
-                    $parsedUrl = parse_url($cube->image_url, PHP_URL_PATH);
-                    $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-                    //DELETE IMAGE FROM GCS USING SERVICE
-                    app(GCSService::class)->deleteImageFromGCS($filePath);
-                }
+                // if (!empty($cube->image_url)) {
+                //     $parsedUrl = parse_url($cube->image_url, PHP_URL_PATH);
+                //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+                //     //DELETE IMAGE FROM GCS USING SERVICE
+                //     app(GCSService::class)->deleteImageFromGCS($filePath);
+                // }
                 $file = $request->file('image');
                 $originalFilename = $file->getClientOriginalName();
-                //UPLOAD TO GCS USING SERVICE
-                $publicUrl = app(GCSService::class)->upload($file, 'uploads/cubes/' . time() . $originalFilename);
-                $cube->image_url = $publicUrl;
+                // //UPLOAD TO GCS USING SERVICE
+                // $publicUrl = app(GCSService::class)->upload($file, 'uploads/cubes/' . time() . $originalFilename);
+                app(ExternalApiService::class)->postData($file, $this->destination);
                 $cube->image_name = $originalFilename;
+                $cube->image_url = 'https://www.iffigoa.org/public/images/cube/webp/' . $originalFilename;
             }
             $cube->save();
             return redirect()->route('cube.index')->with('success', 'Cube updated successfully.!!');
@@ -99,7 +105,6 @@ class CubeController extends Controller
         }
         $cube->delete();
         return redirect()->route('cube.index')->with('danger', 'Cube deleted successfully.!!');
-    
     }
 
     function toggleStatus($id)

@@ -40,7 +40,7 @@
                                         <tr>
                                             <th>Sr.Nom</th>
                                             <th>Title</th>
-                                            <th>Image</th>
+                                            <th>PDF</th>
                                             <th>Poster</th>
                                             <th>status</th>
                                             <th>Action</th>

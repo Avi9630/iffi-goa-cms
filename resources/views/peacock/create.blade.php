@@ -35,9 +35,9 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="image" class="form-label">Image</label>
+                                        <label for="image" class="form-label">PDF</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                            id="image" name="image" value="{{ old('image') }}">
+                                            id="image" name="image" value="{{ old('image') }}" placeholder="Only PDF allowed.">
                                         <small class="form-text text-muted">Upload an image file (pdf).</small>
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -47,8 +47,7 @@
                                         <label for="poster" class="form-label">Poster</label>
                                         <input type="file" class="form-control @error('poster') is-invalid @enderror"
                                             id="poster" name="poster" value="{{ old('poster') }}">
-                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
-                                            gif).</small>
+                                        <small class="form-text text-muted">Upload an image file (Only webp allowed).</small>
                                         @error('poster')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

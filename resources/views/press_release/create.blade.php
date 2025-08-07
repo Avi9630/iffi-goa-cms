@@ -58,14 +58,14 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <label for="link" class="form-label">Link</label>
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
                                             id="link" name="link">
                                         @error('link')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-footer">

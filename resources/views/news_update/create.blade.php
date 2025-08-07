@@ -53,7 +53,7 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="link" class="form-label">Link</label>
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
-                                            id="link" name="link">
+                                            id="link" name="link" value="{{ old('link') }}">
                                         @error('link')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

@@ -27,6 +27,9 @@
                     </div>
                 </form>
             </div>
+            <div class="col-md-6 p-1">
+                <a href={{ route('news-update.index') }} class="btn btn-sm btn-primary btn-flat">NewsUpdate</a>
+            </div>
         </div>
     </div>
     <br>
@@ -35,10 +38,11 @@
         <div class="container-fluid">
             <div class="row">
                 @foreach ($images as $image)
-                    <div class="col-lg-4 mb-4 mb-lg-0">
-                        <img src="{{ $image }}"class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Mountains in the Clouds" />
-                        <span>{{ $image }}</span>
+                    <div class="col-lg-4 mb-4">
+                        <img src="{{ $image['url'] }}"class="w-100 shadow-1-strong rounded mb-4"
+                            alt="Mountains in the Clouds" height="100px" width="100px" />
+
+                        <a href="{{ $image['url'] }}" target="_blank"><span>{{ $image['url'] }}</span></a>
                     </div>
                 @endforeach
             </div>
