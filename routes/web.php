@@ -12,7 +12,11 @@ use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
+use App\Http\Controllers\MasterClassController;
+use App\Http\Controllers\MasterClassTopicController;
+use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,10 +38,14 @@ Route::group(['middleware' => 'auth'], function () {
         'ic-basic-detail' => InternationalCinemaBasicDetailController::class,
         'international-cinema' => InternationalCinemaController::class,
         'international-media' => InternationalMediaController::class,
+        'master-class-topic' => MasterClassTopicController::class,
         'press-release' => PressReleaseController::class,
         'latest-update' => LatestUpdateController::class,
+        'master-class' => MasterClassController::class,
         'news-update' => NewsUpdateController::class,
         'permission' => PermissionController::class,
+        'moderator' => ModeratorController::class,
+        'speaker' => SpeakerController::class,
         'peacock' => PeacockController::class,
         'ticker' => TickerController::class,
         'photo' => PhotoController::class,
@@ -46,10 +54,19 @@ Route::group(['middleware' => 'auth'], function () {
         'cube' => CubeController::class,
     ]);
 
+    // Master-class
+    Route::get('/master-class/{id}/add-detail', [MasterClassTopicController::class, 'addDetail'])->name('masterClass.addDetail');
+    Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
+    Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
+    Route::put('/moderator/{id}/toggle', [ModeratorController::class, 'toggleStatus'])->name('moderator.toggleStatus');
+    Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
+    Route::put('/master-class/{id}/toggle', [MasterClassController::class, 'toggleStatus'])->name('masterClass.toggleStatus');
+
     Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
     Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
 
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
+    
 
     Route::put('/international-cinema/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('internationalCinema.toggle');
     Route::get('/ic/{id}/add-basic-detail', [InternationalCinemaController::class, 'addBasicDetail'])->name('internationalCinema.addBasicDetail');

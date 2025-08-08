@@ -104,6 +104,30 @@
                                     <p>Cube</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('master-class-topic.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Master Class Topics </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('master-class.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Master Class</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('speaker.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Speaker</p>
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a href="{{ route('speaker.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Speaker</p>
+                                </a>
+                            </li> --}}
                         </ul>
                     </li>
 
