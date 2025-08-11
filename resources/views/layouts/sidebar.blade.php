@@ -104,30 +104,60 @@
                                     <p>Cube</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('master-class-topic.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Master Class Topics </p>
                                 </a>
-                            </li>
-                            <li class="nav-item">
+                            </li> --}}
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('master-class.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Master Class</p>
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('speaker.index') }}" class="nav-link">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Speaker</p>
-                                </a>
-                            </li>
+                            </li> --}}
                             {{-- <li class="nav-item">
                                 <a href="{{ route('speaker.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Speaker</p>
                                 </a>
                             </li> --}}
+                            {{-- Master Class --}}
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-mortarboard"></i>
+                                    <p>
+                                        Master Class
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('master-class-date.index') }}" class="nav-link">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Dates</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('master-class-topic.index') }}" class="nav-link">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Topics</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('master-class.index') }}" class="nav-link">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Master Class</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('speaker.index') }}" class="nav-link">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Speakers</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
 

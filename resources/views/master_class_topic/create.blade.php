@@ -27,35 +27,14 @@
                             <div class="card-body">
                                 <div class="row">
 
-                                    {{-- <div class="col-md-6 mb-3">
-                                        <label for="date" class="form-label">Date</label>
-                                        <input type="date" class="form-control @error('date') is-invalid @enderror"
-                                            id="date" name="date" value="{{ old('date') }}"
-                                            placeholder="Enter date." min="2025-11-20" max="2025-11-30" />
-                                        @error('date')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div> --}}
-
-                                    {{-- <div class="col-md-6 mb-3">
-                                        <label for="start_time" class="form-label">Start time</label>
-                                        <input type="time" class="form-control @error('start_time') is-invalid @enderror"
-                                            id="start_time" name="start_time" value="{{ old('start_time') }}"
-                                            placeholder="Start time" />
-                                        @error('start_time')
+                                    <div class="col-md-6 mb-3">
+                                        <label for="master_date_id" class="form-label">Master Date ID</label>
+                                        <input type="number" class="form-control @error('master_date_id') is-invalid @enderror"
+                                            id="master_date_id" name="master_date_id" value="{{ old('master_date_id',$masterDate->id) }}" readonly/>
+                                        @error('master_date_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="end_time" class="form-label">End Time</label>
-                                        <input type="time" class="form-control @error('end_time') is-invalid @enderror"
-                                            id="end_time" name="end_time" value="{{ old('end_time') }}"
-                                            placeholder="Enter country of origin" />
-                                        @error('end_time')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div> --}}
 
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>

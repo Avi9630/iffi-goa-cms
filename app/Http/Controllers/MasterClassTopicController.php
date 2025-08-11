@@ -24,11 +24,13 @@ class MasterClassTopicController extends Controller
         $request->validate([
             'title' => 'required',
             'description' => 'required',
+            'master_date_id' => 'required|numeric',
         ]);
 
         $masterClass = new MasterClassTopic();
         $masterClass['title'] = $payload['title'];
         $masterClass['description'] = $payload['description'];
+        $masterClass['master_date_id'] = $payload['master_date_id'];
 
         if ($masterClass->save()) {
             return redirect()->route('master-class-topic.index')->with('success', 'Master class addedd successfully.!!');

@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Master Class Topic</h3>
+                    <h3 class="mb-0">Master Class Dates</h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -26,66 +26,50 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
-                        <div class="card-header">
+                        {{-- <div class="card-header">
                             <h3 class="card-title">
-                                {{-- <a href={{ route('master-class-topic.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add Master Class Topic
-                                </a> --}}
-                                <a href="{{ route('master-class.index') }}" class="btn btn-secondary btn-sm">Master Class Details</a>
-                                <a href="{{ route('speaker.index') }}" class="btn btn-success btn-sm">Speaker List</a>
-                                <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
+                                <a href={{ route('master-class-topic.index') }} class="btn btn-sm btn-primary btn-flat">
+                                    Master Class Topic
+                                </a>
                             </h3>
-                        </div>
+                        </div> --}}
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>topic</th>
-                                        <th>description</th>                                        
-                                        <th>Master Details</th>
-                                        <th>Speakers</th>
-                                        <th>Moderator</th>
-                                        <th>status</th>
-                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Topic</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($masterClassesTpic as $masterTopic)
+                                    @foreach ($masterDates as $date)
                                         <tr class="align-middle">
-                                            <td>{{ $masterTopic->id }}</td>
-                                            <td>{{ $masterTopic->title }}</td>
-                                            <td>{{ $masterTopic->description }}</td>
-
+                                            <td>{{ $date->id }}</td>
+                                            <td>{{ $date->date }}</td>
                                             <td>
-                                                <a href="{{ route('masterClass.addDetail',$masterTopic->id) }}" class="btn btn-info btn-sm">Master Class Details</a>
+                                                <a href={{ route('masterClassTopic.addTopic',$date->id) }}
+                                                    class="btn btn-sm btn-primary btn-flat">
+                                                    Add Topic
+                                                </a>
                                             </td>
-                                            
-                                            <td>
-                                                <a href="{{ route('masterClass.addSpeaker',$masterTopic->id) }}" class="btn btn-primary btn-sm">Add Speaker</a>
-                                            </td>
-                                            
-                                            <td>
-                                                <a href="{{ route('masterClass.addModerator',$masterTopic->id) }}" class="btn btn-secondary btn-sm">Add Moderator</a>
-                                            </td>
-
-                                            <td>
-                                                <form action="{{ route('masterClassTopic.toggleStatus', $masterTopic->id) }}"
+                                            {{-- <td>
+                                                <form action="{{ route('masterClass.toggleStatus', $master->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn {{ $masterTopic->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $masterTopic->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        class="btn {{ $master->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $master->status === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
 
-                                            <td style="white-space: nowrap;">
-                                                <a href="{{ route('master-class-topic.edit', $masterTopic->id) }}"
+                                            {{-- <td style="white-space: nowrap;">
+                                                <a href="{{ route('master-class.edit', $master->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form action="{{ route('master-class-topic.destroy', $masterTopic->id) }}"
+                                                    <form action="{{ route('master-class.destroy', $master->id) }}"
                                                         method="POST" style="display:inline;"
                                                         onsubmit="return confirm('Are you sure you want to delete this record? This action cannot be undone.');">
                                                         @csrf
@@ -93,7 +77,7 @@
                                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                     </form>
                                                 @endcan
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -13,6 +13,7 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
 use App\Http\Controllers\MasterClassController;
+use App\Http\Controllers\MasterClassDateController;
 use App\Http\Controllers\MasterClassTopicController;
 use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\RoleController;
@@ -39,6 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
         'international-cinema' => InternationalCinemaController::class,
         'international-media' => InternationalMediaController::class,
         'master-class-topic' => MasterClassTopicController::class,
+        'master-class-date' => MasterClassDateController::class,
         'press-release' => PressReleaseController::class,
         'latest-update' => LatestUpdateController::class,
         'master-class' => MasterClassController::class,
@@ -55,6 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
     ]);
 
     // Master-class
+    Route::get('/master-class-topic/{id}/add', [MasterClassDateController::class, 'addTopic'])->name('masterClassTopic.addTopic');
     Route::get('/master-class/{id}/add-detail', [MasterClassTopicController::class, 'addDetail'])->name('masterClass.addDetail');
     Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
     Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
