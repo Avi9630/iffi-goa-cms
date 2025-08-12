@@ -40,8 +40,8 @@
                                         <th>Sr.Nom</th>
                                         <th>Topic ID</th>
                                         <th>Moderator Name</th>
-                                        <th>Moderator Details</th>
-                                        <th>Image</th>
+                                        {{-- <th>Moderator Details</th>
+                                        <th>Image</th> --}}
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -52,10 +52,10 @@
                                             <td>{{ $moderator->id }}</td>
                                             <td>{{ $moderator->topic_id ?? '' }}</td>
                                             <td>{{ $moderator->moderator_name }}</td>
-                                            <td>{{ $moderator->moderator_detail }}</td>
-                                            <td><img src="{{ $moderator->moderator_image_url }}" alt="">
+                                            {{-- <td>{{ $moderator->moderator_detail }}</td> --}}
+                                            {{-- <td><img src="{{ $moderator->moderator_image_url }}" alt="">
                                                 {{ $moderator->moderator_image_name }}
-                                            </td>
+                                            </td> --}}
 
                                             <td>
                                                 <form action="{{ route('moderator.toggleStatus', $moderator->id) }}"

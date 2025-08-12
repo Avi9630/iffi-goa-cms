@@ -50,8 +50,9 @@
 
                                     <div class="col-md-6 mb-3">
                                         <label for="speaker_detail" class="form-label">Speaker Detail</label>
-                                        <textarea name="speaker_detail" id="speaker_detail" cols="10" rows="5"
-                                            class="form-control @error('speaker_detail') is-invalid @enderror" value="{{ old('speaker_detail') }}">                                            
+                                        <textarea name="speaker_detail" id="speaker_detail" cols="5" rows="5"
+                                            class="form-control @error('speaker_detail') is-invalid @enderror">
+                                            {{ old('speaker_detail') }}
                                         </textarea>
                                         @error('speaker_detail')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>

@@ -21,10 +21,6 @@ use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::group(['middleware' => 'guest'], function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('login', 'loginView')->name('login');
@@ -69,7 +65,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
 
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
-    
 
     Route::put('/international-cinema/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('internationalCinema.toggle');
     Route::get('/ic/{id}/add-basic-detail', [InternationalCinemaController::class, 'addBasicDetail'])->name('internationalCinema.addBasicDetail');
@@ -93,6 +88,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/photo/{id}/activeToggle', [PhotoController::class, 'activeToggle'])->name('photo.activeToggle');
     Route::put('/photo/{id}/toggle', [PhotoController::class, 'toggleStatus'])->name('photo.toggle');
 
+    Route::get('/', function () {
+        return view('welcome');
+    });
     Route::get('logout', [AuthController::class, 'logut'])->name('logout');
 });
 

@@ -20,7 +20,7 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">Master Class Form</div>
+                            <div class="card-title">Master Tpoic</div>
                         </div>
                         <form action="{{ route('master-class-topic.store') }}" method="POST">
                             @csrf

@@ -38,16 +38,6 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="date" class="form-label">Date</label>
-                                        <input type="date" class="form-control @error('date') is-invalid @enderror"
-                                            id="date" name="date" value="{{ old('date', $masterClass->date) }}"
-                                            placeholder="Enter date." min="2025-11-20" max="2025-11-30" />
-                                        @error('date')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
                                         <label for="start_time" class="form-label">Start time</label>
                                         <input type="time" class="form-control @error('start_time') is-invalid @enderror"
                                             id="start_time" name="start_time"
@@ -70,30 +60,20 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="year" class="form-label">Year</label>
-                                        <select name="year" id="year"
-                                            class="form-select @error('year') is-invalid @enderror">
-                                            <option value="" selected>Select Year</option>
-                                            <option value="2025" {{ $masterClass->year == 2025 ? 'selected' : '' }}>2025
-                                            </option>
-                                            <option value="2024" {{ $masterClass->year == 2024 ? 'selected' : '' }}>2024
-                                            </option>
-                                            <option value="2023" {{ $masterClass->year == 2023 ? 'selected' : '' }}>2023
-                                            </option>
-                                            <option value="2022" {{ $masterClass->year == 2022 ? 'selected' : '' }}>2022
-                                            </option>
-                                        </select>
-                                        @error('year')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
                                         <label for="format" class="form-label">Format</label>
                                         <input type="text" class="form-control @error('format') is-invalid @enderror"
                                             id="format" name="format" value="{{ old('format', $masterClass->format) }}"
                                             placeholder="Format" />
                                         @error('format')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="session_url" class="form-label">Session URL</label>
+                                        <textarea name="session_url" id="session_url" class="form-control @error('session_url') is-invalid @enderror"
+                                            cols="5" rows="1">{{ old('session_url', $masterClass->session_url) }}</textarea>
+                                        @error('session_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>

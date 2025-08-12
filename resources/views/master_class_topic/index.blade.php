@@ -28,9 +28,6 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
-                                {{-- <a href={{ route('master-class-topic.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add Master Class Topic
-                                </a> --}}
                                 <a href="{{ route('master-class.index') }}" class="btn btn-secondary btn-sm">Master Class Details</a>
                                 <a href="{{ route('speaker.index') }}" class="btn btn-success btn-sm">Speaker List</a>
                                 <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
@@ -43,7 +40,7 @@
                                         <th>Sr.Nom</th>
                                         <th>topic</th>
                                         <th>description</th>                                        
-                                        <th>Master Details</th>
+                                        <th>Master Class</th>
                                         <th>Speakers</th>
                                         <th>Moderator</th>
                                         <th>status</th>
@@ -58,15 +55,15 @@
                                             <td>{{ $masterTopic->description }}</td>
 
                                             <td>
-                                                <a href="{{ route('masterClass.addDetail',$masterTopic->id) }}" class="btn btn-info btn-sm">Master Class Details</a>
+                                                <a href="{{ route('masterClass.addDetail',$masterTopic->id) }}" class="btn btn-info btn-sm">ADD</a>
                                             </td>
                                             
                                             <td>
-                                                <a href="{{ route('masterClass.addSpeaker',$masterTopic->id) }}" class="btn btn-primary btn-sm">Add Speaker</a>
+                                                <a href="{{ route('masterClass.addSpeaker',$masterTopic->id) }}" class="btn btn-primary btn-sm">ADD</a>
                                             </td>
                                             
                                             <td>
-                                                <a href="{{ route('masterClass.addModerator',$masterTopic->id) }}" class="btn btn-secondary btn-sm">Add Moderator</a>
+                                                <a href="{{ route('masterClass.addModerator',$masterTopic->id) }}" class="btn btn-secondary btn-sm">ADD</a>
                                             </td>
 
                                             <td>

@@ -52,8 +52,13 @@
                                             <td>{{ $speaker->id }}</td>
                                             <td>{{ $speaker->topic_id ?? '' }}</td>
                                             <td>{{ $speaker->speaker_name }}</td>
-                                            <td>{{ $speaker->speaker_detail }}</td>
-                                            <td><img src="{{ $speaker->image_url }}" alt="">
+                                            <td>
+                                                <div style="max-height: 100px; overflow-y: auto; white-space: pre-wrap;">
+                                                    {!! $speaker->speaker_detail !!}
+                                                </div>
+                                            </td>
+                                            <td><img src="{{ $speaker->image_url }}" alt="" height="50px"
+                                                    width="100px">
                                                 {{ $speaker->image_name }}
                                             </td>
 
