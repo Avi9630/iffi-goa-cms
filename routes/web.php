@@ -91,7 +91,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', function () {
         return view('welcome');
     });
-    
     Route::get('logout', [AuthController::class, 'logut'])->name('logout');
 });
 
