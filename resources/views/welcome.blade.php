@@ -17,7 +17,7 @@
             <!--end::Row-->
         </div>
     </div> --}}
-    {{-- <div class="app-content">
+    <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
             <!--begin::Row-->
@@ -260,10 +260,10 @@
             <!--end::Row-->
         </div>
         <!--end::Container-->
-    </div> --}}
-    <div class="app-content">
+    </div>
+    {{-- <div class="app-content">
         <div class="container-fluid">
             <h1>Welcome to Iffi Goa CMS</h1>
         </div>
-    </div>
+    </div> --}}
 @endsection

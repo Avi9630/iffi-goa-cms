@@ -20,49 +20,22 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">Master Class Form</div>
+                            <div class="card-title">Master Date</div>&nbsp;
+                            <a href={{ route('master-class-date.index') }} class="btn btn-sm btn-warning btn-flat">
+                                Back
+                            </a>
                         </div>
-                        <form action="{{ route('master-class.store') }}" method="POST">
+                        <form action="{{ route('master-class-date.store') }}" method="POST">
                             @csrf
                             <div class="card-body">
                                 <div class="row">
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="topic_id" class="form-label">Topic ID</label>
-                                        <input type="number" class="form-control @error('topic_id') is-invalid @enderror"
-                                            id="topic_id" name="topic_id" value="{{ old('topic_id', $masterTopic->id) }}"
-                                            placeholder="Enter topic_id." readonly />
-                                        @error('topic_id')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
                                         <label for="date" class="form-label">Date</label>
                                         <input type="date" class="form-control @error('date') is-invalid @enderror"
                                             id="date" name="date" value="{{ old('date') }}"
-                                            placeholder="Enter date." min="2025-11-20" max="2025-11-30" />
+                                            placeholder="Enter date." min="2025-11-20" max="2025-11-28" />
                                         @error('date')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="start_time" class="form-label">Start time</label>
-                                        <input type="time" class="form-control @error('start_time') is-invalid @enderror"
-                                            id="start_time" name="start_time" value="{{ old('start_time') }}"
-                                            placeholder="Start time" />
-                                        @error('start_time')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="end_time" class="form-label">End Time</label>
-                                        <input type="time" class="form-control @error('end_time') is-invalid @enderror"
-                                            id="end_time" name="end_time" value="{{ old('end_time') }}"
-                                            placeholder="Enter country of origin" />
-                                        @error('end_time')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -86,15 +59,6 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
-                                        <label for="format" class="form-label">Format</label>
-                                        <input type="text" class="form-control @error('format') is-invalid @enderror"
-                                            id="format" name="format" value="{{ old('format') }}"
-                                            placeholder="Format" />
-                                        @error('format')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">

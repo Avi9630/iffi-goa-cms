@@ -19,11 +19,6 @@ class SpeakerController extends Controller
         return view('speakers.index', compact('speakers'));
     }
 
-    function create()
-    {
-        return view('master_class.create');
-    }
-
     function store(Request $request)
     {
         $payload = $request->all();
@@ -44,7 +39,7 @@ class SpeakerController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
             $speaker->image_name = $originalFilename;
-            $speaker->image_url = 'https://www.iffigoa.org/public/images/master-class/' . $originalFilename;
+            $speaker->image_url = 'https://www.iffigoa.org/public/images/master-class/webp/' . $originalFilename;
         }
 
         if ($speaker->save()) {
@@ -81,7 +76,7 @@ class SpeakerController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
             $speaker->image_name = $originalFilename;
-            $speaker->image_url = 'https://www.iffigoa.org/public/images/master-class/' . $originalFilename;
+            $speaker->image_url = 'https://www.iffigoa.org/public/images/master-class/webp/' . $originalFilename;
         }
 
         if ($speaker->save()) {

@@ -10,7 +10,7 @@ class ExternalApiService
 
     public function __construct()
     {
-        $this->baseUrl = config('http://localhost/iffi-goa/api/upload-image-in-folder');
+        $this->baseUrl = config('services.example_api.base_url');
     }
 
     public function getPosts($file, $destination)
@@ -30,19 +30,33 @@ class ExternalApiService
 
     public function postData($file, $destination)
     {
-        $response = Http::asMultipart()->post('http://localhost/iffi-goa/api/upload-image-in-folder', [
-            [
-                'name' => 'image',
-                'contents' => fopen($file->getPathname(), 'r'),
-                'filename' => $file->getClientOriginalName(),
-            ],
-            [
-                'name' => 'destination',
-                'contents' => $destination,
-            ],
-        ]);
+        // $response = Http::asMultipart()->post($this->baseUrl, [
+        //     [
+        //         'name' => 'image',
+        //         'contents' => fopen($file->getPathname(), 'r'),
+        //         'filename' => $file->getClientOriginalName(),
+        //     ],
+        //     [
+        //         'name' => 'destination',
+        //         'contents' => $destination,
+        //     ],
+        // ]);
+        $response = Http::withOptions(['verify' => false])
+            ->asMultipart()
+            ->post($this->baseUrl, [
+                [
+                    'name' => 'image',
+                    'contents' => fopen($file->getPathname(), 'r'),
+                    'filename' => $file->getClientOriginalName(),
+                ],
+                [
+                    'name' => 'destination',
+                    'contents' => $destination,
+                ],
+            ]);
+
         if ($response->successful()) {
-            return $response->json(); // Or handle as needed
+            return $response->json();
         } else {
             return response()->json(
                 [

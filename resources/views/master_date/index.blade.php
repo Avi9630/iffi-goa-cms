@@ -26,20 +26,25 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
-                        {{-- <div class="card-header">
+                        <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('master-class-topic.index') }} class="btn btn-sm btn-primary btn-flat">
-                                    Master Class Topic
+                                <a href={{ route('master-class-date.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Create Date
+                                </a>
+                                <a href={{ route('master-class-topic.index') }} class="btn btn-sm btn-secondary btn-flat">
+                                    Master Topics
                                 </a>
                             </h3>
-                        </div> --}}
+                        </div>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
                                         <th>Date</th>
+                                        <th>Year</th>
                                         <th>Topic</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -47,12 +52,14 @@
                                         <tr class="align-middle">
                                             <td>{{ $date->id }}</td>
                                             <td>{{ $date->date }}</td>
+                                            <td>{{ $date->year }}</td>
                                             <td>
                                                 <a href={{ route('masterClassTopic.addTopic',$date->id) }}
-                                                    class="btn btn-sm btn-primary btn-flat">
+                                                    class="btn btn-sm btn-info btn-flat">
                                                     Add Topic
                                                 </a>
                                             </td>
+                                            
                                             {{-- <td>
                                                 <form action="{{ route('masterClass.toggleStatus', $master->id) }}"
                                                     method="POST" style="display:inline;">
@@ -65,11 +72,11 @@
                                                 </form>
                                             </td> --}}
 
-                                            {{-- <td style="white-space: nowrap;">
-                                                <a href="{{ route('master-class.edit', $master->id) }}"
+                                            <td style="white-space: nowrap;">
+                                                <a href="{{ route('master-class-date.edit', $date->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form action="{{ route('master-class.destroy', $master->id) }}"
+                                                    <form action="{{ route('master-class-date.destroy', $date->id) }}"
                                                         method="POST" style="display:inline;"
                                                         onsubmit="return confirm('Are you sure you want to delete this record? This action cannot be undone.');">
                                                         @csrf
@@ -77,7 +84,7 @@
                                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                     </form>
                                                 @endcan
-                                            </td> --}}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

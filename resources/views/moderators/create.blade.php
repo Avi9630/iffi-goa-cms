@@ -48,7 +48,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <label for="moderator_detail" class="form-label">Moderator Detail</label>
                                         <textarea name="moderator_detail" id="moderator_detail" cols="10" rows="5"
                                             class="form-control @error('moderator_detail') is-invalid @enderror" value="{{ old('moderator_detail') }}">                                            
@@ -56,9 +56,9 @@
                                         @error('moderator_detail')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
 
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" />
@@ -66,7 +66,7 @@
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-footer">

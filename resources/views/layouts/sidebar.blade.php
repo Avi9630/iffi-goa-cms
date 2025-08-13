@@ -19,7 +19,7 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-clipboard-fill"></i>
-                            <p>RBAC<i class="nav-arrow bi bi-chevron-right"></i></p>
+                            <p>User Management<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
@@ -104,24 +104,6 @@
                                     <p>Cube</p>
                                 </a>
                             </li>
-                            {{-- <li class="nav-item">
-                                <a href="{{ route('master-class-topic.index') }}" class="nav-link">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Master Class Topics </p>
-                                </a>
-                            </li> --}}
-                            {{-- <li class="nav-item">
-                                <a href="{{ route('master-class.index') }}" class="nav-link">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Master Class</p>
-                                </a>
-                            </li> --}}
-                            {{-- <li class="nav-item">
-                                <a href="{{ route('speaker.index') }}" class="nav-link">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Speaker</p>
-                                </a>
-                            </li> --}}
                             {{-- Master Class --}}
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
@@ -160,11 +142,10 @@
                             </li>
                         </ul>
                     </li>
-
                     {{-- Logout --}}
                     <a href="{{ route('logout') }}" class="nav-link">
                         <i class="nav-icon bi bi-clipboard-fill"></i>
-                        <p>Layout</p>
+                        <p>Lagout</p>
                     </a>
                 @else
                 @endauth
