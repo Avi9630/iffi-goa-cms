@@ -27,6 +27,7 @@
                             @csrf @method('PUT')
                             <div class="card-body">
                                 <div class="row">
+
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror"
@@ -35,44 +36,34 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="publish_date" class="form-label">Publish Date</label>
-                                        <input type="date"
-                                            class="form-control @error('publish_date') is-invalid @enderror"
-                                            id="publish_date" name="publish_date"
-                                            value="{{ old('publish_date', $pressRelease->publish_date) }}">
-                                        @error('publish_date')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="title" class="form-label">Description</label>
-                                        <textarea name="description" id="description" cols="10" rows="2"
-                                            class="form-control @error('description')  is-invalid @enderror">{{ old('description', $pressRelease->description) }}</textarea>
-                                        @error('description')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image">
                                         <div>
-                                            <img src="{{ !empty($pressRelease->image_url) ? $pressRelease->image_url : '' }}"
-                                                alt="Image" class="img-fluid mt-2">
+                                            <a href="{{ !empty($pressRelease->image_url)
+                                                ? asset('press_release/' . basename($pressRelease->image_url))
+                                                : (!empty($pressRelease->link)
+                                                    ? $pressRelease->link
+                                                    : asset('press_release/' . $pressRelease->img_src)) }}"
+                                                class="btn btn-primary" target="_blank">
+                                                View PDF
+                                            </a>
                                         </div>
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    {{-- <div class="col-md-6 mb-3">
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="link" class="form-label">Link</label>
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
                                             id="link" name="link" value="{{ $pressRelease->link }}">
                                         @error('link')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">

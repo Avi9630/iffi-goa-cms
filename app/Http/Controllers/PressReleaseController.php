@@ -53,6 +53,7 @@ class PressReleaseController extends Controller
                 'link.url' => 'The link format is invalid.',
             ],
         );
+
         $pressRelease = new PressRelease();
         $pressRelease->title = $request->title ?? null;
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -61,6 +62,7 @@ class PressReleaseController extends Controller
             app(ExternalApiService::class)->postData($file, $this->destination);
             $pressRelease->img_src = $originalFilename;
             $pressRelease->image_url = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+            $pressRelease->link = $request->link ?? null;
         } elseif ($request->filled('link')) {
             $pressRelease->link = $request->link;
         }
@@ -74,48 +76,103 @@ class PressReleaseController extends Controller
         return view('press_release.edit', compact('pressRelease'));
     }
 
-    function update(Request $request, $id, GCSService $gcsService)
+    function update(Request $request, $id)
     {
+        // $pressRelease = PressRelease::findOrFail($id);
+        // $request->validate([
+        //     'title' => 'required|string|max:255',
+        //     'publish_date' => 'required|date',
+        //     'description' => 'nullable|string',
+        //     'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|required_without:link',
+        //     'link' => 'nullable|required_without:image',
+        // ]);
+
+        // $pressRelease->title = $request->title ?? null;
+        // $pressRelease->publish_date = $request->publish_date;
+        // $pressRelease->description = $request->description ?? null;
+
+        // if ($request->hasFile('image') && $request->file('image')->isValid()) {
+        //     // if ($pressRelease->image_url) {
+        //     //     $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
+        //     //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
+        //     //     $gcsService->deleteImageFromGCS($filePath);
+        //     // }
+        //     $file = $request->file('image');
+        //     $originalFilename = $file->getClientOriginalName();
+        //     // Upload to GCS using service
+        //     // $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
+        //     // $pressRelease->image_url = $publicUrl ?? null;
+        //     // $pressRelease->link = null;
+        //     app(ExternalApiService::class)->postData($file, $this->destination);
+        //     $pressRelease->img_src = $originalFilename;
+        //     $pressRelease->link = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+        // }
+        // $pressRelease->save();
+        // return redirect()->route('press-release.index')->with('success', 'Press Release updated successfully.');
+
+        // $request->validate(
+        //     [
+        //         'title' => 'required|string|max:255',
+        //         'image' => 'nullable|mimes:pdf|max:2048|required_without:link',
+        //         'link' => 'nullable|url|required_without:image',
+        //     ],
+        //     [
+        //         'title.required' => 'Please enter the title.',
+        //         'image.required_without' => 'Please upload a PDF file or provide a link.',
+        //         'image.mimes' => 'The file must be a PDF only.',
+        //         'image.max' => 'The PDF must not be larger than 2 MB.',
+        //         'link.required_without' => 'Please provide a link or upload a PDF file.',
+        //         'link.url' => 'The link format is invalid.',
+        //     ],
+        // );
+
         $pressRelease = PressRelease::findOrFail($id);
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'publish_date' => 'required|date',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|required_without:link',
-            // 'link' => 'nullable|required_without:image',
-        ]);
 
+        $request->validate(
+            [
+                'title' => 'required|string|max:255',
+                'image' => [
+                    'nullable',
+                    'mimes:pdf',
+                    'max:2048',
+                    function ($attribute, $value, $fail) use ($request, $pressRelease) {
+                        if (!$value && empty($request->link) && empty($pressRelease->image)) {
+                            $fail('Please upload a PDF file or provide a link.');
+                        }
+                    },
+                ],
+                'link' => [
+                    'nullable',
+                    'url',
+                    function ($attribute, $value, $fail) use ($request, $pressRelease) {
+                        if (!$value && empty($request->image) && empty($press->link)) {
+                            $fail('Please provide a link or upload a PDF file.');
+                        }
+                    },
+                ],
+            ],
+            [
+                'title.required' => 'Please enter the title.',
+                'image.mimes' => 'The file must be a PDF only.',
+                'image.max' => 'The PDF must not be larger than 2 MB.',
+                'link.url' => 'The link format is invalid.',
+            ],
+        );
+
+        // $pressRelease = PressRelease::findOrFail($id);
         $pressRelease->title = $request->title ?? null;
-        $pressRelease->publish_date = $request->publish_date;
-        $pressRelease->description = $request->description ?? null;
-
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            // if ($pressRelease->image_url) {
-            //     $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
-            //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-            //     $gcsService->deleteImageFromGCS($filePath);
-            // }
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload to GCS using service
-            // $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
-            // $pressRelease->image_url = $publicUrl ?? null;
-            // $pressRelease->link = null;
             app(ExternalApiService::class)->postData($file, $this->destination);
             $pressRelease->img_src = $originalFilename;
-            $pressRelease->link = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+            $pressRelease->image_url = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+            $pressRelease->link = $request->link ?? null;
+        } elseif ($request->filled('link')) {
+            $pressRelease->link = $request->link;
         }
-        // else {
-        //     if ($pressRelease->image_url) {
-        //         $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
-        //         $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        //         $gcsService->deleteImageFromGCS($filePath);
-        //     }
-        //     $pressRelease->link = $request->link;
-        //     $pressRelease->image_url = null;
-        // }
         $pressRelease->save();
-        return redirect()->route('press-release.index')->with('success', 'Press Release updated successfully.');
+        return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
     }
 
     function destroy($id)
