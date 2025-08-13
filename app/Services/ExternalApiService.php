@@ -6,11 +6,13 @@ use Illuminate\Support\Facades\Http;
 
 class ExternalApiService
 {
-    protected $baseUrl;
+    protected $uploadUrl;
+    protected $imageListUrl;
 
     public function __construct()
     {
-        $this->baseUrl = config('services.example_api.base_url');
+        $this->uploadUrl = config('services.example_api.upload_image_base_url');
+        $this->imageListUrl = config('services.example_api.image_list_base_url');
     }
 
     public function getPosts($file, $destination)
@@ -43,7 +45,7 @@ class ExternalApiService
         // ]);
         $response = Http::withOptions(['verify' => false])
             ->asMultipart()
-            ->post($this->baseUrl, [
+            ->post($this->uploadUrl, [
                 [
                     'name' => 'image',
                     'contents' => fopen($file->getPathname(), 'r'),
@@ -69,25 +71,46 @@ class ExternalApiService
         }
     }
 
+    // public function getImageList($destination)
+    // {
+    //     $response = Http::asMultipart()->post($this->imageListUrl, [
+    //         [
+    //             'name' => 'destination',
+    //             'contents' => $destination,
+    //         ],
+    //     ]);
+    //     if ($response->successful()) {
+    //         return $response->json(); // Or handle as needed
+    //     } else {
+    //         return response()->json(
+    //             [
+    //                 'message' => 'Upload failed',
+    //                 'status' => $response->status(),
+    //                 'body' => $response->body(),
+    //             ],
+    //             $response->status(),
+    //         );
+    //     }
+    // }
+
     public function getImageList($destination)
     {
-        $response = Http::asMultipart()->post('http://localhost/iffi-goa/api/list-image-from-folder', [
+        $response = Http::asMultipart()->post($this->imageListUrl, [
             [
                 'name' => 'destination',
                 'contents' => $destination,
             ],
         ]);
+
         if ($response->successful()) {
-            return $response->json(); // Or handle as needed
-        } else {
-            return response()->json(
-                [
-                    'message' => 'Upload failed',
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ],
-                $response->status(),
-            );
+            return $response->json();
         }
+
+        return [
+            'error' => true,
+            'message' => 'Upload failed',
+            'status' => $response->status(),
+            'body' => $response->body(),
+        ];
     }
 }
