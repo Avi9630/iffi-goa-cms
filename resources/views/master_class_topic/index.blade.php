@@ -28,6 +28,7 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
+                                <a href="{{ route('master-class-date.index') }}" class="btn btn-primary btn-sm">Master Date</a>
                                 <a href="{{ route('master-class.index') }}" class="btn btn-secondary btn-sm">Master Class Details</a>
                                 <a href="{{ route('speaker.index') }}" class="btn btn-success btn-sm">Speaker List</a>
                                 <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
