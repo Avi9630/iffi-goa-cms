@@ -45,7 +45,7 @@ class ExternalApiService
         // ]);
         $response = Http::withOptions(['verify' => false])
             ->asMultipart()
-            ->post($this->baseUrl, [
+            ->post($this->uploadUrl, [
                 [
                     'name' => 'image',
                     'contents' => fopen($file->getPathname(), 'r'),
