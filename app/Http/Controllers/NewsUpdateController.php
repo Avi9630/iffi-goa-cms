@@ -74,28 +74,24 @@ class NewsUpdateController extends Controller
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
         ]);
-        // Validate the image file
-        if (!$request->hasFile('image')) {
-            return redirect()->back()->with('warning', 'Image file is required.');
+
+        $newsUpdate = new NewsUpdate();
+
+        $newsUpdate->title = $payload['title'];
+        $newsUpdate->description = $payload['description'];
+        $newsUpdate->link = $payload['link'] ?? null;
+        $newsUpdate->link_title = $payload['link_title'] ?? null;
+        $newsUpdate->have_popup = $payload['have_popup'];
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $originalFilename = $file->getClientOriginalName();
+            app(ExternalApiService::class)->postData($file, $this->destination);
+            $newsUpdate->image_name = $originalFilename;
+            $newsUpdate->img_src = $originalFilename;
+            $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
         }
-
-        $file = $request->file('image');
-        $originalFilename = $file->getClientOriginalName();
-        app(ExternalApiService::class)->postData($file, $this->destination);
-        // Upload to GCS using service
-        // $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
-
-        $data = [
-            'title' => $payload['title'],
-            'description' => $payload['description'],
-            'img_src' => $originalFilename,
-            // 'image_url' => $publicUrl,
-            'link' => $payload['link'] ?? null,
-            'link_title' => $payload['link_title'] ?? null,
-            'have_popup' => $payload['have_popup'],
-        ];
-        $newsUpdate = NewsUpdate::create($data);
-        if ($newsUpdate) {
+        if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
         } else {
             return redirect()->back()->with('error', 'Failed to create News Update. Please try again.');
@@ -114,13 +110,18 @@ class NewsUpdateController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|file|mimes:webp|max:2048',
             'link' => 'nullable|url|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
         ]);
 
         $newsUpdate = NewsUpdate::findOrFail($id);
+        $newsUpdate['title'] = $payload['title'];
+        $newsUpdate['description'] = $payload['description'];
+        $newsUpdate['link'] = $payload['link'] ?? null;
+        $newsUpdate['link_title'] = $payload['link_title'] ?? null;
+        $newsUpdate['have_popup'] = $payload['have_popup'];
 
         if ($request->hasFile('image')) {
             if (!is_null($newsUpdate->image_url)) {
@@ -130,25 +131,12 @@ class NewsUpdateController extends Controller
             }
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload to GCS using service
-            // $publicUrl = $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
             app(ExternalApiService::class)->postData($file, $this->destination);
+            $newsUpdate->image_name = $originalFilename;
+            $newsUpdate->img_src = $originalFilename;
+            $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
         }
-
-        $newsUpdate = NewsUpdate::findOrFail($id);
-
-        $data = [
-            'title' => $payload['title'] ?? $newsUpdate->title,
-            'description' => $payload['description'] ?? $newsUpdate->description,
-            'img_src' => $originalFilename,
-            // 'image_url' => $publicUrl ?? $newsUpdate->image_url,
-            'link' => $payload['link'] ?? $newsUpdate->link,
-            'link_title' => $payload['link_title'] ?? $newsUpdate->link_title,
-            'have_popup' => $payload['have_popup'] ?? $newsUpdate->have_popup,
-        ];
-
-        $newsUpdate = $newsUpdate->update($data);
-
+        $newsUpdate = $newsUpdate->save();
         if ($newsUpdate) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
         } else {
@@ -156,32 +144,39 @@ class NewsUpdateController extends Controller
         }
     }
 
-    public function destroy($id, GCSService $gcsService)
+    public function destroy($id)
     {
         $newsUpdate = NewsUpdate::findOrFail($id);
-        // $parsedUrl = parse_url($newsUpdate->image_url, PHP_URL_PATH);
-        // $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        // $gcsService->deleteImageFromGCS($filePath);
         $newsUpdate->delete();
         return redirect()->route('news-update.index')->with('success', 'News update and image deleted.');
     }
 
+    // public function popupImage(GCSService $gcsService)
+    // {
+    //     $response = app(ExternalApiService::class)->getImageList($this->destination);
+    //     $images = $response['files'];
+    //     return view('news_update.image', compact('images'));
+    // }
+
     public function popupImage(GCSService $gcsService)
     {
         $response = app(ExternalApiService::class)->getImageList($this->destination);
-        $images = $response['files'];
+
+        if (!empty($response['error'])) {
+            return back()->withErrors(['msg' => $response['message']]);
+        }
+
+        $images = $response['files'] ?? [];
         return view('news_update.image', compact('images'));
     }
 
-    function popupImageUpload(Request $request, GCSService $gcsService)
+    function popupImageUpload(Request $request)
     {
         $request->validate([
             'image' => 'required|file|mimes:webp|max:2048',
         ]);
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
-        // Upload to GCS using service
-        // $gcsService->upload($file, 'uploads/newsUpdate/' . time() . $originalFilename);
         app(ExternalApiService::class)->postData($file, $this->destination);
         return redirect()->back()->with('success', 'Image uploaded successfully.');
     }
