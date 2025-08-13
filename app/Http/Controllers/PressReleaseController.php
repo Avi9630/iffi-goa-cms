@@ -36,36 +36,36 @@ class PressReleaseController extends Controller
         return view('press_release.create');
     }
 
-    function store(Request $request, GCSService $gcsService)
+    function store(Request $request)
     {
-        $payload = $request->all();
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'publish_date' => 'required|date',
-            'description' => 'nullable|string',
-            'image' => 'required|mimes:jpeg,png,jpg,gif,pdf|max:2048|required_without:link',
-            // 'link' => 'nullable|required_without:image',
-        ]);
-
+        $request->validate(
+            [
+                'title' => 'required|string|max:255',
+                'image' => 'nullable|mimes:pdf|max:2048|required_without:link',
+                'link' => 'nullable|url|required_without:image',
+            ],
+            [
+                'title.required' => 'Please enter the title.',
+                'image.required_without' => 'Please upload a PDF file or provide a link.',
+                'image.mimes' => 'The file must be a PDF only.',
+                'image.max' => 'The PDF must not be larger than 2 MB.',
+                'link.required_without' => 'Please provide a link or upload a PDF file.',
+                'link.url' => 'The link format is invalid.',
+            ],
+        );
         $pressRelease = new PressRelease();
         $pressRelease->title = $request->title ?? null;
-        $pressRelease->publish_date = $request->publish_date;
-        $pressRelease->description = $request->description ?? null;
-
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload to GCS using service
-            // $publicUrl = $gcsService->upload($file, 'uploads/pressRelease/' . time() . $originalFilename);
-            // $pressRelease->image_url = $publicUrl;
             app(ExternalApiService::class)->postData($file, $this->destination);
             $pressRelease->img_src = $originalFilename;
-            $pressRelease->link = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
-            $pressRelease->save();
-            return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
-        }else {
-            return redirect()->route('press-release.index')->with('warning', 'File must be uploaded.!!');
+            $pressRelease->image_url = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
+        } elseif ($request->filled('link')) {
+            $pressRelease->link = $request->link;
         }
+        $pressRelease->save();
+        return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
     }
 
     function edit($id)
@@ -104,7 +104,7 @@ class PressReleaseController extends Controller
             app(ExternalApiService::class)->postData($file, $this->destination);
             $pressRelease->img_src = $originalFilename;
             $pressRelease->link = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
-        } 
+        }
         // else {
         //     if ($pressRelease->image_url) {
         //         $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
