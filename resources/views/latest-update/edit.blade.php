@@ -27,7 +27,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="content" class="form-label">Content</label>
+                                        <label for="content" class="form-label">Button Content</label>
                                         <input type="text" class="form-control @error('content') is-invalid @enderror"
                                             id="content" name="content" value="{{ old('content', $latestUpdate->content) }}">
                                         @error('content')

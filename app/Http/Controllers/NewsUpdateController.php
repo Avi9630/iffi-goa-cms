@@ -180,4 +180,15 @@ class NewsUpdateController extends Controller
         app(ExternalApiService::class)->postData($file, $this->destination);
         return redirect()->back()->with('success', 'Image uploaded successfully.');
     }
+
+    function search(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+        $newsUpdates = NewsUpdate::where('title', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+        return view('news_update.index', compact('newsUpdates'));
+    }
 }
