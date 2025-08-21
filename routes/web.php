@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/popup_image_upload', [NewsUpdateController::class, 'popupImageUpload'])->name('newsUpdate.popupImageUpload');
     Route::put('/news-update/{id}/toggle', [NewsUpdateController::class, 'toggleStatus'])->name('newsUpdate.toggle');
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
+    Route::get('/news-update-search', [NewsUpdateController::class, 'search'])->name('newsUpdate.search');
 
     Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
 
@@ -87,6 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/photo/{id}/highlight', [PhotoController::class, 'highlightToggle'])->name('photo.highlightToggle');
     Route::put('/photo/{id}/activeToggle', [PhotoController::class, 'activeToggle'])->name('photo.activeToggle');
     Route::put('/photo/{id}/toggle', [PhotoController::class, 'toggleStatus'])->name('photo.toggle');
+   
 
     Route::get('/', function () {
         return view('welcome');

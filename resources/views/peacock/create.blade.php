@@ -34,21 +34,53 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="image" class="form-label">PDF</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                            id="image" name="image" value="{{ old('image') }}" placeholder="Only PDF allowed.">
+                                            id="image" name="image" value="{{ old('image') }}"
+                                            placeholder="Only PDF allowed.">
                                         <small class="form-text text-muted">Upload an image file (pdf).</small>
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="poster" class="form-label">Poster</label>
                                         <input type="file" class="form-control @error('poster') is-invalid @enderror"
                                             id="poster" name="poster" value="{{ old('poster') }}">
-                                        <small class="form-text text-muted">Upload an image file (Only webp allowed).</small>
+                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
+                                            webp).</small>
                                         @error('poster')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="year" class="form-label"><strong>Year</strong></label>
+                                        <select name="year" id="year"
+                                            class="form-select @error('year') is-invalid @enderror">
+                                            <option value="" selected>Select Year</option>
+                                            <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025</option>
+                                            <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
+                                            </option>
+                                            <option value="2023" {{ old('year') == 2023 ? 'selected' : '' }}>2023
+                                            </option>
+                                            <option value="2022" {{ old('year') == 2022 ? 'selected' : '' }}>2022
+                                            </option>
+                                            <option value="2021" {{ old('year') == 2021 ? 'selected' : '' }}>2021
+                                            </option>
+                                            <option value="2020" {{ old('year') == 2020 ? 'selected' : '' }}>2020
+                                            </option>
+                                            <option value="2019" {{ old('year') == 2019 ? 'selected' : '' }}>2019
+                                            </option>
+                                            <option value="2018" {{ old('year') == 2018 ? 'selected' : '' }}>2018
+                                            </option>
+                                            <option value="2017" {{ old('year') == 2017 ? 'selected' : '' }}>2017
+                                            </option>
+                                        </select>
+                                        @error('year')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>

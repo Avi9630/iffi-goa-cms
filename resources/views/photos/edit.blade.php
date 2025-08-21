@@ -48,8 +48,7 @@
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" />
-                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
-                                            gif).</small>
+                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,webp).</small>
                                         @if ($photo->img_url)
                                             <img src="{{ $photo->img_url }}" alt="Current Image" class="img-fluid mt-2"
                                                 style="max-width: 50px;">

@@ -26,6 +26,13 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <a href={{ route('international-cinema.index') }} class="btn btn-sm btn-primary btn-flat">
+                                    International Cinema
+                                </a>
+                            </h3>
+                        </div>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
