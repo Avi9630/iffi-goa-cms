@@ -41,7 +41,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>Content</th>
+                                        <th style="white-space: nowrap">Button Content</th>
                                         <th>Title</th>
                                         <th>Link</th>
                                         <th>Status</th>
