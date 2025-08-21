@@ -26,6 +26,7 @@
                             @csrf
                             <div class="card-body">
                                 <div class="row">
+                                    
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror"
@@ -34,38 +35,24 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div class="col-md-6 mb-3">
-                                        <label for="publish_date" class="form-label">Publish Date</label>
-                                        <input type="date" class="form-control @error('publish_date') is-invalid @enderror"
-                                            id="publish_date" name="publish_date" value="{{ old('publish_date') }}">
-                                        @error('publish_date')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="title" class="form-label">Description</label>
-                                        <textarea name="description" id="description" cols="10" rows="2"
-                                            class="form-control @error('description')  is-invalid @enderror">{{ old('description') }}</textarea>
-                                        @error('description')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="image" class="form-label">Image</label>
+                                        <label for="image" class="form-label">PDF</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image">
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    {{-- <div class="col-md-6 mb-3">
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="link" class="form-label">Link</label>
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
                                             id="link" name="link">
                                         @error('link')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div> --}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">

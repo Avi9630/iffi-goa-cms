@@ -61,7 +61,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <label for="image_name" class="form-label">Image</label>
                                         <input type="text" name="image_name"
                                             class="form-control @error('image_name') is-invalid @enderror"
@@ -69,7 +69,7 @@
                                         @error('image_name')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-footer">

@@ -39,34 +39,33 @@ class PeacockController extends Controller
 
     function store(Request $request, GCSService $gcsService)
     {
+        $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'required|mimes:pdf',
             'poster' => 'required|image|mimes:webp,|max:2048',
+            'year' => 'required|integer',
         ]);
 
         $peacock = new Peacock();
-        $peacock->title = $request->title ?? null;
-        $peacock->year = '2025';
+        $peacock->title = $payload['title'] ?? null;
+        $peacock->year = $payload['year'] ?? null;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // $imageUrl = $gcsService->upload($file, 'uploads/peacock/' . time() . $originalFilename);
             app(ExternalApiService::class)->postData($file, $this->PDFDestination);
             $peacock->img_src = $originalFilename;
-            $peacock->image_url = 'https://www.iffigoa.org/public/images/thePeacock/' . $originalFilename;
+            $peacock->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->PDFDestination . '/' . $originalFilename;
             $peacock->image_name = $originalFilename;
         }
 
         if ($request->hasFile('poster') && $request->file('poster')->isValid()) {
             $file = $request->file('poster');
             $originalFilename = $file->getClientOriginalName();
-            // $posterUrl = $gcsService->upload($file, 'uploads/peacock/' . time() . $originalFilename);
-            // $peacock->poster_url = $posterUrl;
             app(ExternalApiService::class)->postData($file, $this->posterDestination);
             $peacock->poster = $originalFilename;
-            $peacock->poster_url = 'https://www.iffigoa.org/public/images/thePeacock/poster/webp/' . $originalFilename;
+            $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . $originalFilename;
         }
         $peacock->save();
         return redirect()->route('peacock.index')->with('success', 'Press Release created successfully.');
@@ -80,33 +79,33 @@ class PeacockController extends Controller
 
     function update(Request $request, $id, GCSService $gcsService)
     {
+        $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'nullable|mimes:pdf',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'year' => 'nullable|integer',
         ]);
 
         $peacock = Peacock::findOrFail($id);
-        $peacock->title = $request->title ?? null;
+        $peacock->title = $request->title ?? $peacock->title;
+        $peacock->year = $request->year ?? $peacock->year;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // $imageUrl = $gcsService->upload($file, 'uploads/peacock/' . time() . $originalFilename);
             app(ExternalApiService::class)->postData($file, $this->PDFDestination);
             $peacock->img_src = $originalFilename;
-            $peacock->image_url = 'https://www.iffigoa.org/public/images/thePeacock/' . $originalFilename;
+            $peacock->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->PDFDestination . '/' . $originalFilename;
             $peacock->image_name = $originalFilename;
         }
 
         if ($request->hasFile('poster') && $request->file('poster')->isValid()) {
             $file = $request->file('poster');
             $originalFilename = $file->getClientOriginalName();
-            // $posterUrl = $gcsService->upload($file, 'uploads/peacock/' . time() . $originalFilename);
-            // $peacock->poster_url = $posterUrl;
             app(ExternalApiService::class)->postData($file, $this->posterDestination);
             $peacock->poster = $originalFilename;
-            $peacock->poster_url = 'https://www.iffigoa.org/public/images/thePeacock/poster/webp' . $originalFilename;
+            $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . $originalFilename;
         }
 
         $peacock->save();

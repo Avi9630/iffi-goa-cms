@@ -34,7 +34,7 @@ class PhotoController extends Controller
         $payload = $request->all();
         $request->validate([
             'category_id' => 'required',
-            'image' => 'required_without:video_url|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'image' => 'required_without:video_url|image|mimes:jpg,jpeg,png,webp|max:2048',
             'img_caption' => 'required',
             'video_url' => 'required_without:image',
             'year' => 'required|integer',
@@ -42,6 +42,7 @@ class PhotoController extends Controller
         $photo = new Photo();
         $photo->year = $request->year ?? null;
         $photo->img_caption = $request->img_caption ?? null;
+        $photo->category_id = $request->category_id ?? null;
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
@@ -67,7 +68,7 @@ class PhotoController extends Controller
         $payload = $request->all();
         $request->validate([
             'category_id' => 'required',
-            'image' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
+            'image' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             'img_caption' => 'required',
             'video_url' => 'nullable',
             'year' => 'required|integer',
@@ -75,6 +76,7 @@ class PhotoController extends Controller
         $photo = Photo::findOrFail($id);
         $photo->year = $request->year ?? null;
         $photo->img_caption = $request->img_caption ?? null;
+        $photo->category_id = $request->category_id ?? null;
         
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             if ($photo->img_url) {
