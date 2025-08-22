@@ -9,18 +9,21 @@ use Illuminate\Http\Request;
 
 class PhotoController extends Controller
 {
-
     protected $bucketName;
 
     public function __construct()
     {
         $this->bucketName = config('services.gcs.bucket');
     }
-    
+
     function index()
     {
-        $photos = Photo::where('year', 2025)->paginate(10);
-        return view('photos.index', compact('photos'));
+        // $photos = Photo::where('video_url','=',null)->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
+        // $videos = Photo::where('video_url','!=',null)->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
+        $photos = Photo::whereNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
+
+        $videos = Photo::whereNotNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
+        return view('photos.index', compact(['photos', 'videos']));
     }
 
     function create()
@@ -33,24 +36,36 @@ class PhotoController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'category_id' => 'required',
-            'image' => 'required_without:video_url|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'img_caption' => 'required',
-            'video_url' => 'required_without:image',
+            'image' => 'required_without_all:video_url|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'video_url' => 'required_without_all:image',
             'year' => 'required|integer',
+            'category_id' => 'required',
+            'caption' => 'required',
         ]);
+
+        if (isset($payload['video_url']) && !empty($payload['video_url'])) {
+            if ($payload['category_id'] != 12) {
+                return redirect()->back()->with('danger', 'Please select only No Category in the case of Video_url.');
+            }
+        }
+
         $photo = new Photo();
-        $photo->year = $request->year ?? null;
-        $photo->img_caption = $request->img_caption ?? null;
-        $photo->category_id = $request->category_id ?? null;
+        $photo->year = $payload['year'];
+        $photo->category_id = $payload['category_id'];
+        $photo->img_caption = $payload['caption'];
+
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload to GCS using service
+
             $publicUrl = $gcsService->upload($file, 'uploads/gallery/' . $payload['year'] . time() . $originalFilename);
+            $photo->image = $originalFilename;
             $photo->img_url = $publicUrl;
+            $photo->video_url = null;
         } else {
             $photo->video_url = $request->video_url;
+            $photo->image = null;
+            $photo->img_url = null;
         }
         $photo->save();
         return redirect()->route('photo.index')->with('success', 'Photo uploaded successfully.');
@@ -65,31 +80,34 @@ class PhotoController extends Controller
 
     function update(Request $request, GCSService $gcsService, $id)
     {
+        $photo = Photo::findOrFail($id);
         $payload = $request->all();
         $request->validate([
-            'category_id' => 'required',
-            'image' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
-            'img_caption' => 'required',
-            'video_url' => 'nullable',
+            'image' => [$photo->image ? 'nullable' : 'required_without_all:video_url', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'video_url' => [$photo->image ? 'nullable' : 'required_without_all:image'],
             'year' => 'required|integer',
+            'category_id' => 'required_with:image',
+            'img_caption' => 'required_with:image',
         ]);
-        $photo = Photo::findOrFail($id);
+
         $photo->year = $request->year ?? null;
-        $photo->img_caption = $request->img_caption ?? null;
         $photo->category_id = $request->category_id ?? null;
-        
+        $photo->img_caption = $request->img_caption ?? null;
+
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             if ($photo->img_url) {
-                // Delete old image from GCS
                 $gcsService->deleteImageFromGCS($photo->img_url);
             }
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload new image to GCS
             $publicUrl = $gcsService->upload($file, 'uploads/gallery/' . $payload['year'] . time() . $originalFilename);
             $photo->img_url = $publicUrl;
+            $photo->image = $originalFilename;
+            $photo->video_url = null;
         } elseif ($request->video_url) {
             $photo->video_url = $request->video_url;
+            $photo->img_url = null;
+            $photo->image = null;
         }
         $photo->save();
         return redirect()->route('photo.index')->with('success', 'Photo updated successfully.');
@@ -105,7 +123,6 @@ class PhotoController extends Controller
         }
         $photo->delete();
         return redirect()->route('photo.index')->with('danger', 'Photo deleted successfully.!!');
-    
     }
 
     function toggleStatus($id)
@@ -130,5 +147,16 @@ class PhotoController extends Controller
         $photo->is_active = !$photo->is_active;
         $photo->save();
         return redirect()->route('photo.index')->with('success', 'Photo active status updated successfully.');
+    }
+
+    function search(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+
+        $photos = Photo::where('video_url', '=', null)->where('year', $searchTerm)->orderBy('id', 'DESC')->paginate(5);
+
+        $videos = Photo::where('video_url', '!=', null)->where('year', $searchTerm)->orderBy('id', 'DESC')->paginate(5);
+        return view('photos.index', compact(['photos', 'videos']));
     }
 }
