@@ -13,9 +13,10 @@ class PeacockController extends Controller
 
     public function __construct()
     {
-        $this->bucketName = config('services.gcs.bucket');
+        $this->mainUrl = env('IMAGE_UPLOAD_BASE_URL');
         $this->posterDestination = env('PEACOCK_POSTER_DESTINATION');
         $this->PDFDestination = env('PEACOCK_PDF_DESTINATION');
+        $this->bucketName = config('services.gcs.bucket');
     }
 
     function index()
@@ -56,7 +57,7 @@ class PeacockController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->PDFDestination);
             $peacock->img_src = $originalFilename;
-            $peacock->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->PDFDestination . '/' . $originalFilename;
+            $peacock->image_url = $this->mainUrl . $this->PDFDestination . '/' . $originalFilename;
             $peacock->image_name = $originalFilename;
         }
 
@@ -65,8 +66,9 @@ class PeacockController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->posterDestination);
             $peacock->poster = $originalFilename;
-            $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . $originalFilename;
+            $peacock->poster_url = $this->mainUrl . $this->posterDestination . '/' . $originalFilename;
         }
+
         $peacock->save();
         return redirect()->route('peacock.index')->with('success', 'Press Release created successfully.');
     }
@@ -83,7 +85,7 @@ class PeacockController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'nullable|mimes:pdf',
-            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'year' => 'nullable|integer',
         ]);
 
@@ -96,7 +98,7 @@ class PeacockController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->PDFDestination);
             $peacock->img_src = $originalFilename;
-            $peacock->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->PDFDestination . '/' . $originalFilename;
+            $peacock->image_url = $this->mainUrl . $this->PDFDestination . '/' . $originalFilename;
             $peacock->image_name = $originalFilename;
         }
 
@@ -105,9 +107,8 @@ class PeacockController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->posterDestination);
             $peacock->poster = $originalFilename;
-            $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . $originalFilename;
+            $peacock->poster_url = $this->mainUrl . $this->posterDestination . '/' . $originalFilename;
         }
-
         $peacock->save();
         return redirect()->route('peacock.index')->with('success', 'Press Release updated successfully.');
     }
