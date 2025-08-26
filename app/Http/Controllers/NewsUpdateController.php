@@ -66,6 +66,7 @@ class NewsUpdateController extends Controller
 
     function store(Request $request, ConvertToWEBP $webp)
     {
+        
         $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
@@ -87,12 +88,15 @@ class NewsUpdateController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
+
+            $convertToWEBP = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            dd($convertToWEBP);
+
             app(ExternalApiService::class)->postData($file, $this->destination);
             $newsUpdate->image_name = $originalFilename;
             $newsUpdate->img_src = $originalFilename;
             $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
-            // $convertToWEBP = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            // dd($convertToWEBP);
+            
         }
         if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
