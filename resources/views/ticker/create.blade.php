@@ -21,14 +21,21 @@
                     <div class="col-md-12">
                         <div class="card card-primary card-outline mb-4">
                             <div class="card-header">
-                                <div class="card-title">Ticker form</div>
+
+                                <h3 class="card-title">Create ticker
+                                    <a href={{ route('ticker.index') }} class="btn btn-warning btn-flat inline-block m-1">
+                                        Reset
+                                    </a>
+                                </h3>
+
                             </div>
                             <form action="{{ route('ticker.store') }}" method="POST">
                                 @csrf
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Content</label>
-                                        <textarea name="content" cols="30" rows="10" class="form-control @error('content') is-invalid @enderror"></textarea>
+                                        <label for="content" class="form-label">Content</label>
+                                        <textarea name="content" id="content" cols="30" rows="10"
+                                            class="form-control @error('content') is-invalid @enderror"></textarea>
                                         @error('content')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -45,3 +52,12 @@
         </div>
     </main>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector("#content"))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>

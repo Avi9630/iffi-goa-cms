@@ -7,6 +7,7 @@ use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 use App\Models\NewsUpdate;
+use App\Services\ConvertToWEBP;
 
 class NewsUpdateController extends Controller
 {
@@ -63,13 +64,14 @@ class NewsUpdateController extends Controller
         return view('news_update.create');
     }
 
-    function store(Request $request, GCSService $gcsService)
+    function store(Request $request, ConvertToWEBP $webp)
     {
+        
         $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|file|mimes:webp|max:2048',
+            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|url|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
@@ -86,10 +88,15 @@ class NewsUpdateController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
+
+            $convertToWEBP = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            dd($convertToWEBP);
+
             app(ExternalApiService::class)->postData($file, $this->destination);
             $newsUpdate->image_name = $originalFilename;
             $newsUpdate->img_src = $originalFilename;
             $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
+            
         }
         if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
@@ -158,7 +165,7 @@ class NewsUpdateController extends Controller
     //     return view('news_update.image', compact('images'));
     // }
 
-    public function popupImage(GCSService $gcsService)
+    public function popupImage()
     {
         $response = app(ExternalApiService::class)->getImageList($this->destination);
 
@@ -179,5 +186,16 @@ class NewsUpdateController extends Controller
         $originalFilename = $file->getClientOriginalName();
         app(ExternalApiService::class)->postData($file, $this->destination);
         return redirect()->back()->with('success', 'Image uploaded successfully.');
+    }
+
+    function search(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+        $newsUpdates = NewsUpdate::where('title', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+        return view('news_update.index', compact('newsUpdates'));
     }
 }

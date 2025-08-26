@@ -63,6 +63,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('newsUpdate.popupImage') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Popup Image</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('press-release.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Press-Release</p>
@@ -83,7 +89,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('international-media.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
-                                    <p>Internationa Media</p>
+                                    <p>International Media</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -145,7 +151,7 @@
                     {{-- Logout --}}
                     <a href="{{ route('logout') }}" class="nav-link">
                         <i class="nav-icon bi bi-clipboard-fill"></i>
-                        <p>Lagout</p>
+                        <p>Logout</p>
                     </a>
                 @else
                 @endauth

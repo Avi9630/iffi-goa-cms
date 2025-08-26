@@ -31,20 +31,30 @@
                                 <a href={{ route('news-update.create') }} class="btn btn-sm btn-primary btn-flat">
                                     Add NewsUpdate
                                 </a>
-                                <a href={{ route('newsUpdate.popupImage') }} class="btn btn-sm btn-info btn-flat ">
-                                    PopupImage
+                                <a href={{ route('news-update.index') }} class="btn btn-sm btn-secondary btn-flat ">
+                                    Reset
                                 </a>
                             </h3>
+                            <form action="{{ route('newsUpdate.search') }}">
+                               @csrf
+                                <div class="input-group input-group-sm float-end" style="width: 300px;">
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search by title or description" value="{{ request('search') }}">
+                                    <div class="input-group-append" style="margin-left: 2px">
+                                        <button type="submit" class="btn btn-info btn-sm btn-flat">Search</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
-                                        <th>title</th>
-                                        <th>description</th>
-                                        <th>status</th>
-                                        <th>have_popup</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th style="white-space: nowrap">Have popup</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>

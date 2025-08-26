@@ -3,21 +3,21 @@
 use App\Http\Controllers\InternationalCinemaBasicDetailController;
 use App\Http\Controllers\InternationalCinemaController;
 use App\Http\Controllers\InternationalMediaController;
+use App\Http\Controllers\MasterClassTopicController;
+use App\Http\Controllers\MasterClassDateController;
 use App\Http\Controllers\LatestUpdateController;
 use App\Http\Controllers\PressReleaseController;
+use App\Http\Controllers\MasterClassController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\NewsUpdateController;
+use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\PeacockController;
+use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
-use App\Http\Controllers\MasterClassController;
-use App\Http\Controllers\MasterClassDateController;
-use App\Http\Controllers\MasterClassTopicController;
-use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,27 +54,21 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Master-class
     Route::get('/master-class-topic/{id}/add', [MasterClassDateController::class, 'addTopic'])->name('masterClassTopic.addTopic');
+
     Route::get('/master-class/{id}/add-detail', [MasterClassTopicController::class, 'addDetail'])->name('masterClass.addDetail');
     Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
     Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
-    Route::put('/moderator/{id}/toggle', [ModeratorController::class, 'toggleStatus'])->name('moderator.toggleStatus');
     Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
+
+    Route::put('/moderator/{id}/toggle', [ModeratorController::class, 'toggleStatus'])->name('moderator.toggleStatus');
+
     Route::put('/master-class/{id}/toggle', [MasterClassController::class, 'toggleStatus'])->name('masterClass.toggleStatus');
 
     Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
+
     Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
 
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
-
-    Route::put('/international-cinema/{id}/toggle', [InternationalCinemaController::class, 'toggleStatus'])->name('internationalCinema.toggle');
-    Route::get('/ic/{id}/add-basic-detail', [InternationalCinemaController::class, 'addBasicDetail'])->name('internationalCinema.addBasicDetail');
-    Route::post('/ic/store-basic-detail,...', [InternationalCinemaController::class, 'storeBasicDetail'])->name('internationalCinema.storeBasicDetail');
-
-    Route::get('/news-update/{id}/popup-toggle', [NewsUpdateController::class, 'popupToggle'])->name('newsUpdate.popupToggle');
-    Route::put('/news-update/{id}/popup-update', [NewsUpdateController::class, 'popupUpdate'])->name('newsUpdate.popupUpdate');
-    Route::post('/popup_image_upload', [NewsUpdateController::class, 'popupImageUpload'])->name('newsUpdate.popupImageUpload');
-    Route::put('/news-update/{id}/toggle', [NewsUpdateController::class, 'toggleStatus'])->name('newsUpdate.toggle');
-    Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
 
@@ -84,9 +78,37 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
 
-    Route::put('/photo/{id}/highlight', [PhotoController::class, 'highlightToggle'])->name('photo.highlightToggle');
-    Route::put('/photo/{id}/activeToggle', [PhotoController::class, 'activeToggle'])->name('photo.activeToggle');
-    Route::put('/photo/{id}/toggle', [PhotoController::class, 'toggleStatus'])->name('photo.toggle');
+    Route::controller(InternationalCinemaController::class)
+        ->prefix('ic')
+        ->name('internationalCinema.')
+        ->group(function () {
+            Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
+            Route::get('{id}/add-basic-detail', 'addBasicDetail')->name('addBasicDetail');
+            Route::post('{id}/store-basic-detail', 'storeBasicDetail')->name('storeBasicDetail');
+        });
+
+    Route::controller(NewsUpdateController::class)
+        ->prefix('news-update')
+        ->name('newsUpdate.')
+        ->group(function () {
+            Route::get('{id}/popup-toggle', 'popupToggle')->name('popupToggle');
+            Route::put('{id}/popup-update', 'popupUpdate')->name('popupUpdate');
+            Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
+            Route::get('search', 'search')->name('search');
+            Route::post('popup-image-upload', 'popupImageUpload')->name('popupImageUpload');
+        });
+    Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
+
+    Route::controller(PhotoController::class)
+        ->prefix('photo')
+        ->name('photo.')
+        ->group(function () {
+            Route::put('{id}/highlight', 'highlightToggle')->name('highlightToggle');
+            Route::put('{id}/activeToggle', 'activeToggle')->name('activeToggle');
+            Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
+        });
+        
+    Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
 
     Route::get('/', function () {
         return view('welcome');
