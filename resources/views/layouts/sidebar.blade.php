@@ -63,6 +63,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('newsUpdate.popupImage') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Popup Image</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('press-release.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Press-Release</p>

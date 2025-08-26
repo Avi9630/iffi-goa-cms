@@ -31,9 +31,6 @@
                                 <a href={{ route('news-update.create') }} class="btn btn-sm btn-primary btn-flat">
                                     Add NewsUpdate
                                 </a>
-                                <a href={{ route('newsUpdate.popupImage') }} class="btn btn-sm btn-info btn-flat ">
-                                    PopupImage
-                                </a>
                                 <a href={{ route('news-update.index') }} class="btn btn-sm btn-secondary btn-flat ">
                                     Reset
                                 </a>
