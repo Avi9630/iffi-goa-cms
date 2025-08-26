@@ -66,6 +66,7 @@ class NewsUpdateController extends Controller
 
     function store(Request $request, ConvertToWEBP $webp)
     {
+
         $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
@@ -88,11 +89,13 @@ class NewsUpdateController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $newsUpdate->image_name = $originalFilename;
-            $newsUpdate->img_src = $originalFilename;
-            $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
-            // $convertToWEBP = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            // dd($convertToWEBP);
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';;
+                // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
         if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
@@ -113,7 +116,7 @@ class NewsUpdateController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|file|mimes:webp|max:2048',
+            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|url|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
@@ -135,9 +138,16 @@ class NewsUpdateController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $newsUpdate->image_name = $originalFilename;
-            $newsUpdate->img_src = $originalFilename;
-            $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
+            // $newsUpdate->image_name = $originalFilename;
+            // $newsUpdate->img_src = $originalFilename;
+            // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
         }
         $newsUpdate = $newsUpdate->save();
         if ($newsUpdate) {

@@ -10,7 +10,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class ConvertToWEBP
 {
-   
+
     // public function convert($file, string $destinationPath): string
     // {
     //     try {
@@ -41,20 +41,47 @@ class ConvertToWEBP
     //     return 0;
     // }
 
+    // public function convert($file, string $destinationPath): string
+    // {
+    //     dd($file->getClientOriginalName());
+    //     $storage_url = env('STORAGE_URL', '/var/www/html/api/');
+    //     try {
+    //         $manager = new ImageManager(new Driver());
+    //         $img = $manager->read($file);
+    //         // Create the new webp directory if it doesn't exist
+    //         if (!file_exists($destinationPath)) {
+    //             mkdir($destinationPath, 0755, true);
+    //         }
+    //         $filenameWithoutExt = pathinfo($file, PATHINFO_FILENAME);
+    //         $webpPath = $destinationPath . '/' . $filenameWithoutExt . '.webp';
+    //         $img->toWebp(75)->save($webpPath);
+    //         return $webpPath;
+    //     } catch (\Exception $e) {
+    //         throw new \Exception('Conversion failed: ' . $e->getMessage());
+    //     }
+    // }
+
     public function convert($file, string $destinationPath): string
     {
-        dd($file);
+
         try {
-            $manager = new ImageManager(new Driver());
-            $img = $manager->read($file);
-            // Create the new webp directory if it doesn't exist
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
+
+            if ($_SERVER['HTTP_HOST'] === 'localhost') {
+                $filePath = 'C:/xampp/htdocs/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
+            } else {
+                $filePath = '/var/www/html/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
             }
-            $filenameWithoutExt = pathinfo($file, PATHINFO_FILENAME);
-            $webpPath = $destinationPath . '/' . $filenameWithoutExt . '.webp';
-            $img->toWebp(75)->save($webpPath);
-            return $webpPath;
+            $manager = new ImageManager(new Driver());
+
+            if (!file_exists($filePath)) {
+                throw new \Exception("File does not exist: {$filePath}");
+            }
+            $img = $manager->read($filePath);
+            $filenameWithoutExt = pathinfo($filePath, PATHINFO_FILENAME);
+            $webpPath = dirname($filePath) . '/' . $filenameWithoutExt . '.webp';
+            $img->toWebp(40)->save($webpPath);
+            // return $filenameWithoutExt . '.webp';
+            return true;
         } catch (\Exception $e) {
             throw new \Exception('Conversion failed: ' . $e->getMessage());
         }
