@@ -21,14 +21,19 @@
                     <div class="col-md-12">
                         <div class="card card-primary card-outline mb-4">
                             <div class="card-header">
-                                <div class="card-title">Ticker form</div>
+                                <div class="card-title">Update ticker
+                                    <a href={{ route('ticker.index') }} class="btn btn-warning btn-flat inline-block m-1">
+                                        Reset
+                                    </a>
+                                </div>
                             </div>
-                            <form action="{{ route('ticker.update',$ticker->id) }}" method="POST" >
+                            <form action="{{ route('ticker.update', $ticker->id) }}" method="POST">
                                 @csrf @method('PUT')
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Content</label>
-                                        <textarea name="content" cols="30" rows="10" class="form-control @error('content') is-invalid @enderror">
+                                        <textarea name="content" id='content' cols="30" rows="10"
+                                            class="form-control @error('content') is-invalid @enderror">
                                             {{ old('content', $ticker->content ?? '') }}
                                         </textarea>
                                         @error('content')
@@ -47,3 +52,11 @@
         </div>
     </main>
 @endsection
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector("#content"))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>

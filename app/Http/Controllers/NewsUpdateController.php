@@ -7,6 +7,7 @@ use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 use App\Models\NewsUpdate;
+use App\Services\ConvertToWEBP;
 
 class NewsUpdateController extends Controller
 {
@@ -63,13 +64,13 @@ class NewsUpdateController extends Controller
         return view('news_update.create');
     }
 
-    function store(Request $request, GCSService $gcsService)
+    function store(Request $request, ConvertToWEBP $webp)
     {
         $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|file|mimes:webp|max:2048',
+            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|url|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
@@ -90,6 +91,8 @@ class NewsUpdateController extends Controller
             $newsUpdate->image_name = $originalFilename;
             $newsUpdate->img_src = $originalFilename;
             $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
+            // $convertToWEBP = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            // dd($convertToWEBP);
         }
         if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
@@ -158,7 +161,7 @@ class NewsUpdateController extends Controller
     //     return view('news_update.image', compact('images'));
     // }
 
-    public function popupImage(GCSService $gcsService)
+    public function popupImage()
     {
         $response = app(ExternalApiService::class)->getImageList($this->destination);
 
