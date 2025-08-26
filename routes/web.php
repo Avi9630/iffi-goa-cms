@@ -110,7 +110,6 @@ Route::group(['middleware' => 'auth'], function () {
         
     Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
 
-
     Route::get('/', function () {
         return view('welcome');
     });
