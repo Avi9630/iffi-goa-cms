@@ -20,7 +20,9 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">Cube Form</div>
+                            <div class="card-title">Cube Form
+                                <a href="{{ route('cube.index') }}" class="btn btn-info btn-sm">Reset</a>
+                            </div>
                         </div>
                         <form action="{{ route('cube.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf

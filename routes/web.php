@@ -77,6 +77,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
 
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
+    
+    
+    Route::get('/peacock.search', [PeacockController::class, 'search'])->name('peacock.search');
 
     Route::controller(InternationalCinemaController::class)
         ->prefix('ic')

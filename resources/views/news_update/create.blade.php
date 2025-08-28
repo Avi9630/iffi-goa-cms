@@ -20,7 +20,11 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">NewsUpdate form</div>
+                            <div class="card-title">NewsUpdate form
+                                <a href={{ route('news-update.index') }} class="btn btn-sm btn-info btn-flat ">
+                                    Reset
+                                </a>
+                            </div>
                         </div>
                         <form action="{{ route('news-update.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
@@ -90,3 +94,13 @@
         </div>
     </div>
 @endsection
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector("#description"))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>

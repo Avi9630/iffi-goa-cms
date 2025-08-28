@@ -31,7 +31,7 @@
                 @foreach ($tickers as $ticker)
                     <tr id="ticker-row-{{ $ticker->id }}">
                         <td>{{ $ticker->id }}</td>
-                        <td>{{ $ticker->content }}</td>
+                        <td>{{ html_entity_decode(strip_tags($ticker->content)) }}</td>
                         <td>
                             <form action="{{ route('ticker.toggle', $ticker->id) }}" method="POST" style="display:inline;">
                                 @csrf

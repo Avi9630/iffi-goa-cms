@@ -14,6 +14,7 @@
             @endforeach
         </div>
     </div>
+    
     <div class="app-content mt-2">
         <div class="container-fluid">
             <div class="row g-4">
@@ -64,15 +65,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- <div class="col-md-6 mb-3">
-                                        <label for="award" class="form-label">Award</label>
-                                        <input type="text" class="form-control @error('award') is-invalid @enderror"
-                                            id="award" name="award" placeholder="Enter award" />
-                                        @error('award')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div> --}}
-
                                     <div class="col-md-6 mb-3">
                                         <label for="directed_by" class="form-label">Directed By</label>
                                         <input type="text"
@@ -114,26 +106,6 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-
-                                    {{-- OPTIONAL --}}
-                                    {{-- <div class="col-md-6 mb-3">
-                                        <label for="section" class="form-label">Section</label>
-                                        <input type="text" class="form-control @error('section') is-invalid @enderror"
-                                            id="section" name="section" value="{{ old('section') }}" placeholder="Enter section" />
-                                        @error('section')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="sub_section" class="form-label">Sub Section</label>
-                                        <input type="text"
-                                            class="form-control @error('sub_section') is-invalid @enderror"
-                                            id="sub_section" name="sub_section" value="{{ old('sub_section') }}" placeholder="Enter sub-section"/>
-                                        @error('sub_section')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div> --}}
 
                                     <div class="col-md-6 mb-3">
                                         <label for="year" class="form-label"><strong>Year</strong></label>

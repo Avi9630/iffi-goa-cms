@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CuratedSection;
 use App\Models\InternationalCinema;
 use App\Models\InternationalCinemaBasicDetail;
+use App\Services\ConvertToWEBP;
 use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
@@ -40,10 +41,8 @@ class InternationalCinemaController extends Controller
         return view('international_cinema.create', compact('curatedSections'));
     }
 
-    public function store(Request $request, GCSService $gcsService)
+    public function store(Request $request)
     {
-        $payload = $request->all();
-
         $validated = $request->validate([
             'curated_section_id' => 'required|exists:curated_sections,id',
             'title' => 'required|string|max:255',
@@ -51,7 +50,7 @@ class InternationalCinemaController extends Controller
             'directed_by' => 'required|string|max:255',
             'country_of_origin' => 'required|string|max:255',
             'language' => 'required|string|max:255',
-            'image' => 'required|image|mimes:webp|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'year' => 'required|integer|min:1800|max:' . date('Y'),
             'award_year' => 'required|integer|min:1800|max:' . date('Y'),
         ]);
@@ -70,15 +69,14 @@ class InternationalCinemaController extends Controller
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload to GCS using service
-            // $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $internationalCinema->img_src = $originalFilename;
-            $internationalCinema->img_url = 'https://www.iffigoa.org/public/images/cureted-section/webp/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
-
         $internationalCinema->save();
-
         return redirect()->route('international-cinema.index')->with('success', 'International Cinema created successfully.');
     }
 
@@ -91,8 +89,6 @@ class InternationalCinemaController extends Controller
 
     function update(Request $request, GCSService $gcsService, $id)
     {
-        $payload = $request->all();
-
         $validated = $request->validate([
             'curated_section_id' => 'required|exists:curated_sections,id',
             'title' => 'required|string|max:300',
@@ -100,7 +96,7 @@ class InternationalCinemaController extends Controller
             'directed_by' => 'required|string|max:255',
             'country_of_origin' => 'required|string|max:255',
             'language' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'year' => 'required|integer|min:1800|max:' . date('Y'),
             'award_year' => 'required|integer|min:1800|max:' . date('Y'),
         ]);
@@ -123,13 +119,12 @@ class InternationalCinemaController extends Controller
                 }
                 $file = $request->file('image');
                 $originalFilename = $file->getClientOriginalName();
-                // Upload new image to GCS
-                // $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
-                // $internationalCinema->img_url = $publicUrl;
-
                 app(ExternalApiService::class)->postData($file, $this->destination);
-                $internationalCinema->img_src = $originalFilename;
-                $internationalCinema->img_url = 'https://www.iffigoa.org/public/images/cureted-section/webp/' . $originalFilename;
+                $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+                if ($convertInWebp) {
+                    $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                }
             }
 
             $internationalCinema->save();
@@ -142,18 +137,13 @@ class InternationalCinemaController extends Controller
     function destroy($id)
     {
         $internationalCinema = InternationalCinema::findOrFail($id);
-        // if (!empty($internationalCinema->img_url)) {
-        //     $parsedUrl = parse_url($internationalCinema->img_url, PHP_URL_PATH);
-        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        //     app(GCSService::class)->deleteImageFromGCS($filePath);
-        // }
         $internationalCinema->delete();
         return redirect()->route('international-cinema.index')->with('danger', 'Entry deleted successfully.!!');
     }
 
     function addBasicDetail($id)
     {
-        $internationalCinema = InternationalCinema::findOrFail($id);
+        $internationalCinema = InternationalCinema::find($id);
         return view('international_cinema.basic-detail', compact('internationalCinema'));
     }
 
