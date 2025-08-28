@@ -95,13 +95,22 @@ class ExternalApiService
 
     public function getImageList($destination)
     {
-        $response = Http::asMultipart()->post($this->imageListUrl, [
-            [
-                'name' => 'destination',
-                'contents' => $destination,
-            ],
-        ]);
+        // $response = Http::asMultipart()->post($this->imageListUrl, [
+        //     [
+        //         'name' => 'destination',
+        //         'contents' => $destination,
+        //     ],
+        // ]);
 
+        $response = Http::withOptions(['verify' => false])
+            ->asMultipart()
+            ->post($this->imageListUrl, [
+                [
+                    'name' => 'destination',
+                    'contents' => $destination,
+                ],
+            ]);
+            
         if ($response->successful()) {
             return $response->json();
         }
