@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cube;
+use App\Services\ConvertToWEBP;
 use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class CubeController extends Controller
 
     function index()
     {
-        $cubes = Cube::all();
+        $cubes = Cube::orderBy('id','DESC')->get();
         return view('cubes.index', compact('cubes'));
     }
 
@@ -32,7 +33,7 @@ class CubeController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'image' => 'required|image|mimes:webp|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'required|string',
         ]);
 
@@ -42,13 +43,12 @@ class CubeController extends Controller
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            //UPLOAD TO GCS USING SERVICE
-            // $publicUrl = app(GCSService::class)->upload($file, 'uploads/cubes/' . time() . $originalFilename);
-            // $cube->image_name = $originalFilename;
-            // $cube->image_url = $publicUrl;
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $cube->image_name = $originalFilename;
-            $cube->image_url = 'https://www.iffigoa.org/public/images/cube/webp/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
         $cube->save();
         return redirect()->route('cube.index')->with('success', 'Cube uploaded successfully.!!');
@@ -64,7 +64,7 @@ class CubeController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'image' => 'nullable|image|mimes:webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'required|string',
         ]);
 
@@ -74,19 +74,16 @@ class CubeController extends Controller
             $cube->link = $payload['link'] ?? null;
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                // if (!empty($cube->image_url)) {
-                //     $parsedUrl = parse_url($cube->image_url, PHP_URL_PATH);
-                //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-                //     //DELETE IMAGE FROM GCS USING SERVICE
-                //     app(GCSService::class)->deleteImageFromGCS($filePath);
-                // }
                 $file = $request->file('image');
                 $originalFilename = $file->getClientOriginalName();
-                // //UPLOAD TO GCS USING SERVICE
-                // $publicUrl = app(GCSService::class)->upload($file, 'uploads/cubes/' . time() . $originalFilename);
                 app(ExternalApiService::class)->postData($file, $this->destination);
-                $cube->image_name = $originalFilename;
-                $cube->image_url = 'https://www.iffigoa.org/public/images/cube/webp/' . $originalFilename;
+                $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+                if ($convertInWebp) {
+                    $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                }
+                // $cube->image_name = $originalFilename;
+                // $cube->image_url = 'https://www.iffigoa.org/public/images/cube/webp/' . $originalFilename;
             }
             $cube->save();
             return redirect()->route('cube.index')->with('success', 'Cube updated successfully.!!');

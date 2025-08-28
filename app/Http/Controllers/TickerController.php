@@ -9,7 +9,7 @@ class TickerController extends Controller
 {
     function index()
     {
-        $tickers = Ticker::all();
+        $tickers = Ticker::orderBy('id','DESC')->get();
         return view('ticker.index', [
             'tickers' => $tickers,
         ]);
@@ -53,7 +53,7 @@ class TickerController extends Controller
             'content' => 'required|string|max:255',
         ]);
         $ticker = Ticker::findOrFail($id);
-        $ticker->content = $request->content;
+        $ticker->content = $request->content ?? $ticker->content;
         $ticker->save();
         return redirect()->route('ticker.index')->with('success', 'Ticker updated successfully.');
     }

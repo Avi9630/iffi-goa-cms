@@ -314,6 +314,94 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="premiere" class="form-label">Premiere</label>
+                                        <input type="text"
+                                            class="form-control @error('premiere') is-invalid @enderror"
+                                            id="premiere" name="premiere" value="{{ old('nomination', $icBasicDetail->premiere) }}"
+                                            placeholder="Enter premiere." />
+                                        @error('premiere')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="festival_history" class="form-label">Festival History</label>
+                                        <input type="text"
+                                            class="form-control @error('festival_history') is-invalid @enderror"
+                                            id="festival_history" name="festival_history" value="{{ old('festival_history', $icBasicDetail->festival_history) }}"
+                                            placeholder="Enter festival_history." />
+                                        @error('festival_history')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="link_trailer" class="form-label">Link Trailer</label>
+                                        <input type="text"
+                                            class="form-control @error('link_trailer') is-invalid @enderror"
+                                            id="link_trailer" name="link_trailer" value="{{ old('link_trailer', $icBasicDetail->link_trailer) }}"
+                                            placeholder="Enter link_trailer." />
+                                        @error('link_trailer')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tags" class="form-label">Tags</label>
+                                        <input type="text"
+                                            class="form-control @error('tags') is-invalid @enderror"
+                                            id="tags" name="tags" value="{{ old('tags',$icBasicDetail->tags) }}"
+                                            placeholder="Enter tags." />
+                                        @error('tags')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sales" class="form-label">Sales</label>
+                                        <input type="text"
+                                            class="form-control @error('sales') is-invalid @enderror"
+                                            id="sales" name="sales" value="{{ old('sales', $icBasicDetail->sales) }}"
+                                            placeholder="Enter sales." />
+                                        @error('sales')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="instagram" class="form-label">Instagram</label>
+                                        <input type="text"
+                                            class="form-control @error('instagram') is-invalid @enderror"
+                                            id="instagram" name="instagram" value="{{ old('instagram',$icBasicDetail->instagram) }}"
+                                            placeholder="Enter instagram." />
+                                        @error('instagram')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="twitter" class="form-label">Twitter</label>
+                                        <input type="text"
+                                            class="form-control @error('twitter') is-invalid @enderror"
+                                            id="twitter" name="twitter" value="{{ old('twitter', $icBasicDetail->twitter) }}"
+                                            placeholder="Enter twitter." />
+                                        @error('twitter')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="facebook" class="form-label">Facebook</label>
+                                        <input type="text"
+                                            class="form-control @error('facebook') is-invalid @enderror"
+                                            id="facebook" name="facebook" value="{{ old('facebook',$icBasicDetail->facebook) }}"
+                                            placeholder="Enter facebook." />
+                                        @error('facebook')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">
