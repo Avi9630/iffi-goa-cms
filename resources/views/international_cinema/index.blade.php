@@ -21,6 +21,7 @@
             </div>
         </div>
     </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -36,6 +37,7 @@
                                 </a>
                             </h3>
                         </div>
+                        
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
@@ -69,6 +71,7 @@
                                             <td style="white-space: nowrap;">
                                                 <a href="{{ route('internationalCinema.addBasicDetail', $internationalCinema->id) }}"
                                                     class="btn btn-secondary btn-sm">Add Basic Details</a>
+
                                                 <a href="{{ route('international-cinema.edit', $internationalCinema->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
