@@ -116,7 +116,7 @@ class NewsUpdateController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'file|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|url|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
@@ -125,8 +125,8 @@ class NewsUpdateController extends Controller
         $newsUpdate = NewsUpdate::findOrFail($id);
         $newsUpdate['title'] = $payload['title'];
         $newsUpdate['description'] = $payload['description'];
-        $newsUpdate['link'] = $payload['link'] ?? null;
-        $newsUpdate['link_title'] = $payload['link_title'] ?? null;
+        $newsUpdate['link'] = $payload['link'] ?? $payload['link'];
+        $newsUpdate['link_title'] = $payload['link_title'] ?? $payload['link_title'];
         $newsUpdate['have_popup'] = $payload['have_popup'];
 
         if ($request->hasFile('image')) {
@@ -174,7 +174,6 @@ class NewsUpdateController extends Controller
     public function popupImage()
     {
         $response = app(ExternalApiService::class)->getImageList($this->destination);
-
         if (!empty($response['error'])) {
             return back()->withErrors(['msg' => $response['message']]);
         }
@@ -186,7 +185,7 @@ class NewsUpdateController extends Controller
     function popupImageUpload(Request $request)
     {
         $request->validate([
-            'image' => 'required|file|mimes:webp|max:2048',
+            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
