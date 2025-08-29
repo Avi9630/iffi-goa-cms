@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CuratedSection;
-use App\Models\InternationalCinema;
 use App\Models\InternationalCinemaBasicDetail;
 use App\Services\ExternalApiService;
+use App\Models\InternationalCinema;
+use App\Services\ConvertToWEBP;
+use App\Models\CuratedSection;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,15 @@ class InternationalCinemaController extends Controller
         return view('international_cinema.index', compact(['internationalCinemas', 'curatedSections']));
     }
 
+    function search(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+        $internationalCinemas = InternationalCinema::where('award_year', $searchTerm)->orderBy('id', 'DESC')->paginate(10);
+        $curatedSections = CuratedSection::all();
+        return view('international_cinema.index', compact(['internationalCinemas', 'curatedSections']));
+    }
+
     function toggleStatus($id)
     {
         $internationalCinema = InternationalCinema::findOrFail($id);
@@ -40,10 +50,8 @@ class InternationalCinemaController extends Controller
         return view('international_cinema.create', compact('curatedSections'));
     }
 
-    public function store(Request $request, GCSService $gcsService)
+    public function store(Request $request)
     {
-        $payload = $request->all();
-
         $validated = $request->validate([
             'curated_section_id' => 'required|exists:curated_sections,id',
             'title' => 'required|string|max:255',
@@ -51,7 +59,7 @@ class InternationalCinemaController extends Controller
             'directed_by' => 'required|string|max:255',
             'country_of_origin' => 'required|string|max:255',
             'language' => 'required|string|max:255',
-            'image' => 'required|image|mimes:webp|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'year' => 'required|integer|min:1800|max:' . date('Y'),
             'award_year' => 'required|integer|min:1800|max:' . date('Y'),
         ]);
@@ -70,15 +78,14 @@ class InternationalCinemaController extends Controller
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            // Upload to GCS using service
-            // $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $internationalCinema->img_src = $originalFilename;
-            $internationalCinema->img_url = 'https://www.iffigoa.org/public/images/cureted-section/webp/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
-
         $internationalCinema->save();
-
         return redirect()->route('international-cinema.index')->with('success', 'International Cinema created successfully.');
     }
 
@@ -91,8 +98,6 @@ class InternationalCinemaController extends Controller
 
     function update(Request $request, GCSService $gcsService, $id)
     {
-        $payload = $request->all();
-
         $validated = $request->validate([
             'curated_section_id' => 'required|exists:curated_sections,id',
             'title' => 'required|string|max:300',
@@ -100,7 +105,7 @@ class InternationalCinemaController extends Controller
             'directed_by' => 'required|string|max:255',
             'country_of_origin' => 'required|string|max:255',
             'language' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'year' => 'required|integer|min:1800|max:' . date('Y'),
             'award_year' => 'required|integer|min:1800|max:' . date('Y'),
         ]);
@@ -123,13 +128,12 @@ class InternationalCinemaController extends Controller
                 }
                 $file = $request->file('image');
                 $originalFilename = $file->getClientOriginalName();
-                // Upload new image to GCS
-                // $publicUrl = $gcsService->upload($file, 'uploads/international-cinema/' . $payload['year'] . time() . $originalFilename);
-                // $internationalCinema->img_url = $publicUrl;
-
                 app(ExternalApiService::class)->postData($file, $this->destination);
-                $internationalCinema->img_src = $originalFilename;
-                $internationalCinema->img_url = 'https://www.iffigoa.org/public/images/cureted-section/webp/' . $originalFilename;
+                $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+                if ($convertInWebp) {
+                    $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                }
             }
 
             $internationalCinema->save();
@@ -142,57 +146,134 @@ class InternationalCinemaController extends Controller
     function destroy($id)
     {
         $internationalCinema = InternationalCinema::findOrFail($id);
-        // if (!empty($internationalCinema->img_url)) {
-        //     $parsedUrl = parse_url($internationalCinema->img_url, PHP_URL_PATH);
-        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        //     app(GCSService::class)->deleteImageFromGCS($filePath);
-        // }
         $internationalCinema->delete();
         return redirect()->route('international-cinema.index')->with('danger', 'Entry deleted successfully.!!');
     }
 
     function addBasicDetail($id)
     {
-        $internationalCinema = InternationalCinema::findOrFail($id);
+        $internationalCinema = InternationalCinema::find($id);
         return view('international_cinema.basic-detail', compact('internationalCinema'));
     }
 
-    function storeBasicDetail(Request $request)
+    public function uploadCSV(Request $request)
     {
         $payload = $request->all();
-        $internationalCinema = InternationalCinema::findOrFail($payload['cinema_id']);
-        if ($internationalCinema) {
-            $internationalCinemaBasicDetail = new InternationalCinemaBasicDetail();
-            $internationalCinemaBasicDetail['cinema_id'] = $payload['cinema_id'];
-            $internationalCinemaBasicDetail['director'] = $payload['director'] ?? null;
-            $internationalCinemaBasicDetail['producer'] = $payload['producer'] ?? null;
-            $internationalCinemaBasicDetail['screenplay'] = $payload['screenplay'] ?? null;
-            $internationalCinemaBasicDetail['cinematographer'] = $payload['cinematographer'] ?? null;
-            $internationalCinemaBasicDetail['editor'] = $payload['editor'] ?? null;
-            $internationalCinemaBasicDetail['cast'] = $payload['cast'] ?? null;
-            $internationalCinemaBasicDetail['dop'] = $payload['dop'] ?? null;
-            $internationalCinemaBasicDetail['other_details'] = $payload['other_details'] ?? null;
-            $internationalCinemaBasicDetail['synopsis'] = $payload['synopsis'] ?? null;
-            $internationalCinemaBasicDetail['director_bio'] = $payload['director_bio'] ?? null;
-            $internationalCinemaBasicDetail['producer_bio'] = $payload['producer_bio'] ?? null;
-            $internationalCinemaBasicDetail['sales_agent'] = $payload['sales_agent'] ?? null;
-            $internationalCinemaBasicDetail['award'] = $payload['award'] ?? null;
-            $internationalCinemaBasicDetail['writer'] = $payload['writer'] ?? null;
-            $internationalCinemaBasicDetail['trailer_link'] = $payload['trailer_link'] ?? null;
-            $internationalCinemaBasicDetail['official_selection'] = $payload['official_selection'] ?? null;
-            $internationalCinemaBasicDetail['best_film_award'] = $payload['best_film_award'] ?? null;
-            $internationalCinemaBasicDetail['director_and_producer'] = $payload['director_and_producer'] ?? null;
-            $internationalCinemaBasicDetail['original_title'] = $payload['original_title'] ?? null;
-            $internationalCinemaBasicDetail['co_produced'] = $payload['co_produced'] ?? null;
-            $internationalCinemaBasicDetail['festivals'] = $payload['festivals'] ?? null;
-            $internationalCinemaBasicDetail['drama'] = $payload['drama'] ?? null;
-            $internationalCinemaBasicDetail['history'] = $payload['history'] ?? null;
-            $internationalCinemaBasicDetail['nomination'] = $payload['nomination'] ?? null;
-            $internationalCinemaBasicDetail['status'] = 1;
-            $internationalCinemaBasicDetail->save();
-            return redirect()->route('international-cinema.index')->with('success', 'Basic details addedd successfully.!!');
-        } else {
-            return redirect()->route('international-cinema.index')->with('warning', 'Something went wrong.!!');
+
+        $request->validate([
+            'file' => 'required'
+        ]);
+
+        if(!$request->hasFile('file') && !$request->file('file')->isValid()){
+            return redirect()->back()->with('warning','Upload valid CSV.');
+        }
+        // $csvFile = storage_path('app/CSV/test1.csv');
+        $csvFile = $payload['file'];
+        
+        if (!file_exists($csvFile)) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+        if (($handle = fopen($csvFile, 'r')) === false) {
+            return response()->json(['error' => 'Could not open file.'], 500);
+        }
+        $header = null;
+        try {
+            while (($row = fgetcsv($handle)) !== false) {
+                if (!$header) {
+                    $header = $row;
+                    continue;
+                }
+                $data = [
+                    'section'           => $row[0] ?? null,
+                    'title'             => $row[1] ?? null,
+                    'original_title'    => $row[2] ?? null,
+                    'country'           => $row[3] ?? null,
+                    'production_year'   => $row[4] ?? null,
+                    'language'          => $row[5] ?? null,
+                    'runtime'           => $row[6] ?? null,
+                    'color'             => $row[7] ?? null,
+                    'director'          => $row[8] ?? null,
+                    'director_bio'      => $row[9] ?? null,
+                    'producer'          => $row[10] ?? null,
+                    'screenplay'        => $row[11] ?? null,
+                    'dop'               => $row[12] ?? null,
+                    'editor'            => $row[13] ?? null,
+                    'cast'              => $row[14] ?? null,
+                    'synopsis'          => $row[15] ?? null,
+                    'premiere'          => $row[16] ?? null,
+                    'award'             => $row[17] ?? null,
+                    'festival_history'  => $row[18] ?? null,
+                    'trailer_link'      => $row[19] ?? null,
+                    'tags'              => $row[20] ?? null,
+                    'sales'             => $row[21] ?? null,
+                    'instagram'         => $row[26] ?? null,
+                    'twitter'           => $row[27] ?? null,
+                    'facebook'          => $row[28] ?? null,
+                    'award_year'        => $row[29] ?? null,
+                    'co_screenplay'     => $row[30] ?? null,
+                    'cinematographer'   => $row[31] ?? null,
+                    'producer_bio'      => $row[32] ?? null,
+                ];
+
+                $curated = CuratedSection::where('title', $data['section'])->first();
+                if (!$curated) {
+                    continue;
+                }
+                $cinema = InternationalCinema::updateOrCreate(
+                    [
+                        'title'      => $data['title'],
+                        'award_year' => $data['award_year'],
+                    ],
+                    [
+                        'curated_section_id' => $curated->id,
+                        'slug'               => str_replace(' ', '-', $data['title']),
+                        'directed_by'        => $data['director'],
+                        'country_of_origin'  => $data['country'],
+                        'language'           => $data['language'],
+                        'year'               => $data['production_year'],
+                        'status'             => 1,
+                        'updated_at'         => now(),
+                        'created_at'         => now(),
+                    ]
+                );
+
+                InternationalCinemaBasicDetail::updateOrCreate(
+                    [
+                        'cinema_id'      => $cinema->id,
+                    ],
+                    [
+                        'director'       => $data['director'],
+                        'producer'       => $data['producer'],
+                        'screenplay'     => $data['screenplay'],
+                        'co_screenplay'  => $data['co_screenplay'],
+                        'cinematographer'  => $data['cinematographer'],
+                        'editor'         => $data['editor'],
+                        'cast'           => $data['cast'],
+                        'dop'            => $data['dop'],
+                        'other_details'  => "{$data['runtime']} | {$data['color']} | {$data['country']}",
+                        'synopsis'       => $data['synopsis'],
+                        'director_bio'   => $data['director_bio'],
+                        'producer_bio'   => $data['producer_bio'],
+                        'sales_agent'    => $data['sales'],
+                        'award'          => $data['award'],
+                        'trailer_link'   => $data['trailer_link'],
+                        'original_title' => $data['original_title'],
+                        'premiere'       => $data['premiere'],
+                        'festival_history' => $data['festival_history'],
+                        'link_trailer'   => $data['trailer_link'],
+                        'tags'           => $data['tags'],
+                        'instagram'      => $data['instagram'],
+                        'twitter'        => $data['twitter'],
+                        'facebook'       => $data['facebook'],
+                        'updated_at'     => now(),
+                        'created_at'     => now(),
+                    ]
+                );
+            }
+            fclose($handle);
+            return redirect()->back()->with(['success' => 'CSV Imported Successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }

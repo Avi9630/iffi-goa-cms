@@ -69,6 +69,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
 
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
+    
+    Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');
 
     Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
 
@@ -78,6 +80,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
 
+    Route::get('/peacock.search', [PeacockController::class, 'search'])->name('peacock.search');
+
     Route::controller(InternationalCinemaController::class)
         ->prefix('ic')
         ->name('internationalCinema.')
@@ -85,6 +89,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
             Route::get('{id}/add-basic-detail', 'addBasicDetail')->name('addBasicDetail');
             Route::post('{id}/store-basic-detail', 'storeBasicDetail')->name('storeBasicDetail');
+            Route::post('upload-csv', [InternationalCinemaController::class, 'uploadCSV'])->name('uploadCSV');
+            Route::get('search', [InternationalCinemaController::class, 'search'])->name('search');
         });
 
     Route::controller(NewsUpdateController::class)
@@ -97,6 +103,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('search', 'search')->name('search');
             Route::post('popup-image-upload', 'popupImageUpload')->name('popupImageUpload');
         });
+        
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::controller(PhotoController::class)
@@ -107,7 +114,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('{id}/activeToggle', 'activeToggle')->name('activeToggle');
             Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
         });
-        
+
     Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
 
     Route::get('/', function () {

@@ -22,7 +22,19 @@ class PeacockController extends Controller
     function index()
     {
         $peacocks = Peacock::orderBy('id', 'DESC')->paginate(10);
+        // $years = Peacock::select('year')->distinct()->orderBy('year', 'DESC')->get();
         return view('peacock.index', compact('peacocks'));
+    }
+
+    function search(Request $request)
+    {
+        $searchTerm = $request->input('search');
+        $peacocks = Peacock::where('title', 'LIKE', '%' . $searchTerm . '%')
+            ->orWhere('year', 'LIKE', '%' . $searchTerm . '%')
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+        $year = $request->input('search');
+        return view('peacock.index', compact(['peacocks', 'year']));
     }
 
     function toggleStatus($id)

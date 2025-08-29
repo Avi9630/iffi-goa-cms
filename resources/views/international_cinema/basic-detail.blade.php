@@ -22,12 +22,13 @@
                         <div class="card-header">
                             <div class="card-title">International Cinema Basic Details Form</div>
                         </div>
-                        <form action="{{ route('internationalCinema.storeBasicDetail') }}" method="POST"
+                        <form action="{{ route('ic-basic-detail.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="row">
 
+                                    {{-- International Cinema ID --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="cinema_id" class="form-label">Cinema ID</label>
                                         <input type="number" class="form-control @error('cinema_id') is-invalid @enderror"
@@ -70,6 +71,17 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    
+                                    {{-- Co-Screenplay --}}
+                                    <div class="col-md-6 mb-3">
+                                        <label for="co_screenplay" class="form-label">Co-co_Screenplay</label>
+                                        <input type="text" class="form-control @error('co_screenplay') is-invalid @enderror"
+                                            id="co_screenplay" name="co_screenplay" value="{{ old('co_screenplay') }}"
+                                            placeholder="Enter co_screenplay." />
+                                        @error('co_screenplay')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
 
                                     {{-- Cinematographer --}}
                                     <div class="col-md-6 mb-3">
@@ -83,6 +95,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Editor --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="editor" class="form-label">Editor</label>
                                         <input type="text" class="form-control @error('editor') is-invalid @enderror"
@@ -93,6 +106,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Cast --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="cast" class="form-label">Cast</label>
                                         <input type="text" class="form-control @error('cast') is-invalid @enderror"
@@ -103,6 +117,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- DOP --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="dop" class="form-label">DOP</label>
                                         <input type="text" class="form-control @error('dop') is-invalid @enderror"
@@ -113,6 +128,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Other Details --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="other_details" class="form-label">Other Details</label>
                                         <input type="text"
@@ -124,6 +140,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Synopsis --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="synopsis" class="form-label">Synopsis</label>
                                         <input type="text" class="form-control @error('synopsis') is-invalid @enderror"
@@ -134,6 +151,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Director Bio --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="director_bio" class="form-label">Director Bio</label>
                                         <input type="text"
@@ -145,6 +163,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Producer Bio --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="producer_bio" class="form-label">Producer Bio</label>
                                         <input type="text"
@@ -156,6 +175,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Sales Agent --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="sales_agent" class="form-label">Sales Agent</label>
                                         <input type="text"
@@ -167,6 +187,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Award --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="award" class="form-label">Award</label>
                                         <input type="text" class="form-control @error('award') is-invalid @enderror"
@@ -177,6 +198,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Writer --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="writer" class="form-label">Writer</label>
                                         <input type="text" class="form-control @error('writer') is-invalid @enderror"
@@ -187,6 +209,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Trailer Link --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="trailer_link" class="form-label">Trailer Link</label>
                                         <input type="text"
@@ -198,6 +221,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Official Selection --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="official_selection" class="form-label">Official Selection</label>
                                         <input type="text"
@@ -210,6 +234,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Best Film Award --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="best_film_award" class="form-label">Best Film Award</label>
                                         <input type="text"
@@ -221,6 +246,7 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Director & Producer --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="director_and_producer" class="form-label">Director & Producer</label>
                                         <input type="text"
@@ -233,6 +259,7 @@
                                         @enderror
                                     </div>
 
+                                    Original Title
                                     <div class="col-md-6 mb-3">
                                         <label for="original_title" class="form-label">Original Title</label>
                                         <input type="text"
@@ -243,7 +270,8 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-
+                                    
+                                    {{-- Co-Produced --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="co_produced" class="form-label">Co-Produced</label>
                                         <input type="text"
@@ -293,6 +321,94 @@
                                             id="nomination" name="nomination" value="{{ old('nomination') }}"
                                             placeholder="Enter nomination." />
                                         @error('nomination')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="premiere" class="form-label">Premiere</label>
+                                        <input type="text"
+                                            class="form-control @error('premiere') is-invalid @enderror"
+                                            id="premiere" name="premiere" value="{{ old('premiere') }}"
+                                            placeholder="Enter premiere." />
+                                        @error('premiere')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="festival_history" class="form-label">Festival History</label>
+                                        <input type="text"
+                                            class="form-control @error('festival_history') is-invalid @enderror"
+                                            id="festival_history" name="festival_history" value="{{ old('festival_history') }}"
+                                            placeholder="Enter festival_history." />
+                                        @error('festival_history')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="link_trailer" class="form-label">Link Trailer</label>
+                                        <input type="text"
+                                            class="form-control @error('link_trailer') is-invalid @enderror"
+                                            id="link_trailer" name="link_trailer" value="{{ old('link_trailer') }}"
+                                            placeholder="Enter link_trailer." />
+                                        @error('link_trailer')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tags" class="form-label">Tags</label>
+                                        <input type="text"
+                                            class="form-control @error('tags') is-invalid @enderror"
+                                            id="tags" name="tags" value="{{ old('tags') }}"
+                                            placeholder="Enter tags." />
+                                        @error('tags')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sales" class="form-label">Sales</label>
+                                        <input type="text"
+                                            class="form-control @error('sales') is-invalid @enderror"
+                                            id="sales" name="sales" value="{{ old('sales') }}"
+                                            placeholder="Enter sales." />
+                                        @error('sales')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="instagram" class="form-label">Instagram</label>
+                                        <input type="text"
+                                            class="form-control @error('instagram') is-invalid @enderror"
+                                            id="instagram" name="instagram" value="{{ old('instagram') }}"
+                                            placeholder="Enter instagram." />
+                                        @error('instagram')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="twitter" class="form-label">Twitter</label>
+                                        <input type="text"
+                                            class="form-control @error('twitter') is-invalid @enderror"
+                                            id="twitter" name="twitter" value="{{ old('twitter') }}"
+                                            placeholder="Enter twitter." />
+                                        @error('twitter')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="facebook" class="form-label">Facebook</label>
+                                        <input type="text"
+                                            class="form-control @error('facebook') is-invalid @enderror"
+                                            id="facebook" name="facebook" value="{{ old('facebook') }}"
+                                            placeholder="Enter facebook." />
+                                        @error('facebook')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>

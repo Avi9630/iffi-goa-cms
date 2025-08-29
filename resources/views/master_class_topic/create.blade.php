@@ -29,8 +29,10 @@
 
                                     <div class="col-md-6 mb-3">
                                         <label for="master_date_id" class="form-label">Master Date ID</label>
-                                        <input type="number" class="form-control @error('master_date_id') is-invalid @enderror"
-                                            id="master_date_id" name="master_date_id" value="{{ old('master_date_id',$masterDate->id) }}" readonly/>
+                                        <input type="number"
+                                            class="form-control @error('master_date_id') is-invalid @enderror"
+                                            id="master_date_id" name="master_date_id"
+                                            value="{{ old('master_date_id', $masterDate->id) }}" readonly />
                                         @error('master_date_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -54,25 +56,6 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-
-                                    {{-- <div class="col-md-6 mb-3">
-                                        <label for="year" class="form-label">Year</label>
-                                        <select name="year" id="year"
-                                            class="form-select @error('year') is-invalid @enderror">
-                                            <option value="" selected>Select Year</option>
-                                            <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025
-                                            </option>
-                                            <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
-                                            </option>
-                                            <option value="2023" {{ old('year') == 2023 ? 'selected' : '' }}>2023
-                                            </option>
-                                            <option value="2022" {{ old('year') == 2022 ? 'selected' : '' }}>2022
-                                            </option>
-                                        </select>
-                                        @error('year')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -85,3 +68,12 @@
         </div>
     </div>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector("#description"))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>

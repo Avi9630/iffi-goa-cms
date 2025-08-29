@@ -32,12 +32,23 @@
                                     International Cinema
                                 </a>
                             </h3>
+                            {{-- Search --}}
+                            <form action="{{ route('icBasicDetail.search') }}">
+                                @csrf
+                                <div class="input-group input-group-sm float-end" style="width: 300px;">
+                                    <input type="text" name="search" id="search" class="form-control">
+                                    <div class="input-group-append" style="margin-left: 2px">
+                                        <button type="submit" class="btn btn-info btn-sm btn-flat">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Sr.Nom</th>
+                                        <th>Basic Details ID</th>
                                         <th>Cinema ID</th>
                                         <th>Director</th>
                                         <th>Producer</th>
@@ -66,8 +77,8 @@
                                                 </form>
                                             </td>
                                             <td style="white-space: nowrap;">
-                                                <a href="{{ route('ic-basic-detail.show', $icBasicDetail->id) }}"
-                                                    class="btn btn-primary btn-sm">View</a>
+                                                {{-- <a href="{{ route('ic-basic-detail.show', $icBasicDetail->id) }}"
+                                                    class="btn btn-primary btn-sm">View</a> --}}
 
                                                 <a href="{{ route('ic-basic-detail.edit', $icBasicDetail->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>

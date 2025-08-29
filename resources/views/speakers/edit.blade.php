@@ -87,3 +87,12 @@
         </div>
     </div>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        ClassicEditor.create(document.querySelector("#speaker_detail"))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>

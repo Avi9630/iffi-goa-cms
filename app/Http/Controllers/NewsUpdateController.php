@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\ExternalApiService;
+use App\Services\ConvertToWEBP;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 use App\Models\NewsUpdate;
-use App\Services\ConvertToWEBP;
 
 class NewsUpdateController extends Controller
 {
@@ -163,13 +163,6 @@ class NewsUpdateController extends Controller
         $newsUpdate->delete();
         return redirect()->route('news-update.index')->with('success', 'News update and image deleted.');
     }
-
-    // public function popupImage(GCSService $gcsService)
-    // {
-    //     $response = app(ExternalApiService::class)->getImageList($this->destination);
-    //     $images = $response['files'];
-    //     return view('news_update.image', compact('images'));
-    // }
 
     public function popupImage()
     {
