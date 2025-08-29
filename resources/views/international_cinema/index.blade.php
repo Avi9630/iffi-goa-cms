@@ -21,12 +21,12 @@
             </div>
         </div>
     </div>
-
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
+
                         <div class="card-header">
                             <h3 class="card-title">
                                 <a href={{ route('international-cinema.create') }} class="btn btn-sm btn-primary btn-flat">
@@ -35,14 +35,33 @@
                                 <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-info btn-flat">
                                     List International Cinema Basic Detail
                                 </a>
+                                <a href={{ route('internationalCinema.uploadCSV') }} class="btn btn-sm btn-secondary btn-flat">
+                                    Upload CSV
+                                </a>
                             </h3>
+                            {{-- Search --}}
+                            <form action="{{ route('internationalCinema.search') }}">
+                                @csrf
+                                <div class="input-group input-group-sm float-end" style="width: 300px;">
+                                    <select name="search" class="form-select">
+                                        <option value="" selected>Select Year</option>
+                                        <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025
+                                        </option>
+                                        <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
+                                        </option>
+                                    </select>
+                                    <div class="input-group-append" style="margin-left: 2px">
+                                        <button type="submit" class="btn btn-info btn-sm btn-flat">Search</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        
+
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Sr.Nom</th>
+                                        <th>Cinema ID</th>
                                         <th>Curated Section</th>
                                         <th>Title</th>
                                         <th>Slug</th>
@@ -88,6 +107,7 @@
                                 </tbody>
                             </table>
                         </div>
+
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-end">
                                 {{ $internationalCinemas->withQueryString()->links() }}
