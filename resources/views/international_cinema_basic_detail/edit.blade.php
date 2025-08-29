@@ -73,6 +73,17 @@
                                         @enderror
                                     </div>
 
+                                    {{-- Co-Screenplay --}}
+                                    <div class="col-md-6 mb-3">
+                                        <label for="co_screenplay" class="form-label">Co-co_Screenplay</label>
+                                        <input type="text" class="form-control @error('co_screenplay') is-invalid @enderror"
+                                            id="co_screenplay" name="co_screenplay" value="{{ old('co_screenplay',$icBasicDetail->co_screenplay) }}"
+                                            placeholder="Enter co_screenplay." />
+                                        @error('co_screenplay')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
                                     {{-- Cinematographer --}}
                                     <div class="col-md-6 mb-3">
                                         <label for="cinematographer" class="form-label">Cinematographer</label>

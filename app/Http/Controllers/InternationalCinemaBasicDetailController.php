@@ -21,6 +21,7 @@ class InternationalCinemaBasicDetailController extends Controller
             $icBasicDetail['director'] = $payload['director'] ?? $icBasicDetail['director'];
             $icBasicDetail['producer'] = $payload['producer'] ?? $icBasicDetail['producer'];
             $icBasicDetail['screenplay'] = $payload['screenplay'] ?? $icBasicDetail['screenplay'];
+            $icBasicDetail['co_screenplay'] = $payload['co_screenplay'] ?? $icBasicDetail['co_screenplay'];
             $icBasicDetail['cinematographer'] = $payload['cinematographer'] ?? $icBasicDetail['cinematographer'];
             $icBasicDetail['editor'] = $payload['editor'] ?? $icBasicDetail['editor'];
             $icBasicDetail['cast'] = $payload['cast'] ?? $icBasicDetail['cast'];
