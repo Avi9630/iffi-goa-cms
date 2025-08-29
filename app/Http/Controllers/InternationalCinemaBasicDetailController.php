@@ -13,6 +13,19 @@ class InternationalCinemaBasicDetailController extends Controller
         return view('international_cinema_basic_detail.index', compact('icBasicDetails'));
     }
 
+    function search(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+        $icBasicDetails = InternationalCinemaBasicDetail::where('cinema_id',$searchTerm)
+            ->orWhere('director', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('producer', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('screenplay', 'LIKE', "%{$searchTerm}%")
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+        return view('international_cinema_basic_detail.index', compact('icBasicDetails'));
+    }
+
     function store(Request $request)
     {
         $payload = $request->all();
