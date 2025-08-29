@@ -21,7 +21,11 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">International Cinema Form</div>
+                            <div class="card-title">International Cinema Form
+                                <a href={{ route('international-cinema.index') }} class="btn btn-warning btn-flat">
+                                    Back
+                                </a>
+                            </div>
                         </div>
                         <form action="{{ route('international-cinema.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
