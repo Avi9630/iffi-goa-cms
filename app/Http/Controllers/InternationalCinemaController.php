@@ -147,42 +147,42 @@ class InternationalCinemaController extends Controller
         return view('international_cinema.basic-detail', compact('internationalCinema'));
     }
 
-    function storeBasicDetail(Request $request)
-    {
-        $payload = $request->all();
-        $internationalCinema = InternationalCinema::findOrFail($payload['cinema_id']);
-        if ($internationalCinema) {
-            $internationalCinemaBasicDetail = new InternationalCinemaBasicDetail();
-            $internationalCinemaBasicDetail['cinema_id'] = $payload['cinema_id'];
-            $internationalCinemaBasicDetail['director'] = $payload['director'] ?? null;
-            $internationalCinemaBasicDetail['producer'] = $payload['producer'] ?? null;
-            $internationalCinemaBasicDetail['screenplay'] = $payload['screenplay'] ?? null;
-            $internationalCinemaBasicDetail['cinematographer'] = $payload['cinematographer'] ?? null;
-            $internationalCinemaBasicDetail['editor'] = $payload['editor'] ?? null;
-            $internationalCinemaBasicDetail['cast'] = $payload['cast'] ?? null;
-            $internationalCinemaBasicDetail['dop'] = $payload['dop'] ?? null;
-            $internationalCinemaBasicDetail['other_details'] = $payload['other_details'] ?? null;
-            $internationalCinemaBasicDetail['synopsis'] = $payload['synopsis'] ?? null;
-            $internationalCinemaBasicDetail['director_bio'] = $payload['director_bio'] ?? null;
-            $internationalCinemaBasicDetail['producer_bio'] = $payload['producer_bio'] ?? null;
-            $internationalCinemaBasicDetail['sales_agent'] = $payload['sales_agent'] ?? null;
-            $internationalCinemaBasicDetail['award'] = $payload['award'] ?? null;
-            $internationalCinemaBasicDetail['writer'] = $payload['writer'] ?? null;
-            $internationalCinemaBasicDetail['trailer_link'] = $payload['trailer_link'] ?? null;
-            $internationalCinemaBasicDetail['official_selection'] = $payload['official_selection'] ?? null;
-            $internationalCinemaBasicDetail['best_film_award'] = $payload['best_film_award'] ?? null;
-            $internationalCinemaBasicDetail['director_and_producer'] = $payload['director_and_producer'] ?? null;
-            $internationalCinemaBasicDetail['original_title'] = $payload['original_title'] ?? null;
-            $internationalCinemaBasicDetail['co_produced'] = $payload['co_produced'] ?? null;
-            $internationalCinemaBasicDetail['festivals'] = $payload['festivals'] ?? null;
-            $internationalCinemaBasicDetail['drama'] = $payload['drama'] ?? null;
-            $internationalCinemaBasicDetail['history'] = $payload['history'] ?? null;
-            $internationalCinemaBasicDetail['nomination'] = $payload['nomination'] ?? null;
-            $internationalCinemaBasicDetail['status'] = 1;
-            $internationalCinemaBasicDetail->save();
-            return redirect()->route('international-cinema.index')->with('success', 'Basic details addedd successfully.!!');
-        } else {
-            return redirect()->route('international-cinema.index')->with('warning', 'Something went wrong.!!');
-        }
-    }
+    // function storeBasicDetail(Request $request)
+    // {
+    //     $payload = $request->all();
+    //     $internationalCinema = InternationalCinema::findOrFail($payload['cinema_id']);
+    //     if ($internationalCinema) {
+    //         $internationalCinemaBasicDetail = new InternationalCinemaBasicDetail();
+    //         $internationalCinemaBasicDetail['cinema_id'] = $payload['cinema_id'];
+    //         $internationalCinemaBasicDetail['director'] = $payload['director'] ?? null;
+    //         $internationalCinemaBasicDetail['producer'] = $payload['producer'] ?? null;
+    //         $internationalCinemaBasicDetail['screenplay'] = $payload['screenplay'] ?? null;
+    //         $internationalCinemaBasicDetail['cinematographer'] = $payload['cinematographer'] ?? null;
+    //         $internationalCinemaBasicDetail['editor'] = $payload['editor'] ?? null;
+    //         $internationalCinemaBasicDetail['cast'] = $payload['cast'] ?? null;
+    //         $internationalCinemaBasicDetail['dop'] = $payload['dop'] ?? null;
+    //         $internationalCinemaBasicDetail['other_details'] = $payload['other_details'] ?? null;
+    //         $internationalCinemaBasicDetail['synopsis'] = $payload['synopsis'] ?? null;
+    //         $internationalCinemaBasicDetail['director_bio'] = $payload['director_bio'] ?? null;
+    //         $internationalCinemaBasicDetail['producer_bio'] = $payload['producer_bio'] ?? null;
+    //         $internationalCinemaBasicDetail['sales_agent'] = $payload['sales_agent'] ?? null;
+    //         $internationalCinemaBasicDetail['award'] = $payload['award'] ?? null;
+    //         $internationalCinemaBasicDetail['writer'] = $payload['writer'] ?? null;
+    //         $internationalCinemaBasicDetail['trailer_link'] = $payload['trailer_link'] ?? null;
+    //         $internationalCinemaBasicDetail['official_selection'] = $payload['official_selection'] ?? null;
+    //         $internationalCinemaBasicDetail['best_film_award'] = $payload['best_film_award'] ?? null;
+    //         $internationalCinemaBasicDetail['director_and_producer'] = $payload['director_and_producer'] ?? null;
+    //         $internationalCinemaBasicDetail['original_title'] = $payload['original_title'] ?? null;
+    //         $internationalCinemaBasicDetail['co_produced'] = $payload['co_produced'] ?? null;
+    //         $internationalCinemaBasicDetail['festivals'] = $payload['festivals'] ?? null;
+    //         $internationalCinemaBasicDetail['drama'] = $payload['drama'] ?? null;
+    //         $internationalCinemaBasicDetail['history'] = $payload['history'] ?? null;
+    //         $internationalCinemaBasicDetail['nomination'] = $payload['nomination'] ?? null;
+    //         $internationalCinemaBasicDetail['status'] = 1;
+    //         $internationalCinemaBasicDetail->save();
+    //         return redirect()->route('international-cinema.index')->with('success', 'Basic details addedd successfully.!!');
+    //     } else {
+    //         return redirect()->route('international-cinema.index')->with('warning', 'Something went wrong.!!');
+    //     }
+    // }
 }
