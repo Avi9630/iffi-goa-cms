@@ -89,8 +89,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
             Route::get('{id}/add-basic-detail', 'addBasicDetail')->name('addBasicDetail');
             Route::post('{id}/store-basic-detail', 'storeBasicDetail')->name('storeBasicDetail');
-            Route::get('upload-csv', [InternationalCinemaController::class, 'uploadCSV'])->name('uploadCSV');
-            Route::get('upload.excel', [InternationalCinemaController::class, 'uploadExcel'])->name('uploadExcel');
+            Route::post('upload-csv', [InternationalCinemaController::class, 'uploadCSV'])->name('uploadCSV');
             Route::get('search', [InternationalCinemaController::class, 'search'])->name('search');
         });
 
