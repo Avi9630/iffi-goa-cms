@@ -156,9 +156,20 @@ class InternationalCinemaController extends Controller
         return view('international_cinema.basic-detail', compact('internationalCinema'));
     }
 
-    public function uploadCSV()
+    public function uploadCSV(Request $request)
     {
-        $csvFile = storage_path('app/CSV/test1.csv');
+        $payload = $request->all();
+
+        $request->validate([
+            'file' => 'required'
+        ]);
+
+        if(!$request->hasFile('file') && !$request->file('file')->isValid()){
+            return redirect()->back()->with('warning','Upload valid CSV.');
+        }
+        // $csvFile = storage_path('app/CSV/test1.csv');
+        $csvFile = $payload['file'];
+        
         if (!file_exists($csvFile)) {
             return response()->json(['error' => 'File not found.'], 404);
         }
@@ -258,7 +269,7 @@ class InternationalCinemaController extends Controller
                         'created_at'     => now(),
                     ]
                 );
-            }            
+            }
             fclose($handle);
             return redirect()->back()->with(['success' => 'CSV Imported Successfully']);
         } catch (\Exception $e) {
