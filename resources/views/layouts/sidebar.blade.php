@@ -49,6 +49,8 @@
                             <i class="nav-icon bi bi-clipboard-fill"></i>
                             <p>IFFI-Sections<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
+
+                        {{-- Ticker --}}
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ route('ticker.index') }}" class="nav-link">
@@ -56,60 +58,87 @@
                                     <p>Ticker</p>
                                 </a>
                             </li>
+
+                            {{-- News Update --}}
                             <li class="nav-item">
                                 <a href="{{ route('news-update.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>News-Update</p>
                                 </a>
                             </li>
+
+                            {{-- Popup-image --}}
                             <li class="nav-item">
                                 <a href="{{ route('newsUpdate.popupImage') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Popup Image</p>
                                 </a>
                             </li>
+
+                            {{-- Press Release --}}
                             <li class="nav-item">
                                 <a href="{{ route('press-release.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Press-Release</p>
                                 </a>
                             </li>
+                            
+                            {{-- Latest Update --}}
                             <li class="nav-item">
                                 <a href="{{ route('latest-update.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Latest-Update</p>
                                 </a>
                             </li>
+
+                            {{-- Gallery --}}
                             <li class="nav-item">
                                 <a href="{{ route('photo.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Gallery</p>
                                 </a>
                             </li>
+
+                            {{-- Internation Media --}}
                             <li class="nav-item">
                                 <a href="{{ route('international-media.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>International Media</p>
                                 </a>
                             </li>
+
+                            {{-- Peacock --}}
                             <li class="nav-item">
                                 <a href="{{ route('peacock.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Peacock</p>
                                 </a>
                             </li>
+
+                            {{-- International Cinema --}}
                             <li class="nav-item">
                                 <a href="{{ route('international-cinema.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>International Cinema</p>
                                 </a>
                             </li>
+
+                            {{-- Indian Panorama --}}
+                            <li class="nav-item">
+                                <a href="{{ route('indian-panorama.index') }}" class="nav-link">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Indian Panorama</p>
+                                </a>
+                            </li>
+
+                            {{-- Cube --}}
                             <li class="nav-item">
                                 <a href="{{ route('cube.index') }}" class="nav-link">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Cube</p>
                                 </a>
                             </li>
+
                             {{-- Master Class --}}
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
@@ -148,6 +177,7 @@
                             </li>
                         </ul>
                     </li>
+
                     {{-- Logout --}}
                     <a href="{{ route('logout') }}" class="nav-link">
                         <i class="nav-icon bi bi-clipboard-fill"></i>
