@@ -17,8 +17,10 @@ use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
+use App\Http\Controllers\IndianPanoramaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\IndianPanorama;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'guest'], function () {
@@ -37,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
         'international-media' => InternationalMediaController::class,
         'master-class-topic' => MasterClassTopicController::class,
         'master-class-date' => MasterClassDateController::class,
+        'indian-panorama' => IndianPanoramaController::class,
         'press-release' => PressReleaseController::class,
         'latest-update' => LatestUpdateController::class,
         'master-class' => MasterClassController::class,
@@ -52,35 +55,14 @@ Route::group(['middleware' => 'auth'], function () {
         'cube' => CubeController::class,
     ]);
 
-    // Master-class
-    Route::get('/master-class-topic/{id}/add', [MasterClassDateController::class, 'addTopic'])->name('masterClassTopic.addTopic');
-
-    Route::get('/master-class/{id}/add-detail', [MasterClassTopicController::class, 'addDetail'])->name('masterClass.addDetail');
-    Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
-    Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
-    Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
-
-    Route::put('/moderator/{id}/toggle', [ModeratorController::class, 'toggleStatus'])->name('moderator.toggleStatus');
-
-    Route::put('/master-class/{id}/toggle', [MasterClassController::class, 'toggleStatus'])->name('masterClass.toggleStatus');
-
-    Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
-
-    Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
-
-    Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
-    
-    Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');
-
-    Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
-
-    Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');
-
-    Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
-
-    Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
-
-    Route::get('/peacock.search', [PeacockController::class, 'search'])->name('peacock.search');
+    Route::controller(IndianPanoramaController::class)
+        ->prefix('ip')
+        ->name('indianPanorama.')
+        ->group(function () {
+            Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
+            Route::get('search', [IndianPanoramaController::class, 'search'])->name('search');
+            Route::post('upload-csv', [IndianPanoramaController::class, 'uploadCSV'])->name('uploadCSV');
+        });
 
     Route::controller(InternationalCinemaController::class)
         ->prefix('ic')
@@ -103,7 +85,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('search', 'search')->name('search');
             Route::post('popup-image-upload', 'popupImageUpload')->name('popupImageUpload');
         });
-        
+
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::controller(PhotoController::class)
@@ -117,9 +99,37 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
 
+    // Master-class
+    Route::get('/master-class-topic/{id}/add', [MasterClassDateController::class, 'addTopic'])->name('masterClassTopic.addTopic');
+    Route::get('/master-class/{id}/add-detail', [MasterClassTopicController::class, 'addDetail'])->name('masterClass.addDetail');
+    Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
+    Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
+    Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
+
+    Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
+    Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');
+
+    Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');
+    Route::get('/peacock.search', [PeacockController::class, 'search'])->name('peacock.search');
+
+    Route::put('/moderator/{id}/toggle', [ModeratorController::class, 'toggleStatus'])->name('moderator.toggleStatus');
+
+    Route::put('/master-class/{id}/toggle', [MasterClassController::class, 'toggleStatus'])->name('masterClass.toggleStatus');
+
+    Route::put('/international-media/{id}/toggle', [InternationalMediaController::class, 'toggleStatus'])->name('internationalMedia.toggle');
+
+    Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
+
+    Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
+
+    Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
+
+    Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
+
     Route::get('/', function () {
         return view('welcome');
     });
+
     Route::get('logout', [AuthController::class, 'logut'])->name('logout');
 });
 
