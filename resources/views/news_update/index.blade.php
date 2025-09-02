@@ -34,6 +34,9 @@
                                 <a href={{ route('news-update.index') }} class="btn btn-sm btn-secondary btn-flat ">
                                     Reset
                                 </a>
+                                <a href={{ route('newsUpdate.popupImage') }} class="btn btn-sm btn-success btn-flat ">
+                                    Popup Image
+                                </a>
                             </h3>
                             <form action="{{ route('newsUpdate.search') }}">
                                @csrf
