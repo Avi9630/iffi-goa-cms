@@ -40,6 +40,16 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
+                                    <div class="mb-3">
+                                        <label for="content" class="form-label">Sort Number</label>
+                                        <input type="text" name="sort_num" id="sort_num" class="form-control @error('sort_num') is-invalid @enderror"
+                                        value="{{ old('sort_num', $ticker->sort_num ?? '') }}">
+                                        @error('sort_num')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary">Submit</button>

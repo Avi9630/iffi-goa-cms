@@ -23,6 +23,7 @@
                 <tr>
                     <th>Sr.Nom</th>
                     <th>Content</th>
+                    <th>Sort Nom</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -32,6 +33,7 @@
                     <tr id="ticker-row-{{ $ticker->id }}">
                         <td>{{ $ticker->id }}</td>
                         <td>{{ html_entity_decode(strip_tags($ticker->content)) }}</td>
+                        <td>{{ $ticker->sort_num }}</td>
                         <td>
                             <form action="{{ route('ticker.toggle', $ticker->id) }}" method="POST" style="display:inline;">
                                 @csrf
