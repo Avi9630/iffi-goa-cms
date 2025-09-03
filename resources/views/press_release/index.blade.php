@@ -1,19 +1,5 @@
 @extends('layouts.app')
 @section('content')
-    {{-- <div class="app-content-header">
-        <div class="container-fluid">
-            <span>
-                <h4 class="alert-danger"></h4>
-            </span>
-            @foreach (['success', 'info', 'danger', 'warning'] as $msg)
-                @if (Session::has($msg))
-                    <div id="flash-message" class="alert alert-{{ $msg }}" role="alert">
-                        {{ Session::get($msg) }}
-                    </div>
-                @endif
-            @endforeach
-        </div>
-    </div> --}}
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -54,7 +40,7 @@
                                         <th>Sr.Nom</th>
                                         <th>Title</th>
                                         <th>Publish Date</th>
-                                        <th>Description</th>
+                                        {{-- <th>Description</th> --}}
                                         <th>status</th>
                                         <th>Action</th>
                                     </tr>
@@ -65,7 +51,7 @@
                                             <td>{{ $pressRelease->id }}</td>
                                             <td>{{ $pressRelease->title }}</td>
                                             <td>{{ $pressRelease->publish_date }}</td>
-                                            <td>{{ $pressRelease->description }}</td>
+                                            {{-- <td>{{ $pressRelease->description }}</td> --}}
                                             <td>
                                                 <form action="{{ route('pressRelease.toggle', $pressRelease->id) }}"
                                                     method="POST" style="display:inline;">
