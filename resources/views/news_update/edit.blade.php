@@ -73,6 +73,15 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
+                                        <label for="sort_num" class="form-label">Sort Num</label>
+                                        <input type="number" class="form-control @error('sort_num') is-invalid @enderror"
+                                            id="sort_num" name="sort_num" value="{{ old('sort_num',$newsUpdate->sort_num) }}">
+                                        @error('sort_num')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="have_popup" class="form-label">Have Popup</label>
                                         <select name="have_popup" id="have_popup"
                                             class="form-select @error('role_id') is-invalid @enderror">

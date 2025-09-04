@@ -20,8 +20,8 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">NewsUpdate form
-                                <a href={{ route('news-update.index') }} class="btn btn-sm btn-info btn-flat ">
+                            <div class="card-title"><strong>NewsUpdate</strong>
+                                <a href={{ route('news-update.index') }} class="btn btn-sm btn-warning btn-flat ">
                                     Reset
                                 </a>
                             </div>
@@ -38,6 +38,7 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Description</label>
                                         <textarea name="description" id="description" cols="10" rows="2"
@@ -46,6 +47,7 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
@@ -55,6 +57,7 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="link" class="form-label">Link</label>
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
@@ -63,6 +66,7 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="link_title" class="form-label">Link Title</label>
                                         <input type="text" class="form-control @error('link_title') is-invalid @enderror"
@@ -71,6 +75,16 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sort_num" class="form-label">Sort Num</label>
+                                        <input type="number" class="form-control @error('sort_num') is-invalid @enderror"
+                                            id="sort_num" name="sort_num" value="{{ old('sort_num') }}">
+                                        @error('sort_num')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="have_popup" class="form-label">Have Popup</label>
                                         <select name="have_popup" id="have_popup"

@@ -13,18 +13,25 @@ class NewsUpdateController extends Controller
 {
     protected $bucketName;
 
-    public function __construct(ExternalApiService $api)
+    public function __construct()
     {
-        $this->projectId = config('services.gcs.project_id');
-        $this->keyFilePath = config('services.gcs.key_file');
-        $this->bucketName = config('services.gcs.bucket');
-        $this->publicUrlFormat = config('services.gcs.public_url_format');
         $this->destination = env('NEWS_AND_UPDATE');
     }
 
     function index()
     {
         $newsUpdates = NewsUpdate::orderBy('id', 'DESC')->paginate(10);
+        return view('news_update.index', compact('newsUpdates'));
+    }
+
+    function newsSearch(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+        $newsUpdates = NewsUpdate::where('title', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
         return view('news_update.index', compact('newsUpdates'));
     }
 
@@ -47,11 +54,11 @@ class NewsUpdateController extends Controller
         $request->validate([
             'pop_up_header' => 'nullable|string|max:255',
             'pop_up_content' => 'nullable|string',
-            'sort_num' => 'nullable|integer',
+            // 'sort_num' => 'nullable|integer',
             'image_name' => 'nullable|string|max:255',
         ]);
 
-        $data = $request->only(['pop_up_header', 'pop_up_content', 'sort_num', 'image_name']);
+        $data = $request->only(['pop_up_header', 'pop_up_content', 'image_name']);
 
         $newsUpdate = NewsUpdate::findOrFail($id);
         $newsUpdate->update($data);
@@ -66,15 +73,15 @@ class NewsUpdateController extends Controller
 
     function store(Request $request, ConvertToWEBP $webp)
     {
-
         $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'link' => 'nullable|url|max:255',
+            'link' => 'nullable|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
+            'sort_num' => '',
         ]);
 
         $newsUpdate = new NewsUpdate();
@@ -84,6 +91,7 @@ class NewsUpdateController extends Controller
         $newsUpdate->link = $payload['link'] ?? null;
         $newsUpdate->link_title = $payload['link_title'] ?? null;
         $newsUpdate->have_popup = $payload['have_popup'];
+        $newsUpdate->sort_num = $payload['sort_num'] ?? null;
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -92,8 +100,7 @@ class NewsUpdateController extends Controller
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
             if ($convertInWebp) {
                 $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';;
-                // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
                 $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
             }
         }
@@ -117,9 +124,10 @@ class NewsUpdateController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'file|mimes:jpg,jpeg,png,webp|max:2048',
-            'link' => 'nullable|url|max:255',
+            'link' => 'nullable|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
+            'sort_num' => '',
         ]);
 
         $newsUpdate = NewsUpdate::findOrFail($id);
@@ -128,6 +136,7 @@ class NewsUpdateController extends Controller
         $newsUpdate['link'] = $payload['link'] ?? $payload['link'];
         $newsUpdate['link_title'] = $payload['link_title'] ?? $payload['link_title'];
         $newsUpdate['have_popup'] = $payload['have_popup'];
+        $newsUpdate['sort_num'] = $payload['sort_num']  ?? null;
 
         if ($request->hasFile('image')) {
             if (!is_null($newsUpdate->image_url)) {
@@ -150,6 +159,7 @@ class NewsUpdateController extends Controller
             // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
         }
         $newsUpdate = $newsUpdate->save();
+
         if ($newsUpdate) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
         } else {
@@ -170,7 +180,6 @@ class NewsUpdateController extends Controller
         if (!empty($response['error'])) {
             return back()->withErrors(['msg' => $response['message']]);
         }
-
         $images = $response['files'] ?? [];
         return view('news_update.image', compact('images'));
     }
@@ -178,22 +187,11 @@ class NewsUpdateController extends Controller
     function popupImageUpload(Request $request)
     {
         $request->validate([
-            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'required|file|mimes:jpg,jpeg,png,webp,mp4,mov|max:2048',
         ]);
         $file = $request->file('image');
         $originalFilename = $file->getClientOriginalName();
         app(ExternalApiService::class)->postData($file, $this->destination);
         return redirect()->back()->with('success', 'Image uploaded successfully.');
-    }
-
-    function search(Request $request)
-    {
-        $payload = $request->all();
-        $searchTerm = $request->input('search');
-        $newsUpdates = NewsUpdate::where('title', 'LIKE', "%{$searchTerm}%")
-            ->orWhere('description', 'LIKE', "%{$searchTerm}%")
-            ->orderBy('id', 'DESC')
-            ->paginate(10);
-        return view('news_update.index', compact('newsUpdates'));
     }
 }
