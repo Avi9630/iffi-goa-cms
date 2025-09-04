@@ -41,8 +41,8 @@ class PressReleaseController extends Controller
             [
                 'title' => 'required|string|max:255',
                 'image' => 'nullable|mimes:pdf|max:2048|required_without:link',
-                'link' => 'nullable|url|required_without:image',
-                'publish_date' => 'required|date_format:Y-m-d',
+                'link' => 'nullable|required_without:image',
+                // 'publish_date' => 'required|date_format:Y-m-d',
             ],
             [
                 'title.required' => 'Please enter the title.',
@@ -51,14 +51,14 @@ class PressReleaseController extends Controller
                 'image.max' => 'The PDF must not be larger than 2 MB.',
                 'link.required_without' => 'Please provide a link or upload a PDF file.',
                 'link.url' => 'The link format is invalid.',
-                'publish_date.required' => 'Publish date is required.!!.',
-                'publish_date.date_format' => 'Publish date like:-' . date('Y-m-d'),
+                // 'publish_date.required' => 'Publish date is required.!!.',
+                // 'publish_date.date_format' => 'Publish date like:-' . date('Y-m-d'),
             ],
         );
 
         $pressRelease = new PressRelease();
         $pressRelease->title = $request->title;
-        $pressRelease->publish_date = $request->publish_date;
+        $pressRelease->publish_date = date('Y-m-d');
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -90,7 +90,6 @@ class PressReleaseController extends Controller
         $request->validate(
             [
                 'title' => 'required|string|max:255',
-                'publish_date' => 'required|date_format:Y-m-d',
                 'image' => [
                     'nullable',
                     'mimes:pdf',
@@ -103,7 +102,6 @@ class PressReleaseController extends Controller
                 ],
                 'link' => [
                     'nullable',
-                    'url',
                     function ($attribute, $value, $fail) use ($request, $pressRelease) {
                         if (!$value && empty($request->image) && empty($press->link)) {
                             $fail('Please provide a link or upload a PDF file.');
@@ -116,14 +114,10 @@ class PressReleaseController extends Controller
                 'image.mimes' => 'The file must be a PDF only.',
                 'image.max' => 'The PDF must not be larger than 2 MB.',
                 'link.url' => 'The link format is invalid.',
-                'publish_date.required' => 'Publish date is required.!!.',
-                'publish_date.date_format' => 'Publish date like:-' . date('Y-m-d'),
             ],
         );
 
         $pressRelease->title = $payload['title'] ?? $pressRelease->title;
-        $pressRelease->publish_date = $payload['publish_date'] ?? $pressRelease->publish_date;
-
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();

@@ -27,9 +27,9 @@
                     </div>
                 </form>
             </div>
-            {{-- <div class="col-md-6 p-1">
+            <div class="col-md-6 p-1">
                 <a href={{ route('news-update.index') }} class="btn btn-sm btn-primary btn-flat">NewsUpdate</a>
-            </div> --}}
+            </div>
         </div>
     </div>
     <br>
