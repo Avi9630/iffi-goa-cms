@@ -20,7 +20,11 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">Popup Details</div>
+                            <div class="card-title">Popup Details
+                                <a href={{ route('news-update.index') }} class="btn btn-sm btn-warning btn-flat ">
+                                    News&Update
+                                </a>
+                            </div>
                         </div>
                         <form action="{{ route('newsUpdate.popupUpdate', $newsUpdate->id) }}" method="POST">
                             @csrf @method('PUT')
@@ -46,16 +50,22 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
-                                        <label for="sort_num" class="form-label">Sort Num</label>
-                                        <input type="text" name="sort_num"
-                                            class="form-control @error('sort_num') is-invalid @enderror"
-                                            value="{{ old('sort_num', $newsUpdate->sort_num ?? '') }}">
-                                        @error('sort_num')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="pop_up_header" class="form-label">Sample</label>
+                                        <p>
+                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI9lRck6miglY0SZF_BZ_sK829yiNskgYRUg&s"
+                                                alt="" height="100 px" width="100 px">
 
+                                            <strong>IMAGE-TAG</strong> :-
+                                            {{ '<img src="http://localhost/iffi-goa/public/images/news-update/webp/Akkineni Nagarjuna Rao.jpg" alt="" height="100 px" width="100 px">' }}
+                                            <br>
+                                            <b>VIDEO-TAG</b> :-
+                                            {{ '<video width="400" controls>
+                                                                                         <source src="https://iffigoa.org/public/images/news-update/nmic%20meet.mp4" type="video/mp4">
+                                                                                         Your browser does not support the video tag.
+                                                                                        </video>' }}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">

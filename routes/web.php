@@ -5,6 +5,7 @@ use App\Http\Controllers\InternationalCinemaController;
 use App\Http\Controllers\InternationalMediaController;
 use App\Http\Controllers\MasterClassTopicController;
 use App\Http\Controllers\MasterClassDateController;
+use App\Http\Controllers\IndianPanoramaController;
 use App\Http\Controllers\LatestUpdateController;
 use App\Http\Controllers\PressReleaseController;
 use App\Http\Controllers\MasterClassController;
@@ -17,7 +18,6 @@ use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
-use App\Http\Controllers\IndianPanoramaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\IndianPanorama;
@@ -43,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
         'press-release' => PressReleaseController::class,
         'latest-update' => LatestUpdateController::class,
         'master-class' => MasterClassController::class,
-        'news-update' => NewsUpdateController::class,
+        // 'news-update' => NewsUpdateController::class,
         'permission' => PermissionController::class,
         'moderator' => ModeratorController::class,
         'speaker' => SpeakerController::class,
@@ -54,6 +54,8 @@ Route::group(['middleware' => 'auth'], function () {
         'user' => UserController::class,
         'cube' => CubeController::class,
     ]);
+
+    Route::resource('news-update', NewsUpdateController::class)->except(['show']);
 
     Route::controller(IndianPanoramaController::class)
         ->prefix('ip')
@@ -82,10 +84,12 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('{id}/popup-toggle', 'popupToggle')->name('popupToggle');
             Route::put('{id}/popup-update', 'popupUpdate')->name('popupUpdate');
             Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
-            Route::get('search', 'search')->name('search');
+            // Route::get('news-update-search', 'newsSearch')->name('search');
+            Route::get('search', 'newsSearch')->name('search');
             Route::post('popup-image-upload', 'popupImageUpload')->name('popupImageUpload');
         });
 
+    // Route::get('/search', [NewsUpdateController::class, 'newsSearch'])->name('newsUpdate.search');
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::controller(PhotoController::class)

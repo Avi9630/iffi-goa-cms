@@ -9,7 +9,7 @@ class TickerController extends Controller
 {
     function index()
     {
-        $tickers = Ticker::where('status', 1)->orderBy('sort_num', 'asc')->get();
+        $tickers = Ticker::orderBy('sort_num', 'asc')->get();
         // $tickers = Ticker::orderBy('id','DESC')->get();
         return view('ticker.index', [
             'tickers' => $tickers,
@@ -52,9 +52,13 @@ class TickerController extends Controller
 
     function update(Request $request, $id)
     {
+        // $request->validate([
+        //     'content' => 'required|string|max:255',
+        //     'sort_num' => 'required|unique:tickers,sort_num',
+        // ]);
         $request->validate([
             'content' => 'required|string|max:255',
-            'sort_num' => 'required|unique:tickers,sort_num',
+            'sort_num' => 'required|unique:tickers,sort_num,' . $id,
         ]);
         $ticker = Ticker::findOrFail($id);
         $ticker->content = $request->content ?? $ticker->content;
