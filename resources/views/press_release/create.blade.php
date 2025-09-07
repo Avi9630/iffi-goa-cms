@@ -54,14 +54,14 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <label for="publish_date" class="form-label">Publish Date</label>
                                         <input type="text" class="form-control @error('publish_date') is-invalid @enderror"
                                             id="publish_date" name="publish_date" value="{{ old('publish_date') }}">
                                         @error('publish_date')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-footer">

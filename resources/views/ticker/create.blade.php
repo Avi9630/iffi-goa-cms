@@ -35,7 +35,9 @@
                                     <div class="mb-3">
                                         <label for="content" class="form-label">Content</label>
                                         <textarea name="content" id="content" cols="30" rows="10"
-                                            class="form-control @error('content') is-invalid @enderror"></textarea>
+                                            class="form-control @error('content') is-invalid @enderror">
+                                        {{ old('content') }}
+                                        </textarea>
                                         @error('content')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-
 use Illuminate\Console\Command;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\File;
@@ -10,7 +9,6 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class ConvertToWEBP
 {
-
     // public function convert($file, string $destinationPath): string
     // {
     //     try {
@@ -63,16 +61,17 @@ class ConvertToWEBP
 
     public function convert($file, string $destinationPath): string
     {
-
         try {
-
+            $extension = strtolower($file->getClientOriginalExtension());
+            if ($extension === 'webp') {
+                return true;
+            }
             if ($_SERVER['HTTP_HOST'] === 'localhost') {
                 $filePath = 'C:/xampp/htdocs/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
             } else {
                 $filePath = '/var/www/html/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
             }
             $manager = new ImageManager(new Driver());
-
             if (!file_exists($filePath)) {
                 throw new \Exception("File does not exist: {$filePath}");
             }
@@ -80,7 +79,9 @@ class ConvertToWEBP
             $filenameWithoutExt = pathinfo($filePath, PATHINFO_FILENAME);
             $webpPath = dirname($filePath) . '/' . $filenameWithoutExt . '.webp';
             $img->toWebp(40)->save($webpPath);
-            // return $filenameWithoutExt . '.webp';
+            if (file_exists($webpPath) && file_exists($filePath)) {
+                unlink($filePath);
+            }
             return true;
         } catch (\Exception $e) {
             throw new \Exception('Conversion failed: ' . $e->getMessage());
