@@ -17,6 +17,7 @@ use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CubeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -130,6 +131,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
 
+    Route::get('get_images_by_folder/{path}', [CommonController::class, 'getImageByFolder'])
+        ->where('path', '.*')
+        ->name('getImageByFolder');
     Route::get('/', function () {
         return view('welcome');
     });
