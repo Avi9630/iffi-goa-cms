@@ -14,7 +14,6 @@ class CubeController extends Controller
 
     public function __construct()
     {
-        $this->bucketName = config('services.gcs.bucket');
         $this->destination = env('CUBE_DESTINATION');
     }
 
@@ -39,12 +38,12 @@ class CubeController extends Controller
 
         $cube = new Cube();
         $cube->link = $payload['link'];
-
+        
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);            
             if ($convertInWebp) {
                 $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
                 $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
