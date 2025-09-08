@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peacock;
+use App\Services\ConvertToWEBP;
 use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
@@ -16,13 +17,11 @@ class PeacockController extends Controller
         $this->mainUrl = env('IMAGE_UPLOAD_BASE_URL');
         $this->posterDestination = env('PEACOCK_POSTER_DESTINATION');
         $this->PDFDestination = env('PEACOCK_PDF_DESTINATION');
-        $this->bucketName = config('services.gcs.bucket');
     }
 
     function index()
     {
         $peacocks = Peacock::orderBy('id', 'DESC')->paginate(10);
-        // $years = Peacock::select('year')->distinct()->orderBy('year', 'DESC')->get();
         return view('peacock.index', compact('peacocks'));
     }
 
@@ -50,13 +49,13 @@ class PeacockController extends Controller
         return view('peacock.create');
     }
 
-    function store(Request $request, GCSService $gcsService)
+    function store(Request $request)
     {
         $payload = $request->all();
         $request->validate([
             'title' => 'required|string|max:255',
             'image' => 'required|mimes:pdf',
-            'poster' => 'required|image|mimes:webp,|max:2048',
+            'poster' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'year' => 'required|integer',
         ]);
 
@@ -77,8 +76,11 @@ class PeacockController extends Controller
             $file = $request->file('poster');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->posterDestination);
-            $peacock->poster = $originalFilename;
-            $peacock->poster_url = $this->mainUrl . $this->posterDestination . '/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('poster'), $this->posterDestination);            
+            if ($convertInWebp) {
+                $peacock->poster = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
 
         $peacock->save();
@@ -118,8 +120,13 @@ class PeacockController extends Controller
             $file = $request->file('poster');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->posterDestination);
-            $peacock->poster = $originalFilename;
-            $peacock->poster_url = $this->mainUrl . $this->posterDestination . '/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('poster'), $this->posterDestination);            
+            if ($convertInWebp) {
+                $peacock->poster = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
+            // $peacock->poster = $originalFilename;
+            // $peacock->poster_url = $this->mainUrl . $this->posterDestination . '/' . $originalFilename;
         }
         $peacock->save();
         return redirect()->route('peacock.index')->with('success', 'Press Release updated successfully.');
@@ -128,16 +135,6 @@ class PeacockController extends Controller
     function destroy($id)
     {
         $peacock = Peacock::findOrFail($id);
-        // if (!empty($peacock->image_url)) {
-        //     $parsedUrl = parse_url($peacock->image_url, PHP_URL_PATH);
-        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        //     app(GCSService::class)->deleteImageFromGCS($filePath);
-        // }
-        // if (!empty($peacock->poster_url)) {
-        //     $parsedUrl = parse_url($peacock->poster_url, PHP_URL_PATH);
-        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        //     app(GCSService::class)->deleteImageFromGCS($filePath);
-        // }
         $peacock->delete();
         return redirect()->route('peacock.index')->with('danger', 'Peacock deleted successfully.!!');
     }
