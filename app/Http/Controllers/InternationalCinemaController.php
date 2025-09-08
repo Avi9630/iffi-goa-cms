@@ -16,7 +16,6 @@ class InternationalCinemaController extends Controller
 
     public function __construct()
     {
-        $this->bucketName = config('services.gcs.bucket');
         $this->destination = env('INTERNATIONAL_CINEMA');
     }
 

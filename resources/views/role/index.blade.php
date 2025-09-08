@@ -4,7 +4,7 @@
         <div class="app-content-header">
             <div class="container-fluid">
                 <span>
-                    <h4 class="alert-danger"></h4>
+                    <h4 class="alert-danger"><strong>Role</strong></h4>
                 </span>
                 @foreach (['success', 'info', 'danger', 'warning'] as $msg)
                     @if (Session::has($msg))

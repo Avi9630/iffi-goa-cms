@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">International Media</h3>
+                    <h3 class="mb-0"><strong>International Media</strong></h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -21,6 +21,7 @@
             </div>
         </div>
     </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -33,10 +34,14 @@
                                     Add Cinema
                                 </a>
                                 <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-info btn-flat">
-                                    List International Cinema Basic Detail
+                                    IC-Basic Detail
                                 </a>
+                                <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-warning btn-flat">
+                                    Reset
+                                </a>
+                                <a href="{{ route('downloadSampleCsv',['fileName' => 'test.csv']) }}" class="btn btn-sm btn-success" target="_blank">Download sample CSV</a>
                             </h3>
-                            
+
                             {{-- Search --}}
                             <form action="{{ route('internationalCinema.search') }}">
                                 @csrf
@@ -55,9 +60,10 @@
                                     </div>
                                 </div>
                             </form>
-                            
+
                             {{-- Upload CSV --}}
-                            <form action="{{ route('internationalCinema.uploadCSV') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('internationalCinema.uploadCSV') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="input-group input-group-sm float-end" style="width: 300px;">
                                     <input type="file" name="file"
@@ -70,7 +76,7 @@
                                     </div>
                                 </div>
                             </form>
-                            
+
                         </div>
 
                         <div class="card-body">
