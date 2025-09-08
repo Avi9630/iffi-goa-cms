@@ -3,7 +3,7 @@
     <div class="app-content-header">
         <div class="container-fluid">
             <span>
-                <h4 class="alert-danger"></h4>
+                <h4 class="alert-danger"><strong>Repository</strong></h4>
             </span>
             @foreach (['success', 'info', 'danger', 'warning'] as $msg)
                 @if (Session::has($msg))
@@ -40,7 +40,7 @@
                 <a href={{ route('getImageByFolder', ['path' => 'images/cube/webp']) }}
                     class="btn btn-secondary btn-flat">Cube</a>
 
-                <a href={{ route('getImageByFolder', ['path' => 'images/indian-panorama-cinema/webp']) }}
+                <a href={{ route('getImageByFolder', ['path' => 'images/indian-panorama-cinema']) }}
                     class="btn btn-info btn-flat">Indian Panorama</a>
 
                 <a href={{ route('getImageByFolder', ['path' => 'images/cureted-section']) }}
