@@ -99,9 +99,7 @@
                             @endif
 
                             <div class="card-body text-center" style="background: rgba(255,255,255,0.95); padding: 1rem;">
-                                <!-- File Type with Icon Badge -->
                                 <div class="d-flex justify-content-center align-items-center mb-2">
-
                                     @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                         <i class="bi bi-image me-2" style="font-size: 1.2rem; color:#0d6efd;"></i>
                                     @elseif($extension === 'pdf')
@@ -112,8 +110,6 @@
                                     @endif
                                     <span class="badge bg-secondary text-uppercase">{{ $extension }}</span>
                                 </div>
-
-                                <!-- Action Buttons -->
                                 <a href="{{ $url }}" target="_blank" class="btn btn-sm btn-primary w-100 mb-2">
                                     View File
                                 </a>
@@ -184,3 +180,31 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".copy-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const fileUrl = this.getAttribute("data-url");
+                if (!fileUrl) {
+                    alert("No URL found to copy!");
+                    return;
+                }
+                navigator.clipboard.writeText(fileUrl).then(() => {
+                    this.textContent = "Copied!";
+                    this.classList.remove("btn-outline-secondary");
+                    this.classList.add("btn-success");
+                    setTimeout(() => {
+                        this.textContent = "Copy URL";
+                        this.classList.remove("btn-success");
+                        this.classList.add("btn-outline-secondary");
+                    }, 2000);
+                }).catch(err => {
+                    console.error("Failed to copy text: ", err);
+                    alert("Copy failed!");
+                });
+            });
+        });
+    });
+</script>
+
