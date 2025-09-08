@@ -14,14 +14,13 @@ use App\Http\Controllers\NewsUpdateController;
 use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\PeacockController;
 use App\Http\Controllers\SpeakerController;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CubeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Models\IndianPanorama;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'guest'], function () {
@@ -34,6 +33,7 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
+    
     Route::resources([
         'ic-basic-detail' => InternationalCinemaBasicDetailController::class,
         'international-cinema' => InternationalCinemaController::class,
@@ -82,15 +82,13 @@ Route::group(['middleware' => 'auth'], function () {
         ->prefix('news-update')
         ->name('newsUpdate.')
         ->group(function () {
+            Route::post('popup-image-upload', 'popupImageUpload')->name('popupImageUpload');
             Route::get('{id}/popup-toggle', 'popupToggle')->name('popupToggle');
             Route::put('{id}/popup-update', 'popupUpdate')->name('popupUpdate');
             Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
-            // Route::get('news-update-search', 'newsSearch')->name('search');
             Route::get('search', 'newsSearch')->name('search');
-            Route::post('popup-image-upload', 'popupImageUpload')->name('popupImageUpload');
         });
 
-    // Route::get('/search', [NewsUpdateController::class, 'newsSearch'])->name('newsUpdate.search');
     Route::get('/popup-image', [NewsUpdateController::class, 'popupImage'])->name('newsUpdate.popupImage');
 
     Route::controller(PhotoController::class)
@@ -104,7 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
 
-    // Master-class
+    // MASTER-CLASS
     Route::get('/master-class-topic/{id}/add', [MasterClassDateController::class, 'addTopic'])->name('masterClassTopic.addTopic');
     Route::get('/master-class/{id}/add-detail', [MasterClassTopicController::class, 'addDetail'])->name('masterClass.addDetail');
     Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
@@ -134,6 +132,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('get_images_by_folder/{path}', [CommonController::class, 'getImageByFolder'])
         ->where('path', '.*')
         ->name('getImageByFolder');
+
     Route::get('/', function () {
         return view('welcome');
     });
