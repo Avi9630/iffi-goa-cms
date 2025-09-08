@@ -61,8 +61,25 @@
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
-                        {{-- Ticker --}}
+                        
                         <ul class="nav nav-treeview">
+                            {{-- Popup-image --}}
+                            {{-- <li class="nav-item">
+                                <a href="{{ route('newsUpdate.popupImage') }}" class="nav-link {{ request()->is('newsUpdate.popupImage*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Popup Image</p>
+                                </a>
+                            </li> --}}
+
+                            <li class="nav-item">
+                                <a href="{{ route('newsUpdate.popupImage') }}"
+                                    class="nav-link {{ request()->is('newsUpdate*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Repository</p>
+                                </a>
+                            </li>
+
+                            {{-- Ticker --}}
                             <li class="nav-item">
                                 <a href="{{ route('ticker.index') }}"
                                     class="nav-link {{ request()->is('ticker*') ? 'active' : '' }}">
@@ -79,14 +96,6 @@
                                     <p>News-Update</p>
                                 </a>
                             </li>
-
-                            {{-- Popup-image --}}
-                            {{-- <li class="nav-item">
-                                <a href="{{ route('newsUpdate.popupImage') }}" class="nav-link {{ request()->is('newsUpdate.popupImage*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Popup Image</p>
-                                </a>
-                            </li> --}}
 
                             {{-- Press Release --}}
                             <li class="nav-item">

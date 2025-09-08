@@ -9,7 +9,7 @@ class LatestUpdateController extends Controller
 {
     function index()
     {
-        $latestUpdates = LatestUpdate::paginate(10);
+        $latestUpdates = LatestUpdate::orderBy('id','DESC')->paginate(10);
         return view('latest-update.index', compact('latestUpdates'));
     }
 
@@ -30,7 +30,7 @@ class LatestUpdateController extends Controller
             'content' => $request->content,
             'title' => $request->title,
             'link' => $request->link,
-            'status' => $request->status?? 1, // Default to active if not provided
+            'status' => $request->status?? 1,
         ]);
 
         return redirect()->route('latest-update.index')->with('success', 'Latest Update created successfully.');
