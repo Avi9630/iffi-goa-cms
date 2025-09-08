@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0"> Indian Panorama</h3>
+                    <h3 class="mb-0"><strong>Indian Panorama</strong></h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -28,11 +28,7 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline mb-4">
                         <div class="card-header">
-                            <div class="card-title">Search
-                                <a href={{ route('indian-panorama.index') }} class="btn btn-sm btn-primary btn-flat">
-                                    Reset
-                                </a>
-                            </div>
+                            <div class="card-title">Search</div>
                         </div>
                         <form action="{{ route('indianPanorama.search') }}" method="GET">
                             @csrf @method('GET')
@@ -48,7 +44,7 @@
                                             <option value="" selected>Select Official Selection</option>
 
                                             @foreach ($IPOfficialSelection as $key => $selection)
-                                                <option name="official_selection_id" value="{{ $key+1 }}"
+                                                <option name="official_selection_id" value="{{ $key + 1 }}"
                                                     {{ isset($payload['official_selection_id']) && $payload['official_selection_id'] == $key ? 'selected' : '' }}>
                                                     {{ $selection->title }}
                                                 </option>
@@ -65,13 +61,21 @@
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
                                             <option value="" selected>Select Year</option>
-                                            <option value="2025" {{ isset($payload['year']) && $payload['year'] == 2025 ? 'selected' : '' }}>2025
+                                            <option value="2025"
+                                                {{ isset($payload['year']) && $payload['year'] == 2025 ? 'selected' : '' }}>
+                                                2025
                                             </option>
-                                            <option value="2024" {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>2024
+                                            <option value="2024"
+                                                {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>
+                                                2024
                                             </option>
-                                            <option value="2023" {{ isset($payload['year']) && $payload['year'] == 2023 ? 'selected' : '' }}>2023
+                                            <option value="2023"
+                                                {{ isset($payload['year']) && $payload['year'] == 2023 ? 'selected' : '' }}>
+                                                2023
                                             </option>
-                                            <option value="2022" {{ isset($payload['year']) && $payload['year'] == 2022 ? 'selected' : '' }}>2022
+                                            <option value="2022"
+                                                {{ isset($payload['year']) && $payload['year'] == 2022 ? 'selected' : '' }}>
+                                                2022
                                             </option>
                                         </select>
                                         @error('year')
@@ -101,10 +105,15 @@
                                 <a href={{ route('indian-panorama.create') }} class="btn btn-sm btn-primary btn-flat">
                                     Add Cinema
                                 </a>
+                                <a href={{ route('indian-panorama.index') }} class="btn btn-sm btn-warning btn-flat">
+                                    Reset
+                                </a>
+                                <a href="{{ route('downloadSampleCsv', ['fileName' => 'indian_panorama.csv']) }}"
+                                    class="btn btn-sm btn-info" target="_blank">Download sample CSV</a>
                             </h3>
-
                             {{-- Upload CSV --}}
-                            <form action="{{ route('indianPanorama.uploadCSV') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('indianPanorama.uploadCSV') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="input-group input-group-sm float-end" style="width: 500px;">
                                     <input type="file" name="file"

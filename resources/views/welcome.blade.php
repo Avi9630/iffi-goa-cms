@@ -22,6 +22,19 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="row">
+
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box text-bg-warning">
+                            <div class="inner">
+                                <p>Repository</p>
+                            </div>
+                            <a href="{{ route('newsUpdate.popupImage') }}"
+                                class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                                More info <i class="bi bi-link-45deg"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
                     <div class="col-lg-3 col-6">
                         <div class="small-box text-bg-primary">
                             <div class="inner">
@@ -60,7 +73,7 @@
                     </div>
                     
                     <div class="col-lg-3 col-6">
-                        <div class="small-box text-bg-secondary">
+                        <div class="small-box text-bg-info">
                             <div class="inner">
                                 <p>Latest-Update</p>
                             </div>
@@ -121,6 +134,18 @@
                     </div>
                     
                     <div class="col-lg-3 col-6">
+                        <div class="small-box text-bg-primary">
+                            <div class="inner">
+                                <p>Indian Panorama</p>
+                            </div>
+                            <a href="{{ route('indian-panorama.index') }}"
+                                class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                                More info <i class="bi bi-link-45deg"></i>
+                            </a>
+                        </div>                       
+                    </div>
+                    
+                    <div class="col-lg-3 col-6">
                         <div class="small-box text-bg-success">
                             <div class="inner">
                                 <p>Cube</p>
@@ -133,7 +158,7 @@
                     </div>
                     
                     <div class="col-lg-3 col-6">
-                        <div class="small-box text-bg-info">
+                        <div class="small-box text-bg-warning">
                             <div class="inner">
                                 <p>Master Date</p>
                             </div>

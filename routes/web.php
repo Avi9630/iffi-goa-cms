@@ -22,6 +22,7 @@ use App\Http\Controllers\CubeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::group(['middleware' => 'guest'], function () {
     Route::controller(AuthController::class)->group(function () {
@@ -32,8 +33,10 @@ Route::group(['middleware' => 'guest'], function () {
     });
 });
 
+
+
 Route::group(['middleware' => 'auth'], function () {
-    
+
     Route::resources([
         'ic-basic-detail' => InternationalCinemaBasicDetailController::class,
         'international-cinema' => InternationalCinemaController::class,
@@ -132,6 +135,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('get_images_by_folder/{path}', [CommonController::class, 'getImageByFolder'])
         ->where('path', '.*')
         ->name('getImageByFolder');
+
+    Route::get('/download-sample-csv/{fileName}', [CommonController::class, 'downloadSampleCsv'])->name('downloadSampleCsv');
+
 
     Route::get('/', function () {
         return view('welcome');
