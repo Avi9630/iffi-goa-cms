@@ -34,9 +34,12 @@
                                 <a href={{ route('news-update.index') }} class="btn btn-sm btn-secondary btn-flat ">
                                     Reset
                                 </a>
+                                <a href={{ route('newsUpdate.popupImage') }} class="btn btn-sm btn-success btn-flat ">
+                                    Popup Image
+                                </a>
                             </h3>
-                            <form action="{{ route('newsUpdate.search') }}">
-                               @csrf
+                            <form action="{{ route('newsUpdate.search') }}" method="GET">
+                               @csrf @method('GET')
                                 <div class="input-group input-group-sm float-end" style="width: 300px;">
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search by title or description" value="{{ request('search') }}">
@@ -53,6 +56,7 @@
                                         <th>Sr.Nom</th>
                                         <th>Title</th>
                                         <th>Description</th>
+                                        <th>Sort Num</th>
                                         <th>Status</th>
                                         <th style="white-space: nowrap">Have popup</th>
                                         <th>Action</th>
@@ -64,6 +68,7 @@
                                             <td>{{ $newsUpdate->id }}</td>
                                             <td>{{ $newsUpdate->title }}</td>
                                             <td>{{ $newsUpdate->description }}</td>
+                                            <td>{{ $newsUpdate->sort_num }}</td>
                                             <td>
                                                 <form action="{{ route('newsUpdate.toggle', $newsUpdate->id) }}"
                                                     method="POST" style="display:inline;">
