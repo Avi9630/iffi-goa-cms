@@ -75,13 +75,14 @@ class NewsUpdateController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'link' => 'nullable|max:255',
-            'link_title' => 'nullable|string|max:255',
-            'have_popup' => 'required|in:0,1',
-            'sort_num' => '',
+            'image'       => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'   => 'required_without:image|nullable|string|max:255',
+            'link'        => 'nullable|max:255',
+            'link_title'  => 'nullable|string|max:255',
+            'have_popup'  => 'required|in:0,1',
+            'sort_num'    => 'nullable|integer',
         ]);
 
         $newsUpdate = new NewsUpdate();
@@ -101,7 +102,14 @@ class NewsUpdateController extends Controller
             if ($convertInWebp) {
                 $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
                 $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                // $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->image_url = null;
+            }
+        } else {
+            if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
+                $newsUpdate->image_url = $payload['image_url'];
+                $newsUpdate->image_name = null;
+                $newsUpdate->img_src = null;
             }
         }
         if ($newsUpdate->save()) {
@@ -123,7 +131,8 @@ class NewsUpdateController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image'       => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'   => 'required_without:image|nullable|string|max:255',
             'link' => 'nullable|max:255',
             'link_title' => 'nullable|string|max:255',
             'have_popup' => 'required|in:0,1',
@@ -151,16 +160,14 @@ class NewsUpdateController extends Controller
             if ($convertInWebp) {
                 $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
                 $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->image_url = null;
             }
-            // $newsUpdate->image_name = $originalFilename;
-            // $newsUpdate->img_src = $originalFilename;
-            // $newsUpdate->image_url = 'https://www.iffigoa.org/public/images/news-update/webp/' . $originalFilename;
+        } else {
+            $newsUpdate->image_url = $payload['image_url'];
+            $newsUpdate->image_name = null;
+            $newsUpdate->img_src = null;
         }
-        $newsUpdate = $newsUpdate->save();
-
-        if ($newsUpdate) {
+        if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
         } else {
             return redirect()->back()->with('error', 'Failed to create News Update. Please try again.');

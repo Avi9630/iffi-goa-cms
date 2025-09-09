@@ -67,7 +67,7 @@
                                         <tr class="align-middle">
                                             <td>{{ $newsUpdate->id }}</td>
                                             <td>{{ $newsUpdate->title }}</td>
-                                            <td>{{ $newsUpdate->description }}</td>
+                                            <td>{!! $newsUpdate->description !!}</td>
                                             <td>{{ $newsUpdate->sort_num }}</td>
                                             <td>
                                                 <form action="{{ route('newsUpdate.toggle', $newsUpdate->id) }}"
