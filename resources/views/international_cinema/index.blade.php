@@ -22,6 +22,87 @@
         </div>
     </div>
 
+    <div class="app-content mt-2">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header">
+                            <div class="card-title">Search</div>
+                        </div>
+                        <form action="{{ route('internationalCinema.fullSearch') }}" method="GET">
+                            @csrf @method('GET')
+                            <div class="card-body">
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="curated_section_id" class="form-label">
+                                            <strong>Official Selection</strong>
+                                        </label>
+                                        <select name="curated_section_id" id="curated_section_id"
+                                            class="form-select @error('curated_section_id') is-invalid @enderror">
+                                            <option value="" selected>Select curated section</option>
+
+                                            @foreach ($curatedSections as $key => $cSection)
+                                                <option name="curated_section_id" value="{{ $cSection->id }}"
+                                                    {{ isset($payload['curated_section_id']) && $payload['curated_section_id'] == $cSection->id ? 'selected' : '' }}>
+                                                    {{ $cSection->title }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                        @error('curated_section_id')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="title" class="form-label"><strong>Title</strong></label>
+                                        <input type="text" name="title" id="title" class="form-control"
+                                            value="{{ isset($payload['title']) ? $payload['title'] : '' }}">
+                                        @error('title')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="year" class="form-label"><strong>Year</strong></label>
+                                        <select name="year" id="year"
+                                            class="form-select @error('year') is-invalid @enderror">
+                                            <option value="" selected>Select Year</option>
+                                            <option value="2025"
+                                                {{ isset($payload['year']) && $payload['year'] == 2025 ? 'selected' : '' }}>
+                                                2025
+                                            </option>
+                                            <option value="2024"
+                                                {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>
+                                                2024
+                                            </option>
+                                            <option value="2023"
+                                                {{ isset($payload['year']) && $payload['year'] == 2023 ? 'selected' : '' }}>
+                                                2023
+                                            </option>
+                                            <option value="2022"
+                                                {{ isset($payload['year']) && $payload['year'] == 2022 ? 'selected' : '' }}>
+                                                2022
+                                            </option>
+                                        </select>
+                                        @error('year')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -36,10 +117,11 @@
                                 <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-info btn-flat">
                                     IC-Basic Detail
                                 </a>
-                                <a href={{ route('ic-basic-detail.index') }} class="btn btn-sm btn-warning btn-flat">
+                                <a href={{ route('international-cinema.index') }} class="btn btn-sm btn-warning btn-flat">
                                     Reset
                                 </a>
-                                <a href="{{ route('downloadSampleCsv',['fileName' => 'test.csv']) }}" class="btn btn-sm btn-success" target="_blank">Download sample CSV</a>
+                                <a href="{{ route('downloadSampleCsv', ['fileName' => 'test.csv']) }}"
+                                    class="btn btn-sm btn-success" target="_blank">Download sample CSV</a>
                             </h3>
 
                             {{-- Search --}}

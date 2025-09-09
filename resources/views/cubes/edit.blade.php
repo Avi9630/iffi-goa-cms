@@ -41,13 +41,22 @@
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" placeholder="Upload image." />
-                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
-                                            gif).</small>
+                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png).</small>
                                         @if ($cube->image_url)
                                             <img src="{{ $cube->image_url }}" alt="Current Image" class="img-fluid mt-2"
                                                 style="max-width: 50px;">
                                         @endif
                                         @error('image')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="image_url" class="form-label">Image URL</label>
+                                        <input type="text" class="form-control @error('image_url') is-invalid @enderror"
+                                            id="image_url" name="image_url"
+                                            value="{{ old('image_url', $cube->image_url) }}">
+                                        @error('image_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
