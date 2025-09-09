@@ -19,7 +19,7 @@ class CubeController extends Controller
 
     function index()
     {
-        $cubes = Cube::orderBy('id','DESC')->get();
+        $cubes = Cube::orderBy('id', 'DESC')->get();
         return view('cubes.index', compact('cubes'));
     }
 
@@ -32,25 +32,35 @@ class CubeController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            // 'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image'       => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'   => 'required_without:image|nullable|string|max:255',
             'link' => 'required|string',
         ]);
 
         $cube = new Cube();
         $cube->link = $payload['link'];
-        
+
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);            
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
             if ($convertInWebp) {
                 $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                // $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $cube->image_url = null;
             }
+        } else {
+            $cube->image_url = $payload['image_url'];
+            $cube->image_name = null;
         }
-        $cube->save();
-        return redirect()->route('cube.index')->with('success', 'Cube uploaded successfully.!!');
+
+        if ($cube->save()) {
+            return redirect()->route('cube.index')->with('success', 'Cube uploaded successfully.!!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to create. Please try again.!!');
+        }
     }
 
     function edit($id)
@@ -63,7 +73,9 @@ class CubeController extends Controller
     {
         $payload = $request->all();
         $request->validate([
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            // 'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image'       => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'   => 'required_without:image|nullable|string|max:255',
             'link' => 'required|string',
         ]);
 
@@ -79,13 +91,20 @@ class CubeController extends Controller
                 $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
                 if ($convertInWebp) {
                     $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                    $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    // $cube->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    $cube->image_url = null;
                 }
-                // $cube->image_name = $originalFilename;
-                // $cube->image_url = 'https://www.iffigoa.org/public/images/cube/webp/' . $originalFilename;
+            } else {
+                $cube->image_url = $payload['image_url'];
+                $cube->image_name = null;
             }
-            $cube->save();
-            return redirect()->route('cube.index')->with('success', 'Cube updated successfully.!!');
+
+            if ($cube->save()) {
+                return redirect()->route('cube.index')->with('success', 'Cube uploaded successfully.!!');
+            } else {
+                return redirect()->back()->with('error', 'Failed to create. Please try again.!!');
+            }
+
         } else {
             return redirect()->route('cube.index')->with('warning', 'Something went wrong.!!');
         }
