@@ -47,7 +47,6 @@ Route::group(['middleware' => 'auth'], function () {
         'press-release' => PressReleaseController::class,
         'latest-update' => LatestUpdateController::class,
         'master-class' => MasterClassController::class,
-        // 'news-update' => NewsUpdateController::class,
         'permission' => PermissionController::class,
         'moderator' => ModeratorController::class,
         'speaker' => SpeakerController::class,
@@ -79,6 +78,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('{id}/store-basic-detail', 'storeBasicDetail')->name('storeBasicDetail');
             Route::post('upload-csv', [InternationalCinemaController::class, 'uploadCSV'])->name('uploadCSV');
             Route::get('search', [InternationalCinemaController::class, 'search'])->name('search');
+            Route::get('full-search', [InternationalCinemaController::class, 'fullSearch'])->name('fullSearch');
         });
 
     Route::controller(NewsUpdateController::class)

@@ -39,6 +39,7 @@
                                     <tr>
                                         <th>Sr.Nom</th>
                                         <th>Image</th>
+                                        <th>Image URL</th>
                                         <th>Link</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -48,6 +49,9 @@
                                     @foreach ($cubes as $cube)
                                         <tr class="align-middle">
                                             <td>{{ $cube->id }}</td>
+                                            <td>
+                                                {{ $cube->image_name  }}
+                                            </td>
                                             <td>
                                                 <img src="{{ $cube->image_url }}" alt="" height="50px" width="100px">
                                             </td>

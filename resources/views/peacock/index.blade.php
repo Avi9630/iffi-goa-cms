@@ -73,7 +73,9 @@
                                             <th>Sr.Nom</th>
                                             <th>Title</th>
                                             <th>PDF</th>
+                                            <th>PDF URL</th>
                                             <th>Poster</th>
+                                            <th>Poster URL</th>
                                             <th>status</th>
                                             <th>Action</th>
                                         </tr>
@@ -83,12 +85,14 @@
                                             <tr class="align-middle">
                                                 <td>{{ $peacock->id }}</td>
                                                 <td>{{ $peacock->title }}</td>
+                                                <td>{{ $peacock->img_src }}</td>
                                                 <td>
                                                     @if ($peacock->image_url)
                                                         <iframe src="{{ $peacock->image_url }}" width="100%"
                                                             height="100px"></iframe>
                                                     @endif
                                                 </td>
+                                                <td>{{ $peacock->poster }}</td>
                                                 <td>
                                                     @if ($peacock->poster_url)
                                                         <img src="{{ $peacock->poster_url }}" alt="Current Image"
