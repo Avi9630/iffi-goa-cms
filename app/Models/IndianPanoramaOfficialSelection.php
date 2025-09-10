@@ -13,4 +13,9 @@ class IndianPanoramaOfficialSelection extends Model
     {
         return $this->hasMany(IndianPanorama::class, 'official_selection_id');
     }
+
+    public function juryDetails()
+    {
+        return $this->hasMany(JuryDetail::class, 'official_selection_id');
+    }
 }
