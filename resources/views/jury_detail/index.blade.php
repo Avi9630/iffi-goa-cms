@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0"><strong>Indian Panorama</strong></h3>
+                    <h3 class="mb-0"><strong>Jury Details</strong></h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -30,7 +30,7 @@
                         <div class="card-header">
                             <div class="card-title">Search</div>
                         </div>
-                        <form action="{{ route('indianPanorama.search') }}" method="GET">
+                        <form action="{{ route('juryDetail.search') }}" method="GET">
                             @csrf @method('GET')
                             <div class="card-body">
                                 <div class="row">
@@ -43,13 +43,12 @@
                                             class="form-select @error('official_selection_id') is-invalid @enderror">
                                             <option value="" selected>Select Official Selection</option>
 
-                                            @foreach ($IPOfficialSelection as $key => $selection)
+                                            @foreach ($IPOfficialSelections as $key => $selection)
                                                 <option name="official_selection_id" value="{{ $selection->id }}"
                                                     {{ isset($payload['official_selection_id']) && $payload['official_selection_id'] == $selection->id ? 'selected' : '' }}>
                                                     {{ $selection->title }}
                                                 </option>
                                             @endforeach
-
                                         </select>
                                         @error('official_selection_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -57,10 +56,10 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="title" class="form-label"><strong>Title</strong></label>
-                                        <input type="text" name="title" id="title" class="form-control"
-                                            value="{{ isset($payload['title']) ? $payload['title'] : '' }}">
-                                        @error('title')
+                                        <label for="name" class="form-label"><strong>Name</strong></label>
+                                        <input type="text" name="name" id="name" class="form-control"
+                                            value="{{ isset($payload['name']) ? $payload['name'] : '' }}">
+                                        @error('name')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -77,14 +76,6 @@
                                             <option value="2024"
                                                 {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>
                                                 2024
-                                            </option>
-                                            <option value="2023"
-                                                {{ isset($payload['year']) && $payload['year'] == 2023 ? 'selected' : '' }}>
-                                                2023
-                                            </option>
-                                            <option value="2022"
-                                                {{ isset($payload['year']) && $payload['year'] == 2022 ? 'selected' : '' }}>
-                                                2022
                                             </option>
                                         </select>
                                         @error('year')
@@ -108,75 +99,70 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
-
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('indian-panorama.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add Cinema
+                                <a href={{ route('jury-detail.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Add Jury
                                 </a>
-                                <a href={{ route('indian-panorama.index') }} class="btn btn-sm btn-warning btn-flat">
+                                <a href={{ route('jury-detail.index') }} class="btn btn-sm btn-secondary btn-flat ">
                                     Reset
                                 </a>
-                                <a href="{{ route('downloadSampleCsv', ['fileName' => 'indian_panorama.csv']) }}"
-                                    class="btn btn-sm btn-info" target="_blank">Download sample CSV</a>
                             </h3>
-                            {{-- Upload CSV --}}
-                            <form action="{{ route('indianPanorama.uploadCSV') }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="input-group input-group-sm float-end" style="width: 500px;">
-                                    <input type="file" name="file"
-                                        class="form-select @error('file') is-invalid @enderror" required>
-                                    @error('file')
-                                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                    @enderror
-                                    <div class="input-group-append" style="margin-left: 2px">
-                                        <button type="submit" class="btn btn-dark  btn-flat">Upload CSV</button>
-                                    </div>
-                                </div>
-                            </form>
-
                         </div>
-
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Cinema ID</th>
-                                        <th>Curated Section</th>
-                                        <th>Title</th>
-                                        <th>Directed By</th>
-                                        <th>Language</th>
+                                        <th>Sr.Nom</th>
+                                        <th>Type</th>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Image</th>
                                         <th>Year</th>
-                                        <th>status</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($indianPanoramas as $indianPanorama)
+                                    @foreach ($juryDetails as $juryDetail)
                                         <tr class="align-middle">
-                                            <td>{{ $indianPanorama->id }}</td>
-                                            <td>{{ $indianPanorama->ipOfficialSelection->title }}</td>
-                                            <td>{{ $indianPanorama->title }}</td>
-                                            <td>{{ $indianPanorama->directed_by }}</td>
-                                            <td>{{ $indianPanorama->language }}</td>
-                                            <td>{{ $indianPanorama->year }}</td>
+                                            <td>{{ $juryDetail->id }}</td>
+                                            <td>{{ $juryDetail->official_selection_id == 1 ? 'Feature' : ($juryDetail->official_selection_id == 2 ? 'Non-Feature' : ($juryDetail->official_selection_id == 3 ? 'Chairperson' : '')) }}
+                                            </td>
+                                            <td>{{ $juryDetail->name }}</td>
+                                            <td>{!! $juryDetail->position !!}</td>
                                             <td>
-                                                <form action="{{ route('indianPanorama.toggle', $indianPanorama->id) }}"
+                                                @php
+                                                    $path =
+                                                        env('IMAGE_UPLOAD_BASE_URL') . env('JURY_IMAGE_DESTINATION');
+                                                @endphp
+                                                @if (!empty($juryDetail->img_src))
+                                                    <img src="{{ $path . '/' . $juryDetail->img_src }}" alt="Current Image"
+                                                        class="img-fluid mt-2" style="max-width: 100px;">
+                                                @elseif(!empty($juryDetail->img_url))
+                                                    <img src="{{ $juryDetail->img_url }}" alt="Current Image"
+                                                        class="img-fluid mt-2" style="max-width: 100px;">
+                                                @else
+                                                <p>images not uploaded</p>
+                                                @endif
+                                            </td>
+                                            <td>{{ $juryDetail->year }}</td>
+                                            <td>
+                                                <form action="{{ route('juryDetail.toggle', $juryDetail->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
-                                                        class="btn {{ $indianPanorama->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $indianPanorama->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        class="btn {{ $juryDetail->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                        {{ $juryDetail->status === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
                                             </td>
                                             <td style="white-space: nowrap;">
-                                                <a href="{{ route('indian-panorama.edit', $indianPanorama->id) }}"
+                                                <a href="{{ route('jury-detail.edit', $juryDetail->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form action="{{ route('indian-panorama.destroy', $indianPanorama->id) }}"
+                                                    <form action="{{ route('jury-detail.destroy', $juryDetail->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -189,12 +175,11 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="card-footer clearfix">
+                        {{-- <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $indianPanoramas->withQueryString()->links() }}
+                                {{ $juryDetails->withQueryString()->links() }}
                             </ul>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
