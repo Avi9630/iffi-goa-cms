@@ -13,6 +13,7 @@ class ExternalApiService
     {
         $this->uploadUrl = config('services.example_api.upload_image_base_url');
         $this->imageListUrl = config('services.example_api.image_list_base_url');
+        $this->getImageByNameUrl = config('services.example_api.get_image_by_name_base_url');
     }
 
     public function getPosts($file, $destination)
@@ -71,6 +72,52 @@ class ExternalApiService
         }
     }
 
+    public function getImageList($destination)
+    {
+        $response = Http::asMultipart()->post($this->imageListUrl, [
+            [
+                'name' => 'destination',
+                'contents' => $destination,
+            ],
+        ]);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return [
+            'error' => true,
+            'message' => 'Upload failed',
+            'status' => $response->status(),
+            'body' => $response->body(),
+        ];
+    }
+
+    public function getImageByName($name, $destination)
+    {
+        $response = Http::asMultipart()->post($this->getImageByNameUrl, [
+            [
+                'name' => 'name',
+                'contents' => $name,
+            ],
+            [
+                'name' => 'destination',
+                'contents' => $destination,
+            ],
+        ]);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return [
+            'error' => true,
+            'message' => 'Upload failed',
+            'status' => $response->status(),
+            'body' => $response->body(),
+        ];
+    }
+
     // public function getImageList($destination)
     // {
     //     $response = Http::asMultipart()->post($this->imageListUrl, [
@@ -92,25 +139,4 @@ class ExternalApiService
     //         );
     //     }
     // }
-
-    public function getImageList($destination)
-    {
-        $response = Http::asMultipart()->post($this->imageListUrl, [
-            [
-                'name' => 'destination',
-                'contents' => $destination,
-            ],
-        ]);
-
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return [
-            'error' => true,
-            'message' => 'Upload failed',
-            'status' => $response->status(),
-            'body' => $response->body(),
-        ];
-    }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\PhotoCategory;
+use App\Services\ConvertToWEBP;
+use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 
@@ -14,14 +16,12 @@ class PhotoController extends Controller
     public function __construct()
     {
         $this->bucketName = config('services.gcs.bucket');
+        $this->galleryDestination = env('GALLERY');
     }
 
     function index()
     {
-        // $photos = Photo::where('video_url','=',null)->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
-        // $videos = Photo::where('video_url','!=',null)->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
         $photos = Photo::whereNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
-
         $videos = Photo::whereNotNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
         return view('photos.index', compact(['photos', 'videos']));
     }
@@ -35,12 +35,20 @@ class PhotoController extends Controller
     function store(Request $request, GCSService $gcsService)
     {
         $payload = $request->all();
+        // $request->validate([
+        //     'image' => 'required_without_all:video_url|image|mimes:jpg,jpeg,png,webp|max:2048',
+        //     'video_url' => 'required_without_all:image',
+        //     'year' => 'required|integer',
+        //     'category_id' => 'required',
+        //     'caption' => 'required',
+        // ]);
         $request->validate([
-            'image' => 'required_without_all:video_url|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'required_without_all:video_url',
+            'image.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             'video_url' => 'required_without_all:image',
             'year' => 'required|integer',
             'category_id' => 'required',
-            'caption' => 'required',
+            'caption' => 'required_with:video_url',
         ]);
 
         if (isset($payload['video_url']) && !empty($payload['video_url'])) {
@@ -49,25 +57,46 @@ class PhotoController extends Controller
             }
         }
 
-        $photo = new Photo();
-        $photo->year = $payload['year'];
-        $photo->category_id = $payload['category_id'];
-        $photo->img_caption = $payload['caption'];
-
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-
-            $publicUrl = $gcsService->upload($file, 'uploads/gallery/' . $payload['year'] . time() . $originalFilename);
-            $photo->image = $originalFilename;
-            $photo->img_url = $publicUrl;
-            $photo->video_url = null;
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $file) {
+                if ($file->isValid()) {
+                    $originalFilename = $file->getClientOriginalName();
+                    $filenameWithoutExt = pathinfo($originalFilename, PATHINFO_FILENAME);
+                    $publicUrl = $gcsService->upload($file, 'uploads/gallery/' . $payload['year'] . '/' . time() . '_' . $originalFilename);
+                    $photo = new Photo();
+                    $photo->year = $payload['year'];
+                    $photo->category_id = $payload['category_id'];
+                    $photo->img_caption = $filenameWithoutExt;
+                    $photo->image = $originalFilename;
+                    $photo->img_url = $publicUrl;
+                    $photo->video_url = null;
+                    $photo->save();
+                }
+            }
         } else {
+            $photo = new Photo();
+            $photo->year = $payload['year'];
+            $photo->category_id = $payload['category_id'];
+            $photo->img_caption =$payload['caption'];
             $photo->video_url = $request->video_url;
             $photo->image = null;
             $photo->img_url = null;
+            $photo->save();
         }
-        $photo->save();
+        // if ($request->hasFile('image') && $request->file('image')->isValid()) {
+        //     $file = $request->file('image');
+        //     $originalFilename = $file->getClientOriginalName();
+
+        //     $publicUrl = $gcsService->upload($file, 'uploads/gallery/' . $payload['year'] . time() . $originalFilename);
+        //     $photo->image = $originalFilename;
+        //     $photo->img_url = $publicUrl;
+        //     $photo->video_url = null;
+        // } else {
+        //     $photo->video_url = $request->video_url;
+        //     $photo->image = null;
+        //     $photo->img_url = null;
+        // }
+        // $photo->save();
         return redirect()->route('photo.index')->with('success', 'Photo uploaded successfully.');
     }
 
