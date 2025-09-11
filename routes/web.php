@@ -116,7 +116,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');
 
     Route::put('/jury-detail/{id}/toggle', [JuryDetailController::class, 'toggle'])->name('juryDetail.toggle');
-    // Route::put('/jury-detail-search', [JuryDetailController::class, 'search'])->name('juryDetail.search');
     Route::get('/jury-detail-search', [JuryDetailController::class, 'search'])->name('juryDetail.search');
 
     Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');
