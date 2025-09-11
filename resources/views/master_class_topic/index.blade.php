@@ -21,6 +21,28 @@
             </div>
         </div>
     </div>
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <a href="{{ route('master-class-date.index') }}" class="btn btn-primary btn-sm">
+                                    Date List</a>
+                                <a href="{{ route('master-class.index') }}" class="btn btn-secondary btn-sm">
+                                    Details List</a>
+                                <a href="{{ route('speaker.index') }}" class="btn btn-success btn-sm">Speaker List</a>
+                                <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -28,10 +50,8 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href="{{ route('master-class-date.index') }}" class="btn btn-primary btn-sm">Master Date</a>
-                                <a href="{{ route('master-class.index') }}" class="btn btn-secondary btn-sm">Master Class Details</a>
-                                <a href="{{ route('speaker.index') }}" class="btn btn-success btn-sm">Speaker List</a>
-                                <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
+                                <a href="{{ route('master-class-topic.create') }}" class="btn btn-primary btn-sm">
+                                    Add Topic</a>
                             </h3>
                         </div>
                         <div class="card-body">
@@ -39,9 +59,10 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
+                                        <th>Master Date</th>
                                         <th>topic</th>
-                                        <th>description</th>                                        
-                                        <th>Master Class</th>
+                                        <th>description</th>
+                                        <th>Master Details</th>
                                         <th>Speakers</th>
                                         <th>Moderator</th>
                                         <th>status</th>
@@ -52,23 +73,28 @@
                                     @foreach ($masterClassesTpic as $masterTopic)
                                         <tr class="align-middle">
                                             <td>{{ $masterTopic->id }}</td>
+                                            <td>{{ $masterTopic->masterDate->date }}</td>
                                             <td>{{ $masterTopic->title }}</td>
                                             <td>{{ $masterTopic->description }}</td>
 
                                             <td>
-                                                <a href="{{ route('masterClass.addDetail',$masterTopic->id) }}" class="btn btn-info btn-sm">ADD</a>
-                                            </td>
-                                            
-                                            <td>
-                                                <a href="{{ route('masterClass.addSpeaker',$masterTopic->id) }}" class="btn btn-primary btn-sm">ADD</a>
-                                            </td>
-                                            
-                                            <td>
-                                                <a href="{{ route('masterClass.addModerator',$masterTopic->id) }}" class="btn btn-secondary btn-sm">ADD</a>
+                                                <a href="{{ route('masterClass.addDetail', $masterTopic->id) }}"
+                                                    class="btn btn-info btn-sm">ADD</a>
                                             </td>
 
                                             <td>
-                                                <form action="{{ route('masterClassTopic.toggleStatus', $masterTopic->id) }}"
+                                                <a href="{{ route('masterClass.addSpeaker', $masterTopic->id) }}"
+                                                    class="btn btn-primary btn-sm">ADD</a>
+                                            </td>
+
+                                            <td>
+                                                <a href="{{ route('masterClass.addModerator', $masterTopic->id) }}"
+                                                    class="btn btn-secondary btn-sm">ADD</a>
+                                            </td>
+
+                                            <td>
+                                                <form
+                                                    action="{{ route('masterClassTopic.toggleStatus', $masterTopic->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PUT')

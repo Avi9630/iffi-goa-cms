@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterClassDate;
 use App\Models\MasterClassTopic;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,8 @@ class MasterClassTopicController extends Controller
 
     function create()
     {
-        return view('master_class_topic.create');
+        $masterDates = MasterClassDate::where(['status'=>1])->get();
+        return view('master_class_topic.createNew', compact('masterDates'));
     }
 
     function store(Request $request)
