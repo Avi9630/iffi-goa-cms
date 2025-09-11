@@ -21,6 +21,28 @@
             </div>
         </div>
     </div>
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <a href="{{ route('master-class-date.index') }}" class="btn btn-primary btn-sm">
+                                    Date List</a>
+                                <a href="{{ route('master-class-topic.index') }}" class="btn btn-secondary btn-sm">
+                                    Topic List</a>
+                                <a href="{{ route('master-class.index') }}" class="btn btn-success btn-sm">Details</a>
+                                <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -28,8 +50,8 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('master-class-topic.index') }} class="btn btn-sm btn-primary btn-flat">
-                                    Master Class Topic
+                                <a href={{ route('speaker.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Add Speaker
                                 </a>
                             </h3>
                         </div>
@@ -38,6 +60,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
+                                        <th>Master Date</th>
                                         <th>Topic ID</th>
                                         <th>Speaker Name</th>
                                         <th>Speaker Details</th>
@@ -50,14 +73,16 @@
                                     @foreach ($speakers as $speaker)
                                         <tr class="align-middle">
                                             <td>{{ $speaker->id }}</td>
-                                            <td>{{ $speaker->topic_id ?? '' }}</td>
+                                            <td>{{ $speaker->masterTopic->masterDate->date }}</td>
+                                            <td>{{ $speaker->masterTopic->title }}</td>
                                             <td>{{ $speaker->speaker_name }}</td>
                                             <td>
                                                 <div style="max-height: 100px; overflow-y: auto; white-space: pre-wrap;">
                                                     {!! $speaker->speaker_detail !!}
                                                 </div>
                                             </td>
-                                            <td><img src="{{ $speaker->image_url }}" alt="" height="50px"
+                                            <td>
+                                                <img src="{{ $speaker->image_url }}" alt="" height="50px"
                                                     width="100px">
                                                 {{ $speaker->image_name }}
                                             </td>

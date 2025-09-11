@@ -21,6 +21,28 @@
             </div>
         </div>
     </div>
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <a href="{{ route('master-class-date.index') }}" class="btn btn-primary btn-sm">
+                                    Date List</a>
+                                <a href="{{ route('master-class-topic.index') }}" class="btn btn-secondary btn-sm">
+                                    Topic List</a>
+                                <a href="{{ route('speaker.index') }}" class="btn btn-success btn-sm">Speaker List</a>
+                                <a href="{{ route('moderator.index') }}" class="btn btn-info btn-sm">Moderator List</a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -28,8 +50,8 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('master-class-topic.index') }} class="btn btn-sm btn-primary btn-flat">
-                                    Master Class Topic
+                                <a href={{ route('master-class.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Add Details
                                 </a>
                             </h3>
                         </div>
@@ -38,8 +60,8 @@
                                 <thead>
                                     <tr>
                                         <th>Sr.Nom</th>
+                                        <th>Master Date</th>
                                         <th>Topic ID</th>
-                                        <th>Date</th>
                                         <th>start_time</th>
                                         <th>end_time</th>
                                         <th>Format</th>
@@ -49,14 +71,17 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($masterClasses as $master)
+                                    {{-- @php
+                                        dd($master->masterTopic->masterDate->date);
+                                    @endphp --}}
                                         <tr class="align-middle">
                                             <td>{{ $master->id }}</td>
-                                            <td>{{ $master->topic_id }}</td>
-                                            <td>{{ $master->date }}</td>
+                                            <td>{{ $master->masterTopic->masterDate->date }}</td>
+                                            <td>{{$master->masterTopic->title }}</td>
                                             <td>{{ $master->start_time }}</td>
                                             <td>{{ $master->end_time }}</td>
                                             <td>{{ $master->format }}</td>
-                                            
+
                                             <td>
                                                 <form action="{{ route('masterClass.toggleStatus', $master->id) }}"
                                                     method="POST" style="display:inline;">

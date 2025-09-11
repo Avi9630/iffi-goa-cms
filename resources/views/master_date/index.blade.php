@@ -32,7 +32,7 @@
                                     Create Date
                                 </a>
                                 <a href={{ route('master-class-topic.index') }} class="btn btn-sm btn-secondary btn-flat">
-                                    Master Topics
+                                    Topics List
                                 </a>
                             </h3>
                         </div>
