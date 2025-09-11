@@ -20,7 +20,6 @@ use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
-use App\Http\Controllers\JuryDetailController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
