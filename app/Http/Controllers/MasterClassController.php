@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MasterClass;
+use App\Models\MasterClassTopic;
 use Illuminate\Http\Request;
+use App\Models\MasterClass;
 
 class MasterClassController extends Controller
 {
@@ -13,9 +14,10 @@ class MasterClassController extends Controller
         return view('master_class.index', compact('masterClasses'));
     }
 
-    function create($id)
+    function create()
     {
-        return view('master_class.create');
+        $masterTopics = MasterClassTopic::where(['status' => 1])->get();
+        return view('master_class.createNew', compact('masterTopics'));
     }
 
     function store(Request $request)

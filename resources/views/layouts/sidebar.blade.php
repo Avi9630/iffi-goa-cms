@@ -63,6 +63,45 @@
                         </a>
                         
                         <ul class="nav nav-treeview">
+                            
+                            {{-- Master Class --}}
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-mortarboard"></i>
+                                    <p>
+                                        Master Class
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview show">
+                                    <li class="nav-item">
+                                        <a href="{{ route('master-class-date.index') }}" class="nav-link {{ request()->is('master-class-date*') ? 'active' : '' }}">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Dates</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('master-class-topic.index') }}" class="nav-link {{ request()->is('master-class-topic*') ? 'active' : '' }}">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Topics</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('master-class.index') }}" class="nav-link {{ request()->is('master-class*') ? 'active' : '' }}">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Master Class</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('speaker.index') }}" class="nav-link {{ request()->is('speaker*') ? 'active' : '' }}">
+                                            <i class="nav-icon bi bi-circle"></i>
+                                            <p>Speakers</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            {{-- Repository --}}
                             <li class="nav-item">
                                 <a href="{{ route('newsUpdate.popupImage') }}"
                                     class="nav-link {{ request()->is('newsUpdate*') ? 'active' : '' }}">
@@ -159,43 +198,6 @@
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Jury Details</p>
                                 </a>
-                            </li>
-
-                            {{-- Master Class --}}
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon bi bi-mortarboard"></i>
-                                    <p>
-                                        Master Class
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview show">
-                                    <li class="nav-item">
-                                        <a href="{{ route('master-class-date.index') }}" class="nav-link {{ request()->is('master-class-date*') ? 'active' : '' }}">
-                                            <i class="nav-icon bi bi-circle"></i>
-                                            <p>Dates</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ route('master-class-topic.index') }}" class="nav-link {{ request()->is('master-class-topic*') ? 'active' : '' }}">
-                                            <i class="nav-icon bi bi-circle"></i>
-                                            <p>Topics</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ route('master-class.index') }}" class="nav-link {{ request()->is('master-class*') ? 'active' : '' }}">
-                                            <i class="nav-icon bi bi-circle"></i>
-                                            <p>Master Class</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ route('speaker.index') }}" class="nav-link {{ request()->is('speaker*') ? 'active' : '' }}">
-                                            <i class="nav-icon bi bi-circle"></i>
-                                            <p>Speakers</p>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>

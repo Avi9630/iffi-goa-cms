@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterClassTopic;
 use App\Models\Speaker;
+use App\Services\ConvertToWEBP;
 use App\Services\ExternalApiService;
 use Illuminate\Http\Request;
 
@@ -18,6 +20,12 @@ class SpeakerController extends Controller
         $speakers = Speaker::all();
         return view('speakers.index', compact('speakers'));
     }
+    
+    function create()
+    {
+        $masterTopics = MasterClassTopic::where(['status' => 1])->get();   
+        return view('speakers.createNew', compact('masterTopics'));
+    }
 
     function store(Request $request)
     {
@@ -26,7 +34,7 @@ class SpeakerController extends Controller
             'topic_id' => 'required|numeric',
             'speaker_name' => 'required|string',
             'speaker_detail' => 'required|string',
-            'image' => 'required|image|mimes:webp|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $speaker = new Speaker();
@@ -38,10 +46,12 @@ class SpeakerController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $speaker->image_name = $originalFilename;
-            $speaker->image_url = 'https://www.iffigoa.org/public/images/master-class/webp/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $speaker->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $speaker->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
-
         if ($speaker->save()) {
             return redirect()->route('speaker.index')->with('success', 'Master class addedd successfully.!!');
         } else {
@@ -62,7 +72,7 @@ class SpeakerController extends Controller
             'topic_id' => 'required|numeric',
             'speaker_name' => 'required|string',
             'speaker_detail' => 'required|string',
-            'image' => 'nullable|image|mimes:webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $speaker = Speaker::findOrFail($id);
@@ -75,8 +85,11 @@ class SpeakerController extends Controller
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
-            $speaker->image_name = $originalFilename;
-            $speaker->image_url = 'https://www.iffigoa.org/public/images/master-class/webp/' . $originalFilename;
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $speaker->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $speaker->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            }
         }
 
         if ($speaker->save()) {
