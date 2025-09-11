@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">News & Update</h3>
+                    <h3 class="mb-0"><strong>News & Update</strong></h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -67,7 +67,7 @@
                                         <tr class="align-middle">
                                             <td>{{ $newsUpdate->id }}</td>
                                             <td>{{ $newsUpdate->title }}</td>
-                                            <td>{{ $newsUpdate->description }}</td>
+                                            <td>{!! $newsUpdate->description !!}</td>
                                             <td>{{ $newsUpdate->sort_num }}</td>
                                             <td>
                                                 <form action="{{ route('newsUpdate.toggle', $newsUpdate->id) }}"

@@ -59,6 +59,15 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
+                                        <label for="image_url" class="form-label">Image URL</label>
+                                        <input type="text" class="form-control @error('image_url') is-invalid @enderror"
+                                            id="image_url" name="image_url" value="{{ old('image_url') }}">
+                                        @error('image_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="link" class="form-label">Link</label>
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
                                             id="link" name="link" value="{{ old('link') }}">
@@ -70,7 +79,7 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="link_title" class="form-label">Link Title</label>
                                         <input type="text" class="form-control @error('link_title') is-invalid @enderror"
-                                            id="link_title" name="link_title">
+                                            id="link_title" name="link_title"  value="{{ old('link_title') }}">
                                         @error('link_title')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

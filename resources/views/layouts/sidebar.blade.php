@@ -63,14 +63,6 @@
                         </a>
                         
                         <ul class="nav nav-treeview">
-                            {{-- Popup-image --}}
-                            {{-- <li class="nav-item">
-                                <a href="{{ route('newsUpdate.popupImage') }}" class="nav-link {{ request()->is('newsUpdate.popupImage*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Popup Image</p>
-                                </a>
-                            </li> --}}
-
                             <li class="nav-item">
                                 <a href="{{ route('newsUpdate.popupImage') }}"
                                     class="nav-link {{ request()->is('newsUpdate*') ? 'active' : '' }}">
@@ -158,6 +150,14 @@
                                 <a href="{{ route('cube.index') }}" class="nav-link {{ request()->is('cube*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Cube</p>
+                                </a>
+                            </li>
+                            
+                            {{-- Jury Details --}}
+                            <li class="nav-item">
+                                <a href="{{ route('jury-detail.index') }}" class="nav-link {{ request()->is('jury-detail*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Jury Details</p>
                                 </a>
                             </li>
 

@@ -37,29 +37,68 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="image" class="form-label">PDF</label>
-                                        <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                            id="image" name="image" value="{{ old('image', $peacock->image_url) }}">
-                                        <small class="form-text text-muted">Upload an image file (pdf).</small>
-                                        @if ($peacock->image_url)
-                                            <iframe src="{{ $peacock->image_url }}" width="100%" height="100px"></iframe>
+                                        <label for="poster" class="form-label">Poster</label>
+                                        <input type="file" class="form-control @error('poster') is-invalid @enderror"
+                                            id="poster" name="poster">
+                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
+                                            webp).</small>
+                                        @if (!empty($peacock->poster))
+                                            @php
+                                                $path =
+                                                    env('IMAGE_UPLOAD_BASE_URL') .
+                                                    '/' .
+                                                    env('PEACOCK_POSTER_DESTINATION');
+                                            @endphp
+                                            <img src="{{ $path . '/' . $peacock->poster }}" alt="Current Image"
+                                                class="img-fluid mt-2" style="max-width: 50px;" height="50px"
+                                                width="50px">
                                         @endif
-                                        @error('image')
+                                        @error('poster')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="poster" class="form-label">Poster</label>
-                                        <input type="file" class="form-control @error('poster') is-invalid @enderror"
-                                            id="poster" name="poster" value="{{ old('poster', $peacock->poster_url) }}">
-                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
-                                            webp).</small>
+                                        <label for="poster_url" class="form-label">Poster URL</label>
+                                        <input type="text" class="form-control @error('poster_url') is-invalid @enderror"
+                                            id="poster_url" name="poster_url"
+                                            value="{{ old('poster_url', $peacock->poster_url) }}">
                                         @if ($peacock->poster_url)
                                             <img src="{{ $peacock->poster_url }}" alt="Current Image" class="img-fluid mt-2"
-                                                style="max-width: 100px;">
+                                                style="max-width: 50px;">
                                         @endif
-                                        @error('poster')
+                                        @error('poster_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pdf" class="form-label">PDF</label>
+                                        <input type="file" class="form-control @error('pdf') is-invalid @enderror"
+                                            id="pdf" name="pdf" placeholder="Only PDF allowed.">
+                                        <small class="form-text text-muted">Upload an pdf file.</small>
+                                        @if (!empty($peacock->img_src))
+                                            @php
+                                                $path = env('IMAGE_UPLOAD_BASE_URL')  . env('PEACOCK_PDF_DESTINATION');
+                                            @endphp
+                                            <embed src="{{ $path . '/' . $peacock->img_src }}" type="application/pdf" width="100%"
+                                                height="100px">
+                                        @endif
+                                        @error('pdf')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pdf_url" class="form-label">PDF URL</label>
+                                        <input type="text" class="form-control @error('pdf_url') is-invalid @enderror"
+                                            id="pdf_url" name="pdf_url"
+                                            value="{{ old('pdf_url', $peacock->image_url) }}">
+                                        @if ($peacock->image_url)
+                                            <embed src="{{ $peacock->image_url }}" type="application/pdf" width="100%"
+                                                height="100px">
+                                        @endif
+                                        @error('pdf_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -69,7 +108,8 @@
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
                                             <option value="" selected>Select Year</option>
-                                            <option value="2025" {{ $peacock->year == 2025 ? 'selected' : '' }}>2025</option>
+                                            <option value="2025" {{ $peacock->year == 2025 ? 'selected' : '' }}>2025
+                                            </option>
                                             <option value="2024" {{ $peacock->year == 2024 ? 'selected' : '' }}>2024
                                             </option>
                                             <option value="2023" {{ $peacock->year == 2023 ? 'selected' : '' }}>2023

@@ -26,21 +26,12 @@
                             @csrf
                             <div class="card-body">
                                 <div class="row">
+
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror"
                                             id="title" name="title" value="{{ old('title') }}">
                                         @error('title')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="image" class="form-label">PDF</label>
-                                        <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                            id="image" name="image" placeholder="Only PDF allowed.">
-                                        <small class="form-text text-muted">Upload an image file (pdf).</small>
-                                        @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -52,6 +43,34 @@
                                         <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
                                             webp).</small>
                                         @error('poster')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="poster_url" class="form-label">Poster URL</label>
+                                        <input type="text" class="form-control @error('poster_url') is-invalid @enderror"
+                                            id="poster_url" name="poster_url" value="{{ old('poster_url') }}">
+                                        @error('poster_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pdf" class="form-label">PDF</label>
+                                        <input type="file" class="form-control @error('pdf') is-invalid @enderror"
+                                            id="pdf" name="pdf" placeholder="Only PDF allowed.">
+                                        <small class="form-text text-muted">Upload an pdf file.</small>
+                                        @error('pdf')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pdf_url" class="form-label">PDF URL</label>
+                                        <input type="text" class="form-control @error('pdf_url') is-invalid @enderror"
+                                            id="pdf_url" name="pdf_url" value="{{ old('pdf_url') }}">
+                                        @error('pdf_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>

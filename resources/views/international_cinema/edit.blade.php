@@ -48,7 +48,8 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                            id="title" name="title" value="{{ old('title', $internationalCinema->title) }}"
+                                            id="title" name="title"
+                                            value="{{ old('title', $internationalCinema->title) }}"
                                             placeholder="Enter title." />
                                         @error('title')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -58,7 +59,8 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="slug" class="form-label">Slug</label>
                                         <input type="text" class="form-control @error('slug') is-invalid @enderror"
-                                            id="slug" name="slug" value="{{ old('slug', $internationalCinema->slug) }}"
+                                            id="slug" name="slug"
+                                            value="{{ old('slug', $internationalCinema->slug) }}"
                                             placeholder="like:- international-cinema" />
                                         @error('slug')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -78,7 +80,8 @@
                                         <label for="directed_by" class="form-label">Directed By</label>
                                         <input type="text"
                                             class="form-control @error('directed_by') is-invalid @enderror" id="directed_by"
-                                            name="directed_by" value="{{ old('directed_by', $internationalCinema->directed_by) }}"
+                                            name="directed_by"
+                                            value="{{ old('directed_by', $internationalCinema->directed_by) }}"
                                             placeholder="Directed by" />
                                         @error('directed_by')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -90,7 +93,8 @@
                                         <input type="text"
                                             class="form-control @error('country_of_origin') is-invalid @enderror"
                                             id="country_of_origin" name="country_of_origin"
-                                            value="{{ old('country_of_origin', $internationalCinema->country_of_origin) }}" placeholder="Enter country of origin" />
+                                            value="{{ old('country_of_origin', $internationalCinema->country_of_origin) }}"
+                                            placeholder="Enter country of origin" />
                                         @error('country_of_origin')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -99,7 +103,8 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="language" class="form-label">Language</label>
                                         <input type="text" class="form-control @error('language') is-invalid @enderror"
-                                            id="language" name="language" value="{{ old('language', $internationalCinema->language) }}"
+                                            id="language" name="language"
+                                            value="{{ old('language', $internationalCinema->language) }}"
                                             placeholder="Enter language" />
                                         @error('language')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -111,11 +116,30 @@
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" />
                                         <small class="form-text text-muted">Upload an image file (jpg, jpeg, png).</small>
-                                        @if ($internationalCinema->img_url)
-                                            <img src="{{ $internationalCinema->img_url }}" alt="Current Image" class="img-fluid mt-2"
-                                                style="max-width: 50px;">
+                                        @if (!empty($internationalCinema->img_src))
+                                            @php
+                                                $path = env('IMAGE_UPLOAD_BASE_URL') . '/' . env('INTERNATIONAL_CINEMA');
+                                            @endphp
+                                            <img src="{{ $path . '/' . $internationalCinema->img_src }}" alt="Current Image"
+                                                class="img-fluid mt-2" style="max-width: 50px;" height="50px"
+                                                width="50px">
                                         @endif
                                         @error('image')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="image_url" class="form-label">Image URL</label>
+                                        <input type="text"
+                                            class="form-control @error('image_url') is-invalid @enderror" id="image_url"
+                                            name="image_url"
+                                            value="{{ old('image_url', $internationalCinema->img_url) }}">
+                                        @if ($internationalCinema->img_url)
+                                            <img src="{{ $internationalCinema->img_url }}" alt="Current Image"
+                                                class="img-fluid mt-2" style="max-width: 50px;">
+                                        @endif
+                                        @error('image_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -145,13 +169,17 @@
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
                                             <option value="" selected>Select Year</option>
-                                            <option value="2025" {{ $internationalCinema->year == 2025 ? 'selected' : '' }}>2025
+                                            <option value="2025"
+                                                {{ $internationalCinema->year == 2025 ? 'selected' : '' }}>2025
                                             </option>
-                                            <option value="2024" {{ $internationalCinema->year == 2024 ? 'selected' : '' }}>2024
+                                            <option value="2024"
+                                                {{ $internationalCinema->year == 2024 ? 'selected' : '' }}>2024
                                             </option>
-                                            <option value="2023" {{ $internationalCinema->year == 2023 ? 'selected' : '' }}>2023
+                                            <option value="2023"
+                                                {{ $internationalCinema->year == 2023 ? 'selected' : '' }}>2023
                                             </option>
-                                            <option value="2022" {{ $internationalCinema->year == 2022 ? 'selected' : '' }}>2022
+                                            <option value="2022"
+                                                {{ $internationalCinema->year == 2022 ? 'selected' : '' }}>2022
                                             </option>
                                         </select>
                                         @error('year')
@@ -163,8 +191,9 @@
                                         <label for="award_year" class="form-label">Award Year</label>
                                         <input type="number"
                                             class="form-control @error('award_year') is-invalid @enderror" id="award_year"
-                                            name="award_year" value="{{ old('award_year', $internationalCinema->award_year) }}" placeholder="Like- 2025"
-                                            value="{{ old('award_year') }}" />
+                                            name="award_year"
+                                            value="{{ old('award_year', $internationalCinema->award_year) }}"
+                                            placeholder="Like- 2025" value="{{ old('award_year') }}" />
                                         @error('award_year')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

@@ -112,6 +112,15 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
+                                        <label for="image_url" class="form-label">Image URL</label>
+                                        <input type="text" class="form-control @error('image_url') is-invalid @enderror"
+                                            id="image_url" name="image_url" value="{{ old('image_url') }}">
+                                        @error('image_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="year" class="form-label"><strong>Year</strong></label>
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">

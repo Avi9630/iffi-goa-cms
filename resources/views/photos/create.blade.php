@@ -63,22 +63,12 @@
                                         @error('category_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
-                                    </div> 
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="caption" class="form-label">Image Caption</label>
-                                        <input type="text"
-                                            class="form-control @error('caption') is-invalid @enderror" id="caption"
-                                            name="caption" value="{{ old('caption') }}" />
-                                        @error('caption')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                        @enderror
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                            id="image" name="image" />
+                                            id="image" name="image[]" multiple />
                                         <small class="form-text text-muted">Upload an image file (jpg, jpeg,
                                             png,webp).</small>
                                         @error('image')
@@ -92,6 +82,16 @@
                                             id="video_url" name="video_url" placeholder="Enter video URL"
                                             value="{{ old('video_url') }}" />
                                         @error('video_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="caption" class="form-label">Image Caption</label>
+                                        <input type="text"
+                                            class="form-control @error('caption') is-invalid @enderror" id="caption"
+                                            name="caption" value="{{ old('caption') }}" />
+                                        @error('caption')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
