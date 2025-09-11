@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterClassTopic;
 use App\Models\Moderator;
 use App\Services\ExternalApiService;
 use Illuminate\Http\Request;
@@ -19,29 +20,22 @@ class ModeratorController extends Controller
         return view('moderators.index', compact('moderators'));
     }
 
+    function create()
+    {
+       $masterTopics = MasterClassTopic::where(['status' => 1])->get();
+        return view('moderators.createNew', compact('masterTopics'));
+    }
+
     function store(Request $request)
     {
         $payload = $request->all();
         $request->validate([
             'topic_id' => 'required|numeric',
             'moderator_name' => 'required|string',
-            // 'moderator_detail' => 'nullable|string',
-            // 'image' => 'nullable|image|mimes:webp|max:2048',
         ]);
-
         $moderator = new Moderator();
         $moderator['topic_id'] = $payload['topic_id'];
         $moderator['moderator_name'] = $payload['moderator_name'];
-        // $moderator['moderator_detail'] = $payload['moderator_detail'] ?? null;
-
-        // if ($request->hasFile('image') && $request->file('image')->isValid()) {
-        //     $file = $request->file('image');
-        //     $originalFilename = $file->getClientOriginalName();
-        //     app(ExternalApiService::class)->postData($file, $this->destination);
-        //     $moderator->moderator_image_name = $originalFilename;
-        //     $moderator->moderator_image_url = 'https://www.iffigoa.org/public/images/master-class/' . $originalFilename;
-        // }
-
         if ($moderator->save()) {
             return redirect()->route('moderator.index')->with('success', 'Moderator addedd successfully.!!');
         } else {
