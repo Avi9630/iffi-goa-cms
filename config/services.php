@@ -16,6 +16,7 @@ return [
     'example_api' => [
         'upload_image_base_url' => env('UPLOAD_IMAGE_BASE_URL'),
         'image_list_base_url' => env('IMAGE_LIST_BASE_URL'),
+        'get_image_by_name_base_url' => env('IMAGE_BY_NAME_URL'),
     ],
 
     'postmark' => [

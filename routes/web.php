@@ -10,6 +10,7 @@ use App\Http\Controllers\LatestUpdateController;
 use App\Http\Controllers\PressReleaseController;
 use App\Http\Controllers\MasterClassController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\JuryDetailController;
 use App\Http\Controllers\NewsUpdateController;
 use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\PeacockController;
