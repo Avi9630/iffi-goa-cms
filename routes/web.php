@@ -23,7 +23,6 @@ use App\Http\Controllers\CubeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 Route::group(['middleware' => 'guest'], function () {
     Route::controller(AuthController::class)->group(function () {

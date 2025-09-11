@@ -8,4 +8,9 @@ class Speaker extends Model
 {
     protected $table = 'speakers';
     protected $guarded = [];
+
+    public function masterTopic()
+    {
+        return $this->belongsTo(MasterClassTopic::class, 'topic_id');
+    }
 }

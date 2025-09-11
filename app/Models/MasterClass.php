@@ -8,4 +8,9 @@ class MasterClass extends Model
 {
     protected $table = 'master_classes';
     protected $guarded = [];
+
+    public function masterTopic()
+    {
+        return $this->belongsTo(MasterClassTopic::class, 'topic_id');
+    }
 }
