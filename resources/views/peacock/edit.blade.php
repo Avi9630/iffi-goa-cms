@@ -42,6 +42,17 @@
                                             id="poster" name="poster">
                                         <small class="form-text text-muted">Upload an image file (jpg, jpeg, png,
                                             webp).</small>
+                                        @if (!empty($peacock->poster))
+                                            @php
+                                                $path =
+                                                    env('IMAGE_UPLOAD_BASE_URL') .
+                                                    '/' .
+                                                    env('PEACOCK_POSTER_DESTINATION');
+                                            @endphp
+                                            <img src="{{ $path . '/' . $peacock->poster }}" alt="Current Image"
+                                                class="img-fluid mt-2" style="max-width: 50px;" height="50px"
+                                                width="50px">
+                                        @endif
                                         @error('poster')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -50,7 +61,12 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="poster_url" class="form-label">Poster URL</label>
                                         <input type="text" class="form-control @error('poster_url') is-invalid @enderror"
-                                            id="poster_url" name="poster_url" value="{{ old('poster_url',$peacock->poster_url) }}">
+                                            id="poster_url" name="poster_url"
+                                            value="{{ old('poster_url', $peacock->poster_url) }}">
+                                        @if ($peacock->poster_url)
+                                            <img src="{{ $peacock->poster_url }}" alt="Current Image" class="img-fluid mt-2"
+                                                style="max-width: 50px;">
+                                        @endif
                                         @error('poster_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -61,6 +77,13 @@
                                         <input type="file" class="form-control @error('pdf') is-invalid @enderror"
                                             id="pdf" name="pdf" placeholder="Only PDF allowed.">
                                         <small class="form-text text-muted">Upload an pdf file.</small>
+                                        @if (!empty($peacock->img_src))
+                                            @php
+                                                $path = env('IMAGE_UPLOAD_BASE_URL')  . env('PEACOCK_PDF_DESTINATION');
+                                            @endphp
+                                            <embed src="{{ $path . '/' . $peacock->img_src }}" type="application/pdf" width="100%"
+                                                height="100px">
+                                        @endif
                                         @error('pdf')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -69,7 +92,12 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="pdf_url" class="form-label">PDF URL</label>
                                         <input type="text" class="form-control @error('pdf_url') is-invalid @enderror"
-                                            id="pdf_url" name="pdf_url" value="{{ old('pdf_url',$peacock->image_url) }}">
+                                            id="pdf_url" name="pdf_url"
+                                            value="{{ old('pdf_url', $peacock->image_url) }}">
+                                        @if ($peacock->image_url)
+                                            <embed src="{{ $peacock->image_url }}" type="application/pdf" width="100%"
+                                                height="100px">
+                                        @endif
                                         @error('pdf_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror

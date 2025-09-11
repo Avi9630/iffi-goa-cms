@@ -10,6 +10,7 @@ use App\Http\Controllers\LatestUpdateController;
 use App\Http\Controllers\PressReleaseController;
 use App\Http\Controllers\MasterClassController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\JuryDetailController;
 use App\Http\Controllers\NewsUpdateController;
 use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\PeacockController;
@@ -33,10 +34,7 @@ Route::group(['middleware' => 'guest'], function () {
     });
 });
 
-
-
 Route::group(['middleware' => 'auth'], function () {
-
     Route::resources([
         'ic-basic-detail' => InternationalCinemaBasicDetailController::class,
         'international-cinema' => InternationalCinemaController::class,
@@ -56,9 +54,11 @@ Route::group(['middleware' => 'auth'], function () {
         'role' => RoleController::class,
         'user' => UserController::class,
         'cube' => CubeController::class,
+        // 'jury-detail' => JuryDetailController::class,
     ]);
 
     Route::resource('news-update', NewsUpdateController::class)->except(['show']);
+    Route::resource('jury-detail', JuryDetailController::class); //->except(['show']);
 
     Route::controller(IndianPanoramaController::class)
         ->prefix('ip')
@@ -115,6 +115,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
     Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');
 
+    Route::put('/jury-detail/{id}/toggle', [JuryDetailController::class, 'toggle'])->name('juryDetail.toggle');
+    // Route::put('/jury-detail-search', [JuryDetailController::class, 'search'])->name('juryDetail.search');
+    Route::get('/jury-detail-search', [JuryDetailController::class, 'search'])->name('juryDetail.search');
+
     Route::put('/peacock/{id}/toggle', [PeacockController::class, 'toggleStatus'])->name('peacock.toggle');
     Route::get('/peacock.search', [PeacockController::class, 'search'])->name('peacock.search');
 
@@ -137,7 +141,6 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('getImageByFolder');
 
     Route::get('/download-sample-csv/{fileName}', [CommonController::class, 'downloadSampleCsv'])->name('downloadSampleCsv');
-
 
     Route::get('/', function () {
         return view('welcome');

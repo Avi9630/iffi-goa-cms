@@ -152,6 +152,14 @@
                                     <p>Cube</p>
                                 </a>
                             </li>
+                            
+                            {{-- Jury Details --}}
+                            <li class="nav-item">
+                                <a href="{{ route('jury-detail.index') }}" class="nav-link {{ request()->is('jury-detail*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Jury Details</p>
+                                </a>
+                            </li>
 
                             {{-- Master Class --}}
                             <li class="nav-item has-treeview">

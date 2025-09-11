@@ -47,8 +47,15 @@
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image">
-                                        {{-- <img src="{{ !empty($newsUpdate->image_url) ? $newsUpdate->image_url : '' }}"
-                                            alt="Image" class="img-fluid mt-2" height="30px" width="50px"> --}}
+                                        <small class="form-text text-muted">Upload an image file (jpg, jpeg, png).</small>
+                                        @if (!empty($newsUpdate->img_src))
+                                            @php
+                                                $path = env('IMAGE_UPLOAD_BASE_URL') . env('NEWS_AND_UPDATE');
+                                            @endphp
+                                            <img src="{{ $path . '/' . $newsUpdate->img_src }}" alt="Current Image"
+                                                class="img-fluid mt-2" style="max-width: 50px;" height="50px"
+                                                width="50px">
+                                        @endif
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -57,7 +64,12 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="image_url" class="form-label">Image URL</label>
                                         <input type="text" class="form-control @error('image_url') is-invalid @enderror"
-                                            id="image_url" name="image_url" value="{{ old('image_url', $newsUpdate->image_url) }}">
+                                            id="image_url" name="image_url"
+                                            value="{{ old('image_url', $newsUpdate->image_url) }}">
+                                        @if ($newsUpdate->image_url)
+                                            <img src="{{ $newsUpdate->image_url }}" alt="Current Image"
+                                                class="img-fluid mt-2" style="max-width: 50px;">
+                                        @endif
                                         @error('image_url')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -85,7 +97,8 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="sort_num" class="form-label">Sort Num</label>
                                         <input type="number" class="form-control @error('sort_num') is-invalid @enderror"
-                                            id="sort_num" name="sort_num" value="{{ old('sort_num',$newsUpdate->sort_num) }}">
+                                            id="sort_num" name="sort_num"
+                                            value="{{ old('sort_num', $newsUpdate->sort_num) }}">
                                         @error('sort_num')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
