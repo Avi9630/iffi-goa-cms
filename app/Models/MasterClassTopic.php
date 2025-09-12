@@ -13,4 +13,14 @@ class MasterClassTopic extends Model
     {
         return $this->belongsTo(MasterClassDate::class, 'master_date_id');
     }
+
+    public function masterClass()
+    {
+        return $this->hasOne(MasterClass::class, 'topic_id');
+    }
+
+    public function moderator()
+    {
+        return $this->hasOne(Moderator::class, 'topic_id');
+    }
 }

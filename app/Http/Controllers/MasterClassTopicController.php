@@ -28,7 +28,6 @@ class MasterClassTopicController extends Controller
             'title' => 'required',
             'description' => 'required',
         ]);
-
         $masterClass = new MasterClassTopic();
         $masterClass['master_date_id'] = $payload['master_date_id'];
         $masterClass['title'] = $payload['title'];

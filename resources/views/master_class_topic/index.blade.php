@@ -71,6 +71,9 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($masterClassesTpic as $masterTopic)
+                                    @php
+                                        // dd($masterTopic->masterClass);
+                                    @endphp
                                         <tr class="align-middle">
                                             <td>{{ $masterTopic->id }}</td>
                                             <td>{{ $masterTopic->masterDate->date }}</td>
@@ -78,8 +81,12 @@
                                             <td>{{ $masterTopic->description }}</td>
 
                                             <td>
-                                                <a href="{{ route('masterClass.addDetail', $masterTopic->id) }}"
-                                                    class="btn btn-info btn-sm">ADD</a>
+                                                @if (empty($masterTopic->masterClass))
+                                                    <a href="{{ route('masterClass.addDetail', $masterTopic->id) }}"
+                                                        class="btn btn-info btn-sm">ADD</a>
+                                                @else
+                                                    <p>Details Already added</p>
+                                                @endif
                                             </td>
 
                                             <td>
@@ -88,8 +95,12 @@
                                             </td>
 
                                             <td>
-                                                <a href="{{ route('masterClass.addModerator', $masterTopic->id) }}"
-                                                    class="btn btn-secondary btn-sm">ADD</a>
+                                                @if (empty($masterTopic->moderator))
+                                                    <a href="{{ route('masterClass.addModerator', $masterTopic->id) }}"
+                                                        class="btn btn-secondary btn-sm">ADD</a>
+                                                @else
+                                                    <p>Already addedd</p>
+                                                @endif
                                             </td>
 
                                             <td>

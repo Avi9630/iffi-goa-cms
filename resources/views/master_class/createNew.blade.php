@@ -88,6 +88,8 @@
                             </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="{{ route('master-class.index') }}" class="btn btn-warning">
+                                    Back</a>
                             </div>
                         </form>
                     </div>

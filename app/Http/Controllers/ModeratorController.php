@@ -22,7 +22,7 @@ class ModeratorController extends Controller
 
     function create()
     {
-       $masterTopics = MasterClassTopic::where(['status' => 1])->get();
+        $masterTopics = MasterClassTopic::where(['status' => 1])->get();
         return view('moderators.createNew', compact('masterTopics'));
     }
 
@@ -33,6 +33,11 @@ class ModeratorController extends Controller
             'topic_id' => 'required|numeric',
             'moderator_name' => 'required|string',
         ]);
+
+        $alreadyFindDetail = Moderator::find($payload['topic_id']);
+        if ($alreadyFindDetail) {
+            return redirect()->back()->with('warning', 'Master Details already addedd.!!');
+        }
         $moderator = new Moderator();
         $moderator['topic_id'] = $payload['topic_id'];
         $moderator['moderator_name'] = $payload['moderator_name'];
@@ -45,8 +50,9 @@ class ModeratorController extends Controller
 
     function edit($id)
     {
+        $masterTopics = MasterClassTopic::where(['status' => 1])->get();
         $moderator = Moderator::findOrFail($id);
-        return view('moderators.edit', compact('moderator'));
+        return view('moderators.edit', compact(['moderator', 'masterTopics']));
     }
 
     function update(Request $request, $id)
@@ -60,6 +66,13 @@ class ModeratorController extends Controller
         ]);
 
         $moderator = Moderator::findOrFail($id);
+
+        $alreadyFindDetail = Moderator::where('topic_id', $payload['topic_id'])
+            ->where('id', '!=', $id)
+            ->first();
+        if ($alreadyFindDetail) {
+            return redirect()->back()->with('warning', 'Master Details already added.!!');
+        }
 
         $moderator['topic_id'] = $payload['topic_id'];
         $moderator['moderator_name'] = $payload['moderator_name'];
