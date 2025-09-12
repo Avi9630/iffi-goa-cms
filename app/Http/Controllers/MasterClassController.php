@@ -30,6 +30,10 @@ class MasterClassController extends Controller
             'format' => 'nullable|string',
             'session_url' => 'nullable|string',
         ]);
+        $alreadyFindDetail = MasterClass::find($payload['topic_id']);
+        if($alreadyFindDetail){
+            return redirect()->back()->with('warning', 'Master Details already addedd.!!');
+        }
         $masterClass = new MasterClass();
         $masterClass['topic_id'] = $payload['topic_id'];
         $masterClass['start_time'] = $payload['start_time'];
