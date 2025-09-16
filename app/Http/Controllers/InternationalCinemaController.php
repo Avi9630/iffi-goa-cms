@@ -22,7 +22,9 @@ class InternationalCinemaController extends Controller
     public function index(Request $request)
     {
         $payload = $request->all();
-        $internationalCinemas = InternationalCinema::orderBy('id', 'DESC')->where(['award_year' => 2025,'year' => 2025])->paginate(10);
+        $internationalCinemas = InternationalCinema::orderBy('id', 'DESC')
+            ->where(['award_year' => 2025, 'year' => 2025])
+            ->paginate(10);
         $curatedSections = CuratedSection::all();
         return view('international_cinema.index', compact(['internationalCinemas', 'curatedSections', 'payload']));
     }
@@ -40,21 +42,9 @@ class InternationalCinemaController extends Controller
     {
         $payload = $request->only(['curated_section_id', 'title', 'year']);
         $internationalCinemas = InternationalCinema::query()
-            ->when(
-                isset($payload['curated_section_id']),
-                fn($q) =>
-                $q->where('curated_section_id', $payload['curated_section_id'])
-            )
-            ->when(
-                isset($payload['title']),
-                fn($q) =>
-                $q->where('title', 'like', '%' . $payload['title'] . '%')
-            )
-            ->when(
-                isset($payload['year']),
-                fn($q) =>
-                $q->where('award_year', $payload['year'])
-            )
+            ->when(isset($payload['curated_section_id']), fn($q) => $q->where('curated_section_id', $payload['curated_section_id']))
+            ->when(isset($payload['title']), fn($q) => $q->where('title', 'like', '%' . $payload['title'] . '%'))
+            ->when(isset($payload['year']), fn($q) => $q->where('award_year', $payload['year']))
             ->orderByDesc('id')
             ->paginate(10);
         $curatedSections = CuratedSection::all();
@@ -210,7 +200,6 @@ class InternationalCinemaController extends Controller
         }
         // $csvFile = storage_path('app/CSV/test1.csv');
         $csvFile = $payload['file'];
-
         if (!file_exists($csvFile)) {
             return response()->json(['error' => 'File not found.'], 404);
         }
@@ -220,10 +209,15 @@ class InternationalCinemaController extends Controller
         $header = null;
         try {
             while (($row = fgetcsv($handle)) !== false) {
+                $row = array_map(function ($field) {
+                    return $field !== null ? mb_convert_encoding($field, 'UTF-8', 'UTF-8, ISO-8859-1, CP1252') : null;
+                }, $row);
+
                 if (!$header) {
                     $header = $row;
                     continue;
                 }
+
                 $data = [
                     'section' => $row[0] ?? null,
                     'title' => $row[1] ?? null,
@@ -255,7 +249,6 @@ class InternationalCinemaController extends Controller
                     'cinematographer' => $row[31] ?? null,
                     'producer_bio' => $row[32] ?? null,
                 ];
-
                 $curated = CuratedSection::where('title', $data['section'])->first();
                 if (!$curated) {
                     continue;
