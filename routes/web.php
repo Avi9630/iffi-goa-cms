@@ -53,7 +53,6 @@ Route::group(['middleware' => 'auth'], function () {
         'role' => RoleController::class,
         'user' => UserController::class,
         'cube' => CubeController::class,
-        // 'jury-detail' => JuryDetailController::class,
     ]);
 
     Route::resource('news-update', NewsUpdateController::class)->except(['show']);

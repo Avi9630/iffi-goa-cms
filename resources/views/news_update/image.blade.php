@@ -21,11 +21,35 @@
                 <form action="{{ route('newsUpdate.popupImageUpload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-md-8">
-                            <input type="file" name="image" class="form-control mb-2" required>
+
+                        <div class="col-md-5 mb-3">
+                            <label for="location" class="form-label">
+                                <strong>Location</strong>
+                            </label>
+                            <select name="location" id="locations"
+                                class="form-select @error('location') is-invalid @enderror">
+                                <option value="" selected>Select location</option>
+                                @foreach ($locations as $key => $value)
+                                    <option value="{{ $value }}">{{ $key }}</option>
+                                @endforeach
+                            </select>
+                            @error('location')
+                                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-secondary">Submit</button>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
+                                name="image" required />
+                            <small class="form-text text-muted">Upload an image file (jpg, jpeg, png).</small>
+                            @error('image')
+                                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -182,9 +206,9 @@
 </script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".copy-btn").forEach(btn => {
-            btn.addEventListener("click", function () {
+            btn.addEventListener("click", function() {
                 const fileUrl = this.getAttribute("data-url");
                 if (!fileUrl) {
                     alert("No URL found to copy!");
@@ -207,4 +231,3 @@
         });
     });
 </script>
-
