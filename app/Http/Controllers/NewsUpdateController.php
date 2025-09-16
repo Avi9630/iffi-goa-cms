@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\CONSTTrait;
 use App\Services\ExternalApiService;
 use App\Services\ConvertToWEBP;
 use App\Services\GCSService;
@@ -11,6 +12,8 @@ use App\Models\NewsUpdate;
 
 class NewsUpdateController extends Controller
 {
+    use CONSTTrait;
+
     protected $bucketName;
 
     public function __construct()
@@ -183,22 +186,33 @@ class NewsUpdateController extends Controller
 
     public function popupImage()
     {
+        $locations = $this->locations();
         $response = app(ExternalApiService::class)->getImageList($this->destination);
         if (!empty($response['error'])) {
             return back()->withErrors(['msg' => $response['message']]);
         }
         $images = $response['files'] ?? [];
-        return view('news_update.image', compact('images'));
+        return view('news_update.image', compact(['images', 'locations']));
     }
 
     function popupImageUpload(Request $request)
     {
+        $payload = $request->all();
         $request->validate([
             'image' => 'required|file|mimes:jpg,jpeg,png,webp,mp4,mov|max:2048',
         ]);
-        $file = $request->file('image');
-        $originalFilename = $file->getClientOriginalName();
-        app(ExternalApiService::class)->postData($file, $this->destination);
+        $location = $payload['location'] ?? '';
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file = $request->file('image');
+            if(isset($payload['location']) && !empty($payload['location'])){
+                $location = $payload['location'];
+            }else {
+                $location = $this->destination;
+            }
+            app(ExternalApiService::class)->postData($file, $location);
+            app(ConvertToWEBP::class)->convert($file, $location);
+        }
         return redirect()->back()->with('success', 'Image uploaded successfully.');
     }
 }
