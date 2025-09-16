@@ -39,7 +39,6 @@
                                     <tr>
                                         <th>Sr.Nom</th>
                                         <th>Image</th>
-                                        <th>Image URL</th>
                                         <th>Link</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -50,16 +49,21 @@
                                         <tr class="align-middle">
                                             <td>{{ $cube->id }}</td>
                                             <td>
-                                                {{ $cube->image_name  }}
-                                            </td>
-                                            <td>
-                                                <img src="{{ $cube->image_url }}" alt="" height="50px" width="100px">
+                                                @php
+                                                    $location = env('IMAGE_UPLOAD_BASE_URL') . env('CUBE_DESTINATION');
+                                                @endphp
+                                                @if (!empty($cube->image_url))
+                                                    <img src="{{ $cube->image_url }}" alt="" height="50px"
+                                                        width="100px">
+                                                @else
+                                                    <img src="{{ $location . '/' . $cube->image_name }}" alt=""
+                                                        height="50px" width="100px">
+                                                @endif
                                             </td>
                                             <td>{{ $cube->link }}</td>
                                             <td>
-                                                <form
-                                                    action="{{ route('cube.toggleStatus', $cube->id) }}"
-                                                    method="POST" style="display:inline;">
+                                                <form action="{{ route('cube.toggleStatus', $cube->id) }}" method="POST"
+                                                    style="display:inline;">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit"
@@ -72,9 +76,8 @@
                                                 <a href="{{ route('cube.edit', $cube->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
                                                 @can('delete')
-                                                    <form
-                                                        action="{{ route('cube.destroy', $cube->id) }}"
-                                                        method="POST" style="display:inline;">
+                                                    <form action="{{ route('cube.destroy', $cube->id) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
