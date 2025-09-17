@@ -36,21 +36,20 @@
                                 <div class="row">
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="official_selection_id" class="form-label">
-                                            <strong>Official Selection</strong>
+                                        <label for="jury_type_id" class="form-label">
+                                            <strong>Jury Type</strong>
                                         </label>
-                                        <select name="official_selection_id" id="official_selection_id"
-                                            class="form-select @error('official_selection_id') is-invalid @enderror">
-                                            <option value="" selected>Select Official Selection</option>
-
-                                            @foreach ($IPOfficialSelections as $key => $selection)
-                                                <option name="official_selection_id" value="{{ $selection->id }}"
-                                                    {{ isset($payload['official_selection_id']) && $payload['official_selection_id'] == $selection->id ? 'selected' : '' }}>
-                                                    {{ $selection->title }}
+                                        <select name="jury_type_id" id="jury_type_id"
+                                            class="form-select @error('jury_type_id') is-invalid @enderror">
+                                            <option value="" selected>Select Jury Type</option>
+                                            @foreach ($juryTypes as $key => $juryType)
+                                                <option name="jury_type_id" value="{{ $key }}"
+                                                    {{ isset($payload['jury_type_id']) && $payload['jury_type_id'] == $key ? 'selected' : '' }}>
+                                                    {{ $juryType }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('official_selection_id')
+                                        @error('jury_type_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -116,7 +115,8 @@
                                         <th>Sr.Nom</th>
                                         <th>Type</th>
                                         <th>Name</th>
-                                        <th>Position</th>
+                                        <th>Designation</th>
+                                        <th>Is Chairperson</th>
                                         <th>Image</th>
                                         <th>Year</th>
                                         <th>Status</th>
@@ -127,10 +127,24 @@
                                     @foreach ($juryDetails as $juryDetail)
                                         <tr class="align-middle">
                                             <td>{{ $juryDetail->id }}</td>
-                                            <td>{{ $juryDetail->official_selection_id == 1 ? 'Feature' : ($juryDetail->official_selection_id == 2 ? 'Non-Feature' : ($juryDetail->official_selection_id == 3 ? 'Chairperson' : '')) }}
+                                            <td>
+                                                {{ $juryDetail->jury_type_id == 1
+                                                    ? 'Indian Panorama-(Feature)'
+                                                    : ($juryDetail->jury_type_id == 2
+                                                        ? 'Indian Panorama-(Non-Feature)'
+                                                        : ($juryDetail->jury_type_id == 3
+                                                            ? 'Best Web Series-(Jury)'
+                                                            : ($juryDetail->jury_type_id == 4
+                                                                ? 'Best Web Series-(Preview Committee)'
+                                                                : ($juryDetail->jury_type_id == 5
+                                                                    ? 'CMOT-(Selection Jury)'
+                                                                    : ($juryDetail->jury_type_id == 6
+                                                                        ? 'CMOT-(Grand-Jury)'
+                                                                        : ''))))) }}
                                             </td>
                                             <td>{{ $juryDetail->name }}</td>
-                                            <td>{!! $juryDetail->position !!}</td>
+                                            <td>{!! $juryDetail->designation !!}</td>
+                                            <td>{{ $juryDetail->is_chairperson }}</td>
                                             <td>
                                                 @php
                                                     $path =
@@ -143,7 +157,7 @@
                                                     <img src="{{ $juryDetail->img_url }}" alt="Current Image"
                                                         class="img-fluid mt-2" style="max-width: 100px;">
                                                 @else
-                                                <p>images not uploaded</p>
+                                                    <p>images not uploaded</p>
                                                 @endif
                                             </td>
                                             <td>{{ $juryDetail->year }}</td>
