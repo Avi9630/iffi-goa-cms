@@ -81,6 +81,9 @@
 
                 <a href={{ route('getImageByFolder', ['path' => 'images/master-class/webp']) }}
                     class="btn btn-info btn-flat">Master Class</a>
+
+                <a href={{ route('getImageByFolder', ['path' => 'images/juries']) }}
+                    class="btn btn-info btn-flat">Juries</a>
             </div>
         </div>
     </div>

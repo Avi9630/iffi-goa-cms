@@ -217,7 +217,6 @@ class InternationalCinemaController extends Controller
                     $header = $row;
                     continue;
                 }
-
                 $data = [
                     'section' => $row[0] ?? null,
                     'title' => $row[1] ?? null,

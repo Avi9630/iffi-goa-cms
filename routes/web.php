@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
     ]);
 
     Route::resource('news-update', NewsUpdateController::class)->except(['show']);
-    Route::resource('jury-detail', JuryDetailController::class); //->except(['show']);
+    Route::resource('jury-detail', JuryDetailController::class);
 
     Route::controller(IndianPanoramaController::class)
         ->prefix('ip')
