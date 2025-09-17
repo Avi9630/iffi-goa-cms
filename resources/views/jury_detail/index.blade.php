@@ -109,91 +109,92 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Sr.Nom</th>
-                                        <th>Type</th>
-                                        <th>Name</th>
-                                        <th>Designation</th>
-                                        <th>Is Chairperson</th>
-                                        <th>Image</th>
-                                        <th>Year</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($juryDetails as $juryDetail)
-                                        <tr class="align-middle">
-                                            <td>{{ $juryDetail->id }}</td>
-                                            <td>
-                                                {{ $juryDetail->jury_type_id == 1
-                                                    ? 'Indian Panorama-(Feature)'
-                                                    : ($juryDetail->jury_type_id == 2
-                                                        ? 'Indian Panorama-(Non-Feature)'
-                                                        : ($juryDetail->jury_type_id == 3
-                                                            ? 'Best Web Series-(Jury)'
-                                                            : ($juryDetail->jury_type_id == 4
-                                                                ? 'Best Web Series-(Preview Committee)'
-                                                                : ($juryDetail->jury_type_id == 5
-                                                                    ? 'CMOT-(Selection Jury)'
-                                                                    : ($juryDetail->jury_type_id == 6
-                                                                        ? 'CMOT-(Grand-Jury)'
-                                                                        : ''))))) }}
-                                            </td>
-                                            <td>{{ $juryDetail->name }}</td>
-                                            <td>{!! $juryDetail->designation !!}</td>
-                                            <td>{{ $juryDetail->is_chairperson }}</td>
-                                            <td>
-                                                @php
-                                                    $path =
-                                                        env('IMAGE_UPLOAD_BASE_URL') . env('JURY_IMAGE_DESTINATION');
-                                                @endphp
-                                                @if (!empty($juryDetail->img_src))
-                                                    <img src="{{ $path . '/' . $juryDetail->img_src }}" alt="Current Image"
-                                                        class="img-fluid mt-2" style="max-width: 100px;">
-                                                @elseif(!empty($juryDetail->img_url))
-                                                    <img src="{{ $juryDetail->img_url }}" alt="Current Image"
-                                                        class="img-fluid mt-2" style="max-width: 100px;">
-                                                @else
-                                                    <p>images not uploaded</p>
-                                                @endif
-                                            </td>
-                                            <td>{{ $juryDetail->year }}</td>
-                                            <td>
-                                                <form action="{{ route('juryDetail.toggle', $juryDetail->id) }}"
-                                                    method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit"
-                                                        class="btn {{ $juryDetail->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                        {{ $juryDetail->status === 1 ? 'Enabled' : 'Disabled' }}
-                                                    </button>
-                                                </form>
-                                            </td>
-                                            <td style="white-space: nowrap;">
-                                                <a href="{{ route('jury-detail.edit', $juryDetail->id) }}"
-                                                    class="btn btn-info btn-sm">Edit</a>
-                                                @can('delete')
-                                                    <form action="{{ route('jury-detail.destroy', $juryDetail->id) }}"
+                            @foreach ($juryTypes as $key => $type)
+                                <h4 class="mt-4">{{ $type }}</h4>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr.Nom</th>
+                                            <th>Type</th>
+                                            <th>Name</th>
+                                            <th>Designation</th>
+                                            <th>Is Chairperson</th>
+                                            <th>Image</th>
+                                            <th>Year</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($juryDetails->where('jury_type_id', $key)->sortBy('id') as $juryDetail)
+                                            <tr class="align-middle">
+                                                <td>{{ $juryDetail->id }}</td>
+                                                <td>
+                                                    {{ $juryDetail->jury_type_id == 1
+                                                        ? 'Indian Panorama-(Feature)'
+                                                        : ($juryDetail->jury_type_id == 2
+                                                            ? 'Indian Panorama-(Non-Feature)'
+                                                            : ($juryDetail->jury_type_id == 3
+                                                                ? 'Best Web Series-(Jury)'
+                                                                : ($juryDetail->jury_type_id == 4
+                                                                    ? 'Best Web Series-(Preview Committee)'
+                                                                    : ($juryDetail->jury_type_id == 5
+                                                                        ? 'CMOT-(Selection Jury)'
+                                                                        : ($juryDetail->jury_type_id == 6
+                                                                            ? 'CMOT-(Grand-Jury)'
+                                                                            : ''))))) }}
+                                                </td>
+                                                <td>{{ $juryDetail->name }}</td>
+                                                <td>{!! $juryDetail->designation !!}</td>
+                                                <td>{{ $juryDetail->is_chairperson }}</td>
+                                                <td>
+                                                    @php
+                                                        $path =
+                                                            env('IMAGE_UPLOAD_BASE_URL') .
+                                                            env('JURY_IMAGE_DESTINATION');
+                                                    @endphp
+                                                    @if (!empty($juryDetail->img_src))
+                                                        <img src="{{ $path . '/' . $juryDetail->img_src }}"
+                                                            alt="Current Image" class="img-fluid mt-2"
+                                                            style="max-width: 100px;">
+                                                    @elseif(!empty($juryDetail->img_url))
+                                                        <img src="{{ $juryDetail->img_url }}" alt="Current Image"
+                                                            class="img-fluid mt-2" style="max-width: 100px;">
+                                                    @else
+                                                        <p>images not uploaded</p>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $juryDetail->year }}</td>
+                                                <td>
+                                                    <form action="{{ route('juryDetail.toggle', $juryDetail->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                        @method('PUT')
+                                                        <button type="submit"
+                                                            class="btn {{ $juryDetail->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                            {{ $juryDetail->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                        </button>
                                                     </form>
-                                                @endcan
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                                </td>
+                                                <td style="white-space: nowrap;">
+                                                    <a href="{{ route('jury-detail.edit', $juryDetail->id) }}"
+                                                        class="btn btn-info btn-sm">Edit</a>
+                                                    @can('delete')
+                                                        <form action="{{ route('jury-detail.destroy', $juryDetail->id) }}"
+                                                            method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                        </form>
+                                                    @endcan
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
                         </div>
-                        {{-- <div class="card-footer clearfix">
-                            <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $juryDetails->withQueryString()->links() }}
-                            </ul>
-                        </div> --}}
+
                     </div>
                 </div>
             </div>
