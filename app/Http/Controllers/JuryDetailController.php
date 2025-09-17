@@ -22,7 +22,7 @@ class JuryDetailController extends Controller
     function index(Request $request)
     {
         $payload = $request->all();
-        $juryDetails = JuryDetail::with('officialSelection')->orderBy('id', 'DESC')->get();
+        $juryDetails = JuryDetail::orderBy('id', 'DESC')->get();
         $juryTypes = $this->juryType();
         return view('jury_detail.index', compact(['juryDetails', 'juryTypes', 'payload']));
     }
