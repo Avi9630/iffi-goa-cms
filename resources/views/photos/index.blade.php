@@ -128,7 +128,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-center"><strong>Vides</strong></h3>
+                        <h3 class="text-center"><strong>Videos</strong></h3>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
