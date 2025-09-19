@@ -59,13 +59,39 @@ class ConvertToWEBP
     //     }
     // }
 
+    // public function convert($file, string $destinationPath): string
+    // {
+    //     try {
+    //         $extension = strtolower($file->getClientOriginalExtension());
+    //         if ($extension === 'webp') {
+    //             return true;
+    //         }
+    //         if ($_SERVER['HTTP_HOST'] === 'localhost') {
+    //             $filePath = 'C:/xampp/htdocs/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
+    //         } else {
+    //             $filePath = '/var/www/html/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
+    //         }
+    //         $manager = new ImageManager(new Driver());
+    //         if (!file_exists($filePath)) {
+    //             throw new \Exception("File does not exist: {$filePath}");
+    //         }
+    //         $img = $manager->read($filePath);
+    //         $filenameWithoutExt = pathinfo($filePath, PATHINFO_FILENAME);
+    //         $webpPath = dirname($filePath) . '/' . $filenameWithoutExt . '.webp';
+    //         $img->toWebp(40)->save($webpPath);
+    //         if (file_exists($webpPath) && file_exists($filePath)) {
+    //             unlink($filePath);
+    //         }
+    //         return true;
+    //     } catch (\Exception $e) {
+    //         throw new \Exception('Conversion failed: ' . $e->getMessage());
+    //     }
+    // }
+
     public function convert($file, string $destinationPath): string
     {
         try {
             $extension = strtolower($file->getClientOriginalExtension());
-            if ($extension === 'webp') {
-                return true;
-            }
             if ($_SERVER['HTTP_HOST'] === 'localhost') {
                 $filePath = 'C:/xampp/htdocs/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
             } else {
@@ -77,12 +103,18 @@ class ConvertToWEBP
             }
             $img = $manager->read($filePath);
             $filenameWithoutExt = pathinfo($filePath, PATHINFO_FILENAME);
-            $webpPath = dirname($filePath) . '/' . $filenameWithoutExt . '.webp';
+            $dir = dirname($filePath);
+            $webpPath = $dir . '/' . $filenameWithoutExt . '.webp';
+            $counter = 1;
+            while (file_exists($webpPath)) {
+                $webpPath = $dir . '/' . $filenameWithoutExt . '_' . $counter . '.webp';
+                $counter++;
+            }
             $img->toWebp(40)->save($webpPath);
             if (file_exists($webpPath) && file_exists($filePath)) {
                 unlink($filePath);
             }
-            return true;
+            return basename($webpPath);
         } catch (\Exception $e) {
             throw new \Exception('Conversion failed: ' . $e->getMessage());
         }

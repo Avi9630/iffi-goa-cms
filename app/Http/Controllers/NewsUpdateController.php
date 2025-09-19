@@ -195,24 +195,50 @@ class NewsUpdateController extends Controller
         return view('news_update.image', compact(['images', 'locations']));
     }
 
-    function popupImageUpload(Request $request)
-    {
-        $payload = $request->all();
-        $request->validate([
-            'image' => 'required|file|mimes:jpg,jpeg,png,webp,mp4,mov|max:2048',
-        ]);
-        $location = $payload['location'] ?? '';
+    // function popupImageUpload(Request $request)
+    // {
+    //     $payload = $request->all();
+    //     $request->validate([
+    //         'image' => 'required',
+    //         'image.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+    //     ]);
+    //     $location = $payload['location'] ?? '';
+    //     if ($request->hasFile('image')) {
+    //         foreach ($request->file('image') as $file) {
+    //             if ($file->isValid()) {
+    //                 if (isset($payload['location']) && !empty($payload['location'])) {
+    //                     $location = $payload['location'];
+    //                 } else {
+    //                     $location = $this->destination;
+    //                 }
+    //                 app(ExternalApiService::class)->postData($file, $location);
+    //                 app(ConvertToWEBP::class)->convert($file, $location);
+    //             }
+    //         }
+    //     }
+    //     return redirect()->back()->with('success', 'Image uploaded successfully.');
+    // }
 
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file = $request->file('image');
-            if(isset($payload['location']) && !empty($payload['location'])){
-                $location = $payload['location'];
-            }else {
-                $location = $this->destination;
+    public function popupImageUpload(Request $request, ExternalApiService $externalApiService, ConvertToWEBP $convertToWEBP)
+    {
+        $request->validate([
+            'image'   => 'required|array',
+            'image.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'location' => 'nullable|string'
+        ], [
+            'image.*.mimes' => 'Only JPG, JPEG, PNG, and WEBP images are allowed.',
+            'image.*.max'   => 'Each image must not exceed 2MB.',
+            'image.*.image' => 'The uploaded file must be a valid image.',
+        ]);
+        $location = $request->location ?: $this->destination;
+        foreach ($request->file('image', []) as $file) {
+            if (!$file->isValid()) {
+                continue;
             }
-            app(ExternalApiService::class)->postData($file, $location);
-            app(ConvertToWEBP::class)->convert($file, $location);
+            $externalApiService->postData($file, $location);
+            $convertToWEBP->convert($file, $location);
         }
-        return redirect()->back()->with('success', 'Image uploaded successfully.');
+
+        return back()->with('success', 'Image uploaded successfully.');
     }
 }
