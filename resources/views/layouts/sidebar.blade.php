@@ -14,6 +14,7 @@
                         <i class="nav-icon bi bi-speedometer"></i>
                         <p>Dashboard</p>
                     </a>
+
                     {{-- Roles && Permissions --}}
                     <li
                         class="nav-item {{ request()->is('user*') || request()->is('role*') || request()->is('permission*') ? 'menu-open' : '' }}">
@@ -109,7 +110,15 @@
                                     <p>Repository</p>
                                 </a>
                             </li>
-
+                            
+                            {{-- Festival Venue --}}
+                            <li class="nav-item">
+                                <a href="{{ route('festival-venue.index') }}" class="nav-link {{ request()->is('festival-venue*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Festival Venue</p>
+                                </a>
+                            </li>
+                            
                             {{-- Ticker --}}
                             <li class="nav-item">
                                 <a href="{{ route('ticker.index') }}"
@@ -121,8 +130,7 @@
 
                             {{-- News Update --}}
                             <li class="nav-item">
-                                <a href="{{ route('news-update.index') }}"
-                                    class="nav-link {{ request()->is('news-update*') ? 'active' : '' }}">
+                                <a href="{{ route('news-update.index') }}" class="nav-link {{ request()->is('news-update*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>News-Update</p>
                                 </a>
