@@ -150,8 +150,8 @@ class FestivalVenueController extends Controller
 
     function destroy($id)
     {
-        $juryDetail = JuryDetail::findOrFail($id);
-        $juryDetail->delete();
-        return redirect()->route('jury-detail.index')->with('danger', 'Peacock deleted successfully.!!');
+        $festivalVenue = FestivalVenue::findOrFail($id);
+        $festivalVenue->delete();
+        return redirect()->route('festival-venue.index')->with('danger', 'Festival venue deleted successfully.!!');
     }
 }
