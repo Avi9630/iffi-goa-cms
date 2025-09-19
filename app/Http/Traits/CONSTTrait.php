@@ -34,4 +34,14 @@ trait CONSTTrait
             6 => 'CMOT-(Grand-Jury)',
         ];
     }
+
+    public function festivalVenueType()
+    {
+        return [
+            1 => 'Opening & Closing Venue',
+            2 => 'Screening Venues',
+            3 => 'Open Air Screening',
+            4 => 'Masterclasses & In-Conversation Sessions',
+        ];
+    }
 }
