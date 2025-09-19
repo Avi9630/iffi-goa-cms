@@ -16,34 +16,8 @@ class ExternalApiService
         $this->getImageByNameUrl = config('services.example_api.get_image_by_name_base_url');
     }
 
-    public function getPosts($file, $destination)
-    {
-        dd($file);
-        $response = Http::get($this->baseUrl . '/posts');
-
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return [
-            'error' => true,
-            'message' => $response->body(),
-        ];
-    }
-
     public function postData($file, $destination)
     {
-        // $response = Http::asMultipart()->post($this->baseUrl, [
-        //     [
-        //         'name' => 'image',
-        //         'contents' => fopen($file->getPathname(), 'r'),
-        //         'filename' => $file->getClientOriginalName(),
-        //     ],
-        //     [
-        //         'name' => 'destination',
-        //         'contents' => $destination,
-        //     ],
-        // ]);
         $response = Http::withOptions(['verify' => false])
             ->asMultipart()
             ->post($this->uploadUrl, [

@@ -10,16 +10,17 @@ trait CONSTTrait
     public function locations()
     {
         return [
-            'Jury' => 'images/jury/indian-panorama-jury',
-            'Poster' => 'images/thePeacock/poster',
-            'Master Class' => 'images/master-class/webp',
             'Indian Panorama' => 'images/indian-panorama-cinema',
             'International Cinema' => 'images/cureted-section',
             'Peacock Pdf Destination' => 'images/thePeacock',
             'News And Update' => 'images/news-update/webp',
-            'Cube Destination' => 'images/cube/webp',
+            'Master Class' => 'images/master-class/webp',
+            'Festival Venue' => 'images/festival-venue',
+            'Poster' => 'images/thePeacock/poster',
             'Press Release' => 'press_release',
             'Gallery' => 'images/gallery',
+            'Cube' => 'images/cube/webp',
+            'Jury' => 'images/juries',
         ];
     }
 
