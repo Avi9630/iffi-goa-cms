@@ -20,6 +20,7 @@ use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
+use App\Http\Controllers\FestivalVenueController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -41,8 +42,9 @@ Route::group(['middleware' => 'auth'], function () {
         'master-class-topic' => MasterClassTopicController::class,
         'master-class-date' => MasterClassDateController::class,
         'indian-panorama' => IndianPanoramaController::class,
-        'press-release' => PressReleaseController::class,
+        'festival-venue' => FestivalVenueController::class,
         'latest-update' => LatestUpdateController::class,
+        'press-release' => PressReleaseController::class,
         'master-class' => MasterClassController::class,
         'permission' => PermissionController::class,
         'moderator' => ModeratorController::class,
@@ -56,7 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
     ]);
 
     Route::resource('news-update', NewsUpdateController::class)->except(['show']);
-    Route::resource('jury-detail', JuryDetailController::class); //->except(['show']);
+    Route::resource('jury-detail', JuryDetailController::class);
 
     Route::controller(IndianPanoramaController::class)
         ->prefix('ip')
@@ -132,6 +134,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
 
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
+    
+    Route::put('/festival-venue/{id}/toggle', [FestivalVenueController::class, 'toggle'])->name('festivalVenue.toggle');
 
     Route::get('get_images_by_folder/{path}', [CommonController::class, 'getImageByFolder'])
         ->where('path', '.*')

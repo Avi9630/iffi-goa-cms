@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0"><strong>Jury Details</strong></h3>
+                    <h3 class="mb-0"><strong>Festival Venue</strong></h3>
                 </div>
                 <div class="col-sm-6">
                     <span>
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="app-content mt-2">
+    {{-- <div class="app-content mt-2">
         <div class="container-fluid">
             <div class="row g-4">
                 <div class="col-md-12">
@@ -91,34 +91,36 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
+                        
                         <div class="card-header">
                             <h3 class="card-title">
-                                <a href={{ route('jury-detail.create') }} class="btn btn-sm btn-primary btn-flat">
-                                    Add Jury
+                                <a href={{ route('festival-venue.create') }} class="btn btn-sm btn-primary btn-flat">
+                                    Add Festival Venue
                                 </a>
-                                <a href={{ route('jury-detail.index') }} class="btn btn-sm btn-secondary btn-flat ">
+                                <a href={{ route('festival-venue.index') }} class="btn btn-sm btn-secondary btn-flat ">
                                     Reset
                                 </a>
                             </h3>
                         </div>
+
                         <div class="card-body">
-                            @foreach ($juryTypes as $key => $type)
+                            @foreach ($festivalVenueTypes as $key => $type)
                                 <h4 class="mt-4">{{ $type }}</h4>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Sr.Nom</th>
-                                            <th>Type</th>
-                                            <th>Name</th>
-                                            <th>Designation</th>
-                                            <th>Is Chairperson</th>
+                                            <th>Venue Type</th>
+                                            <th>Festival Venue Name</th>
+                                            <th>Location Name</th>
+                                            <th>Location</th>
                                             <th>Image</th>
                                             <th>Year</th>
                                             <th>Status</th>
@@ -126,61 +128,57 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($juryDetails->where('jury_type_id', $key)->sortBy('id') as $juryDetail)
+                                        @foreach ($festivalVenues->where('venue_type_id', $key)->sortBy('id') as $festivalVenue)
                                             <tr class="align-middle">
-                                                <td>{{ $juryDetail->id }}</td>
+                                                <td>{{ $festivalVenue->id }}</td>
                                                 <td>
-                                                    {{ $juryDetail->jury_type_id == 1
-                                                        ? 'Indian Panorama-(Feature)'
-                                                        : ($juryDetail->jury_type_id == 2
-                                                            ? 'Indian Panorama-(Non-Feature)'
-                                                            : ($juryDetail->jury_type_id == 3
-                                                                ? 'Best Web Series-(Jury)'
-                                                                : ($juryDetail->jury_type_id == 4
-                                                                    ? 'Best Web Series-(Preview Committee)'
-                                                                    : ($juryDetail->jury_type_id == 5
-                                                                        ? 'CMOT-(Selection Jury)'
-                                                                        : ($juryDetail->jury_type_id == 6
-                                                                            ? 'CMOT-(Grand-Jury)'
-                                                                            : ''))))) }}
+                                                    {{ $festivalVenue->venue_type_id == 1
+                                                        ? 'Opening & Closing Venue'
+                                                        : ($festivalVenue->venue_type_id == 2
+                                                            ? 'Screening Venues'
+                                                            : ($festivalVenue->venue_type_id == 3
+                                                                ? 'Open Air Screening'
+                                                                : ($festivalVenue->venue_type_id == 4
+                                                                    ? 'Masterclasses & In-Conversation Sessions'
+                                                                    : ''))) }}
                                                 </td>
-                                                <td>{{ $juryDetail->name }}</td>
-                                                <td>{!! $juryDetail->designation !!}</td>
-                                                <td>{{ $juryDetail->is_chairperson }}</td>
+                                                <td>{{ $festivalVenue->festival_venu_name }}</td>
+                                                <td>{{ $festivalVenue->location_name }}</td>
+                                                <td>{{ $festivalVenue->location }}</td>
                                                 <td>
                                                     @php
                                                         $path =
                                                             env('IMAGE_UPLOAD_BASE_URL') .
-                                                            env('JURY_IMAGE_DESTINATION');
+                                                            env('FESTIVAL_VENUE');
                                                     @endphp
-                                                    @if (!empty($juryDetail->img_src))
-                                                        <img src="{{ $path . '/' . $juryDetail->img_src }}"
+                                                    @if (!empty($festivalVenue->img_src))
+                                                        <img src="{{ $path . '/' . $festivalVenue->img_src }}"
                                                             alt="Current Image" class="img-fluid mt-2"
                                                             style="max-width: 100px;">
-                                                    @elseif(!empty($juryDetail->img_url))
-                                                        <img src="{{ $juryDetail->img_url }}" alt="Current Image"
+                                                    @elseif(!empty($festivalVenue->img_url))
+                                                        <img src="{{ $festivalVenue->img_url }}" alt="Current Image"
                                                             class="img-fluid mt-2" style="max-width: 100px;">
                                                     @else
                                                         <p>images not uploaded</p>
                                                     @endif
                                                 </td>
-                                                <td>{{ $juryDetail->year }}</td>
+                                                <td>{{ $festivalVenue->year }}</td>
                                                 <td>
-                                                    <form action="{{ route('juryDetail.toggle', $juryDetail->id) }}"
+                                                    <form action="{{ route('festivalVenue.toggle', $festivalVenue->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('PUT')
                                                         <button type="submit"
-                                                            class="btn {{ $juryDetail->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
-                                                            {{ $juryDetail->status === 1 ? 'Enabled' : 'Disabled' }}
+                                                            class="btn {{ $festivalVenue->status === 1 ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                            {{ $festivalVenue->status === 1 ? 'Enabled' : 'Disabled' }}
                                                         </button>
                                                     </form>
                                                 </td>
                                                 <td style="white-space: nowrap;">
-                                                    <a href="{{ route('jury-detail.edit', $juryDetail->id) }}"
+                                                    <a href="{{ route('festival-venue.edit', $festivalVenue->id) }}"
                                                         class="btn btn-info btn-sm">Edit</a>
                                                     @can('delete')
-                                                        <form action="{{ route('jury-detail.destroy', $juryDetail->id) }}"
+                                                        <form action="{{ route('festival-venue.destroy', $festivalVenue->id) }}"
                                                             method="POST" style="display:inline;">
                                                             @csrf
                                                             @method('DELETE')

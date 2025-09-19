@@ -22,4 +22,26 @@ trait CONSTTrait
             'Gallery' => 'images/gallery',
         ];
     }
+
+    public function juryType()
+    {
+        return [
+            1 => 'Indian Panorama-(Feature)',
+            2 => 'Indian Panorama-(Non-Feature)',
+            3 => 'Best Web Series-(Jury)',
+            4 => 'Best Web Series-(Preview Committee)',
+            5 => 'CMOT-(Selection Jury)',
+            6 => 'CMOT-(Grand-Jury)',
+        ];
+    }
+
+    public function festivalVenueType()
+    {
+        return [
+            1 => 'Opening & Closing Venue',
+            2 => 'Screening Venues',
+            3 => 'Open Air Screening',
+            4 => 'Masterclasses & In-Conversation Sessions',
+        ];
+    }
 }

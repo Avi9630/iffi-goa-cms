@@ -30,23 +30,19 @@
 
                                     <div class="col-md-6 mb-3">
                                         <label for="official_selection_id" class="form-label">
-                                            <strong>Official Selection</strong>
+                                            <strong>Jury Type</strong>
                                         </label>
-                                        <select name="official_selection_id" id="official_selection_id"
-                                            class="form-select @error('official_selection_id') is-invalid @enderror">
-                                            <option value="" selected>Select Official Selection</option>
-                                            @foreach ($IPOfficialSelections as $IPOfficialSelection)
-                                                <option value="{{ $IPOfficialSelection->id }}"
-                                                    {{ old('official_selection_id') == $IPOfficialSelection->id ? 'selected' : '' }}>
-                                                    {{ $IPOfficialSelection->title }}
+                                        <select name="jury_type_id" id="jury_type_id"
+                                            class="form-select @error('jury_type_id') is-invalid @enderror">
+                                            <option value="" selected>Select Jury Type</option>
+                                            @foreach ($juryTypes as $key => $juryType)
+                                                <option name="jury_type_id" value="{{ $key }}"
+                                                    {{ old('jury_type_id') == $key ? 'selected' : '' }}>
+                                                    {{ $juryType }}
                                                 </option>
                                             @endforeach
-                                            <option value="3"
-                                                {{ old('official_selection_id') == 3 ? 'selected' : '' }}>
-                                                Chairperson
-                                            </option>
                                         </select>
-                                        @error('official_selection_id')
+                                        @error('jury_type_id')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -61,12 +57,26 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label for="position" class="form-label">Position</label>
-                                        <input type="text" class="form-control @error('position') is-invalid @enderror"
-                                            id="position" name="position" value="{{ old('position') }}">
-                                            <small>Want to make Chairperson, please enter : - 'CHAIRPERSON' </small>
-                                        @error('position')
-                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        <label for="designation" class="form-label">Designation</label>
+                                        <input type="text"
+                                            class="form-control @error('designation') is-invalid @enderror" id="designation"
+                                            name="designation" value="{{ old('designation') }}">
+                                        @error('designation')
+                                            <span class="invalid-feedback d-block" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="is_chairperson" class="form-label">Chairperson</label>
+                                        <div class="form-check">
+                                            <input type="checkbox"
+                                                class="form-check-input @error('is_chairperson') is-invalid @enderror"
+                                                id="is_chairperson" name="is_chairperson" value="1"
+                                                {{ old('is_chairperson') == '1' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="is_chairperson">IsChairperson</label>
+                                        </div>
+                                        @error('is_chairperson')
+                                            <span class="invalid-feedback d-block" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
 
@@ -91,11 +101,23 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea name="description" id="description" cols="10" rows="5"
+                                            class="form-control @error('description') is-invalid @enderror">
+                                            {{ old('description') }}
+                                        </textarea>
+                                        @error('description')
+                                            <span class="invalid-feedback d-block" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="year" class="form-label"><strong>Year</strong></label>
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
                                             <option value="" selected>Select Year</option>
-                                            <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025</option>
+                                            <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025
+                                            </option>
                                             <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
                                             </option>
                                         </select>
@@ -107,6 +129,9 @@
                             </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href={{ route('jury-detail.index') }} class="btn btn-sm btn-warning btn-flat ">
+                                    Reset
+                                </a>
                             </div>
                         </form>
                     </div>

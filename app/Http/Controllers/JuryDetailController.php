@@ -6,11 +6,13 @@ use App\Models\IndianPanoramaOfficialSelection;
 use App\Services\ExternalApiService;
 use Illuminate\Validation\Rule;
 use App\Services\ConvertToWEBP;
+use App\Http\Traits\CONSTTrait;
 use Illuminate\Http\Request;
 use App\Models\JuryDetail;
 
 class JuryDetailController extends Controller
 {
+    use CONSTTrait;
     public function __construct()
     {
         $this->mainUrl = env('IMAGE_UPLOAD_BASE_URL');
@@ -20,58 +22,60 @@ class JuryDetailController extends Controller
     function index(Request $request)
     {
         $payload = $request->all();
-        $juryDetails = JuryDetail::with('officialSelection')->get();
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('jury_detail.index', compact(['juryDetails', 'IPOfficialSelections', 'payload']));
+        $juryDetails = JuryDetail::orderBy('id', 'DESC')->get();
+        $juryTypes = $this->juryType();
+        return view('jury_detail.index', compact(['juryDetails', 'juryTypes', 'payload']));
     }
 
     public function search(Request $request)
     {
-        $payload = $request->only(['official_selection_id', 'name', 'year']);
+        $payload = $request->only(['jury_type_id', 'name', 'year']);
         $juryDetails = JuryDetail::query()
-            ->when(
-                isset($payload['official_selection_id']),
-                fn($q) =>
-                $q->where('official_selection_id', $payload['official_selection_id'])
-            )
-            ->when(
-                isset($payload['name']),
-                fn($q) =>
-                $q->where('name', 'like', '%' . $payload['name'] . '%')
-            )
-            ->when(
-                isset($payload['year']),
-                fn($q) =>
-                $q->where('year', $payload['year'])
-            )
+            ->when(isset($payload['jury_type_id']), fn($q) => $q->where('jury_type_id', $payload['jury_type_id']))
+            ->when(isset($payload['name']), fn($q) => $q->where('name', 'like', '%' . $payload['name'] . '%'))
+            ->when(isset($payload['year']), fn($q) => $q->where('year', $payload['year']))
             ->get();
 
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all(['id', 'title']);
-        return view('jury_detail.index', compact('juryDetails', 'IPOfficialSelections', 'payload'));
+        $juryTypes = $this->juryType();
+        return view('jury_detail.index', compact('juryDetails', 'juryTypes', 'payload'));
     }
 
     function create()
     {
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('jury_detail.create', compact('IPOfficialSelections'));
+        $juryTypes = $this->juryType();
+        return view('jury_detail.create', compact('juryTypes'));
     }
 
     function store(Request $request)
     {
         $payload = $request->all();
         $request->validate([
-            'official_selection_id' => 'required',
+            'jury_type_id' => 'required',
             'name' => 'required|string|max:255',
+            'is_chairperson' => 'nullable',
+            'designation' => 'nullable',
+            'description' => 'nullable',
             'year' => 'required',
-            'position' => 'nullable',
-            'image' => ['nullable', Rule::when($request->position === 'CHAIRPERSON', 'required_without:image_url'), 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'image_url' => ['nullable', Rule::when($request->position === 'CHAIRPERSON', 'required_without:image'), 'string', 'max:255'],
+            'image' => [
+                'nullable',
+                'file',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+            'image_url' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ]);
+
         $juryDetail = new JuryDetail();
-        $juryDetail->official_selection_id = $payload['official_selection_id'];
+        $juryDetail->jury_type_id = $payload['jury_type_id'];
         $juryDetail->name = $payload['name'];
         $juryDetail->year = $payload['year'];
-        $juryDetail->position = $payload['position'] ?? null;
+        $juryDetail->designation = $payload['designation'] ?? null;
+        $juryDetail->is_chairperson = $payload['is_chairperson'] ?? 0;
+        $juryDetail->description = $payload['description'] ?? null;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -97,26 +101,41 @@ class JuryDetailController extends Controller
     function edit($id)
     {
         $juryDetail = JuryDetail::findOrFail($id);
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('jury_detail.edit', compact(['juryDetail', 'IPOfficialSelections']));
+        $juryTypes = $this->juryType();
+        return view('jury_detail.edit', compact(['juryDetail', 'juryTypes']));
     }
 
     function update(Request $request, $id)
     {
         $payload = $request->all();
         $request->validate([
-            'official_selection_id' => 'required',
+            'jury_type_id' => 'required',
             'name' => 'required|string|max:255',
+            'is_chairperson' => 'nullable',
+            'designation' => 'nullable',
+            'description' => 'nullable',
             'year' => 'required',
-            'position' => 'nullable',
-            'image' => ['nullable', Rule::when($request->position === 'CHAIRPERSON', 'required_without:image_url'), 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'image_url' => ['nullable', Rule::when($request->position === 'CHAIRPERSON', 'required_without:image'), 'string', 'max:255'],
+            'image' => [
+                'nullable',
+                'file',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+            'image_url' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ]);
+
         $juryDetail = JuryDetail::findOrFail($id);
-        $juryDetail->official_selection_id = $payload['official_selection_id']?? $juryDetail->official_selection_id;;
-        $juryDetail->name = $payload['name']?? $juryDetail->name;
+
+        $juryDetail->jury_type_id = $payload['jury_type_id'] ?? $juryDetail->jury_type_id;
+        $juryDetail->name = $payload['name'] ?? $juryDetail->name;
         $juryDetail->year = $payload['year'] ?? $juryDetail->year;
-        $juryDetail->position = $payload['position'] ?? $juryDetail->position;
+        $juryDetail->designation = isset($payload['designation']) && !empty($payload['designation']) ? $payload['designation'] : '';
+        $juryDetail->is_chairperson = isset($payload['is_chairperson']) && !empty($payload['is_chairperson']) ? $payload['is_chairperson'] : 0;
+        $juryDetail->description = isset($payload['description']) && !empty($payload['description']) ? $payload['description'] : null;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -131,6 +150,7 @@ class JuryDetailController extends Controller
             $juryDetail->img_url = $payload['image_url'];
             $juryDetail->img_src = null;
         }
+        
         if ($juryDetail->save()) {
             return redirect()->route('jury-detail.index')->with('success', 'Jury created successfully.!!');
         } else {
