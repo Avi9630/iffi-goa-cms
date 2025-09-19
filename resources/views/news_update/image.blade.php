@@ -41,9 +41,15 @@
                         <div class="col-md-6 mb-3">
                             <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                                name="image" required />
-                            <small class="form-text text-muted">Upload an image file (jpg, jpeg, png).</small>
+                                name="image[]" multiple />
+                            <small class="form-text text-muted">Upload an image file (jpg, jpeg,
+                                png,webp).</small>
+
                             @error('image')
+                                <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                            @enderror
+
+                            @error('image.*')
                                 <span class="invalid-feedback" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
@@ -56,6 +62,7 @@
             </div>
         </div>
         <br>
+        
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <a href={{ route('getImageByFolder', ['path' => 'images/news-update/webp']) }}
@@ -81,6 +88,12 @@
 
                 <a href={{ route('getImageByFolder', ['path' => 'images/master-class/webp']) }}
                     class="btn btn-info btn-flat">Master Class</a>
+
+                <a href={{ route('getImageByFolder', ['path' => 'images/juries']) }}
+                    class="btn btn-info btn-flat">Juries</a>
+
+                <a href={{ route('getImageByFolder', ['path' => 'images/festival-venue']) }}
+                    class="btn btn-primary btn-flat m-1">Festival Venue</a>
             </div>
         </div>
     </div>
