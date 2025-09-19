@@ -84,6 +84,9 @@
 
                 <a href={{ route('getImageByFolder', ['path' => 'images/juries']) }}
                     class="btn btn-info btn-flat">Juries</a>
+
+                <a href={{ route('getImageByFolder', ['path' => 'images/festival-venue']) }}
+                    class="btn btn-primary btn-flat m-1">Festival Venue</a>
             </div>
         </div>
     </div>
