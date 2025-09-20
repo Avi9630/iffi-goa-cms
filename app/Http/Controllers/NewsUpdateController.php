@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Traits\CONSTTrait;
 use App\Services\ExternalApiService;
+use App\Http\Traits\CONSTTrait;
 use App\Services\ConvertToWEBP;
-use App\Services\GCSService;
 use Illuminate\Http\Request;
+use App\Services\GCSService;
 use App\Models\NewsUpdate;
 
 class NewsUpdateController extends Controller

@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Console\Command;
-use Intervention\Image\ImageManager;
-use Illuminate\Support\Facades\File;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ConvertToWEBP
 {
