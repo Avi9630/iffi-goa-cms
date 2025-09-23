@@ -33,6 +33,7 @@ trait CONSTTrait
             4 => 'Best Web Series-(Preview Committee)',
             5 => 'CMOT-(Selection Jury)',
             6 => 'CMOT-(Grand-Jury)',
+            7 => 'International Jury',
         ];
     }
 
