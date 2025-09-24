@@ -32,7 +32,7 @@ class TickerController extends Controller
     function store(Request $request)
     {
         $request->validate([
-            'content' => 'required|string|max:255',
+            'content' => 'required|string',
             'sort_num' => 'required|unique:tickers,sort_num',
         ]);
         Ticker::create([
@@ -57,7 +57,7 @@ class TickerController extends Controller
         //     'sort_num' => 'required|unique:tickers,sort_num',
         // ]);
         $request->validate([
-            'content' => 'required|string|max:255',
+            'content' => 'required|string',
             'sort_num' => 'required|unique:tickers,sort_num,' . $id,
         ]);
         $ticker = Ticker::findOrFail($id);
