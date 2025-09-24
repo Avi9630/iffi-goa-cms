@@ -60,22 +60,31 @@ class PeacockController extends Controller
             'pdf_url'       =>  'required_without:pdf|nullable|string|max:255',
             'year'          =>  'required|integer',
         ]);
-        
+
         $peacock = new Peacock();
         $peacock->title = $payload['title'] ?? null;
         $peacock->year = $payload['year'] ?? null;
 
         if ($request->hasFile('poster') && $request->file('poster')->isValid()) {
             $file = $request->file('poster');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->posterDestination);
-            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('poster'), $this->posterDestination);
+            // $originalFilename = $file->getClientOriginalName();
+            // app(ExternalApiService::class)->postData($file, $this->posterDestination);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('poster'), $this->posterDestination);
+            // if ($convertInWebp) {
+            //     $peacock->poster = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $peacock->poster_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->posterDestination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->posterDestination);
             if ($convertInWebp) {
-                $peacock->poster = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                // $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $peacock->poster = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $peacock->poster_url = null;
             }
-        }else {
+        } else {
             $peacock->poster_url = $payload['poster_url'];
             $peacock->poster = null;
         }
@@ -88,7 +97,7 @@ class PeacockController extends Controller
             $peacock->image_name = $originalFilename;
             // $peacock->image_url = $this->mainUrl . $this->PDFDestination . '/' . $originalFilename;
             $peacock->image_url = null;
-        }else {
+        } else {
             $peacock->image_url = $payload['pdf_url'];
             $peacock->img_src = null;
             $peacock->image_name = null;
@@ -126,14 +135,24 @@ class PeacockController extends Controller
         if ($request->hasFile('poster') && $request->file('poster')->isValid()) {
             $file = $request->file('poster');
             $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->posterDestination);
-            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('poster'), $this->posterDestination);
+            // app(ExternalApiService::class)->postData($file, $this->posterDestination);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('poster'), $this->posterDestination);
+            // if ($convertInWebp) {
+            //     $peacock->poster = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     // $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $peacock->poster_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->posterDestination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->posterDestination);
             if ($convertInWebp) {
-                $peacock->poster = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                // $peacock->poster_url = env('IMAGE_UPLOAD_BASE_URL') . $this->posterDestination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $peacock->poster = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $peacock->poster_url = null;
             }
-        }else {
+        } else {
             $peacock->poster_url = $payload['poster_url'];
             $peacock->poster = null;
         }
@@ -146,7 +165,7 @@ class PeacockController extends Controller
             $peacock->image_name = $originalFilename;
             // $peacock->image_url = $this->mainUrl . $this->PDFDestination . '/' . $originalFilename;
             $peacock->image_url = null;
-        }else {
+        } else {
             $peacock->image_url = $payload['pdf_url'];
             $peacock->img_src = null;
             $peacock->image_name = null;
