@@ -65,7 +65,6 @@ class PressReleaseController extends Controller
             $originalFilename = $file->getClientOriginalName();
             app(ExternalApiService::class)->postData($file, $this->destination);
             $pressRelease->img_src = $originalFilename;
-            // $pressRelease->image_url = 'https://www.iffigoa.org/public/press_release/' . $originalFilename;
             $pressRelease->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . $originalFilename;
             $pressRelease->link = null;
         } elseif ($request->filled('link')) {
