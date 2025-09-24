@@ -117,7 +117,7 @@
                             </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
-                                <a href={{ route('jury-detail.index') }} class="btn btn-sm btn-warning btn-flat ">
+                                <a href={{ route('festival-venue.index') }} class="btn btn-sm btn-warning btn-flat ">
                                     Reset
                                 </a>
                             </div>
