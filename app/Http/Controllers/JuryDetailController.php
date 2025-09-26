@@ -79,11 +79,21 @@ class JuryDetailController extends Controller
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->juryPath);
+            // $originalFilename = $file->getClientOriginalName();
+            // app(ExternalApiService::class)->postData($file, $this->juryPath);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->juryPath);
+            // if ($convertInWebp) {
+            //     $juryDetail->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $juryDetail->img_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->juryPath);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->juryPath);
             if ($convertInWebp) {
-                $juryDetail->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $juryDetail->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $juryDetail->img_url = null;
             }
         } else {
@@ -139,18 +149,28 @@ class JuryDetailController extends Controller
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->juryPath);
+            // $originalFilename = $file->getClientOriginalName();
+            // app(ExternalApiService::class)->postData($file, $this->juryPath);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->juryPath);
+            // if ($convertInWebp) {
+            //     $juryDetail->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $juryDetail->img_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->juryPath);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->juryPath);
             if ($convertInWebp) {
-                $juryDetail->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $juryDetail->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $juryDetail->img_url = null;
             }
         } else {
             $juryDetail->img_url = $payload['image_url'];
             $juryDetail->img_src = null;
         }
-        
+
         if ($juryDetail->save()) {
             return redirect()->route('jury-detail.index')->with('success', 'Jury created successfully.!!');
         } else {
