@@ -90,6 +90,9 @@ class ConvertToWEBP
     {
         try {
             $extension = strtolower($file->getClientOriginalExtension());
+            if ($extension === 'webp') {
+                return $file->getClientOriginalName();
+            }
             if ($_SERVER['HTTP_HOST'] === 'localhost') {
                 $filePath = 'C:/xampp/htdocs/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
             } else {

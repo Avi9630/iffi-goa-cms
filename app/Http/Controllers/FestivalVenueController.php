@@ -54,7 +54,7 @@ class FestivalVenueController extends Controller
             ],
         ]);
 
-        
+
         $festivalVenue = new FestivalVenue();
         $festivalVenue->venue_type_id = $payload['venue_type_id'];
         $festivalVenue->festival_venu_name = $payload['festival_venu_name'];
@@ -64,18 +64,28 @@ class FestivalVenueController extends Controller
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->festivalVenuePath);
+            // $originalFilename = $file->getClientOriginalName();
+            // app(ExternalApiService::class)->postData($file, $this->festivalVenuePath);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->festivalVenuePath);
+            // if ($convertInWebp) {
+            //     $festivalVenue->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $festivalVenue->img_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->festivalVenuePath);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->festivalVenuePath);
             if ($convertInWebp) {
-                $festivalVenue->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $festivalVenue->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $festivalVenue->img_url = null;
             }
         } else {
             $festivalVenue->img_url = $payload['image_url'];
             $festivalVenue->img_src = null;
         }
-        
+
         if ($festivalVenue->save()) {
             return redirect()->route('festival-venue.index')->with('success', 'Festival venue addedd successfully.!!');
         } else {
@@ -121,11 +131,21 @@ class FestivalVenueController extends Controller
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->festivalVenuePath);
+            // $originalFilename = $file->getClientOriginalName();
+            // app(ExternalApiService::class)->postData($file, $this->festivalVenuePath);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->festivalVenuePath);
+            // if ($convertInWebp) {
+            //     $festivalVenue->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $festivalVenue->img_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->festivalVenuePath);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->festivalVenuePath);
             if ($convertInWebp) {
-                $festivalVenue->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $festivalVenue->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $festivalVenue->img_url = null;
             }
         } else {

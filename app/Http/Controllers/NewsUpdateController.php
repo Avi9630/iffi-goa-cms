@@ -100,12 +100,23 @@ class NewsUpdateController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->destination);
+            // app(ExternalApiService::class)->postData($file, $this->destination);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            // if ($convertInWebp) {
+            //     $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     // $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $newsUpdate->image_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
             if ($convertInWebp) {
-                $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                // $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->image_name = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
+                $newsUpdate->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $newsUpdate->image_url = null;
             }
         } else {
@@ -158,11 +169,22 @@ class NewsUpdateController extends Controller
             }
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->destination);
+            // app(ExternalApiService::class)->postData($file, $this->destination);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            // if ($convertInWebp) {
+            //     $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $newsUpdate->image_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
             if ($convertInWebp) {
-                $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $newsUpdate->image_name = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
+                $newsUpdate->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $newsUpdate->image_url = null;
             }
         } else {

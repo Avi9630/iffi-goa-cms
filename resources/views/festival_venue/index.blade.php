@@ -104,7 +104,7 @@
                                 <a href={{ route('festival-venue.create') }} class="btn btn-sm btn-primary btn-flat">
                                     Add Festival Venue
                                 </a>
-                                <a href={{ route('festival-venue.index') }} class="btn btn-sm btn-secondary btn-flat ">
+                                <a href={{ route('festival-venue.index') }} class="btn btn-sm btn-warning btn-flat ">
                                     Reset
                                 </a>
                             </h3>

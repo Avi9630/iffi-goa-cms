@@ -42,18 +42,20 @@ class CubeController extends Controller
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->destination);
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
             if ($convertInWebp) {
-                $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $cube->image_name = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $cube->image_url = null;
             }
         } else {
             $cube->image_url = $payload['image_url'];
             $cube->image_name = null;
         }
-
         if ($cube->save()) {
             return redirect()->route('cube.index')->with('success', 'Cube uploaded successfully.!!');
         } else {
@@ -82,11 +84,20 @@ class CubeController extends Controller
             $cube->link = $payload['link'] ?? $cube->link;
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
                 $file = $request->file('image');
-                $originalFilename = $file->getClientOriginalName();
-                app(ExternalApiService::class)->postData($file, $this->destination);
+                // app(ExternalApiService::class)->postData($file, $this->destination);
+                // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+                // if ($convertInWebp) {
+                //     $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                //     $cube->image_url = null;
+                // }
+                $extension = strtolower($file->getClientOriginalExtension());
+                $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+                if (!$upload['status']) {
+                    return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+                }
                 $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
                 if ($convertInWebp) {
-                    $cube->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    $cube->image_name = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                     $cube->image_url = null;
                 }
             } else {

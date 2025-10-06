@@ -95,12 +95,22 @@ class InternationalCinemaController extends Controller
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            app(ExternalApiService::class)->postData($file, $this->destination);
+            // $originalFilename = $file->getClientOriginalName();
+            // app(ExternalApiService::class)->postData($file, $this->destination);
+            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            // if ($convertInWebp) {
+            //     $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     // $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+            //     $internationalCinema->img_url = null;
+            // }
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
             if ($convertInWebp) {
-                $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                // $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                $internationalCinema->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $internationalCinema->img_url = null;
             }
         } else {
@@ -154,12 +164,21 @@ class InternationalCinemaController extends Controller
                     $gcsService->deleteImageFromGCS($internationalCinema->img_url);
                 }
                 $file = $request->file('image');
-                $originalFilename = $file->getClientOriginalName();
-                app(ExternalApiService::class)->postData($file, $this->destination);
+                // $originalFilename = $file->getClientOriginalName();
+                // app(ExternalApiService::class)->postData($file, $this->destination);
+                // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+                // if ($convertInWebp) {
+                //     $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                //     $internationalCinema->img_url = null;
+                // }
+                $extension = strtolower($file->getClientOriginalExtension());
+                $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+                if (!$upload['status']) {
+                    return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+                }
                 $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
                 if ($convertInWebp) {
-                    $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                    // $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
+                    $internationalCinema->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                     $internationalCinema->img_url = null;
                 }
             } else {
