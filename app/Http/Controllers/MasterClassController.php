@@ -25,8 +25,8 @@ class MasterClassController extends Controller
         $payload = $request->all();
         $request->validate([
             'topic_id' => 'required|numeric',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i|after:start_time',
             'format' => 'nullable|string',
             'session_url' => 'nullable|string',
         ]);
@@ -60,8 +60,8 @@ class MasterClassController extends Controller
 
         $request->validate([
             'topic_id' => 'required|numeric',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i|after:start_time',
             'year' => 'nullable|digits:4|integer|min:2022|max:2025',
             'format' => 'nullable|string',
             'session_url' => 'nullable',
