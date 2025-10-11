@@ -73,9 +73,9 @@
                                     @foreach ($speakers as $speaker)
                                         <tr class="align-middle">
                                             <td>{{ $speaker->id }}</td>
-                                            <td>{{ $speaker->masterTopic->masterDate->date }}</td>
-                                            <td>{{ $speaker->masterTopic->title }}</td>
-                                            <td>{{ $speaker->speaker_name }}</td>
+                                            <td>{{ $speaker->masterTopic->masterDate->date ?? null }}</td>
+                                            <td>{{ $speaker->masterTopic->title ?? null }}</td>
+                                            <td>{{ $speaker->speaker_name ?? null }}</td>
                                             <td>
                                                 <div style="max-height: 100px; overflow-y: auto; white-space: pre-wrap;">
                                                     {!! $speaker->speaker_detail !!}

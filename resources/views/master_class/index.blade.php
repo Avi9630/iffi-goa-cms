@@ -71,16 +71,16 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($masterClasses as $master)
-                                    {{-- @php
-                                        dd($master->masterTopic->masterDate->date);
-                                    @endphp --}}
+                                    @php
+                                        // dd($master->masterTopic);
+                                    @endphp
                                         <tr class="align-middle">
                                             <td>{{ $master->id }}</td>
-                                            <td>{{ $master->masterTopic->masterDate->date }}</td>
-                                            <td>{{$master->masterTopic->title }}</td>
-                                            <td>{{ $master->start_time }}</td>
-                                            <td>{{ $master->end_time }}</td>
-                                            <td>{{ $master->format }}</td>
+                                            <td>{{ $master->masterTopic->masterDate->date ?? null }}</td>
+                                            <td>{{$master->masterTopic->title ?? null }}</td>
+                                            <td>{{ $master->start_time ?? null }}</td>
+                                            <td>{{ $master->end_time ?? null}}</td>
+                                            <td>{{ $master->format ?? null}}</td>
 
                                             <td>
                                                 <form action="{{ route('masterClass.toggleStatus', $master->id) }}"
