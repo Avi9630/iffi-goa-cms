@@ -16,7 +16,7 @@ class MasterClassTopicController extends Controller
 
     function create()
     {
-        $masterDates = MasterClassDate::where(['status'=>1])->get();
+        $masterDates = MasterClassDate::where(['status' => 1])->get();
         return view('master_class_topic.createNew', compact('masterDates'));
     }
 
@@ -43,20 +43,23 @@ class MasterClassTopicController extends Controller
     function edit($id)
     {
         $masterClass = MasterClassTopic::findOrFail($id);
-        return view('master_class_topic.edit', compact('masterClass'));
+        $masterDates = MasterClassDate::where(['status' => 1])->get();
+        return view('master_class_topic.edit', compact(['masterClass', 'masterDates']));
     }
 
     function update(Request $request, $id)
     {
         $payload = $request->all();
         $request->validate([
+            'master_date_id' => 'required',
             'title' => 'required',
             'description' => 'required',
         ]);
-        $masterClass = MasterClassTopic::findOrFail($id);
-        $masterClass['title'] = $payload['title'];
-        $masterClass['description'] = $payload['description'];
-        if ($masterClass->save()) {
+        $masterClassTopic = MasterClassTopic::findOrFail($id);
+        $masterClassTopic['master_date_id'] = $payload['master_date_id'] ?? $masterClassTopic->master_date_id;
+        $masterClassTopic['title'] = $payload['title'];
+        $masterClassTopic['description'] = $payload['description'];
+        if ($masterClassTopic->save()) {
             return redirect()->route('master-class-topic.index')->with('success', 'Master class Updated successfully.!!');
         } else {
             return redirect()->back()->with('warning', 'Something went wrong during update master class.!!');
@@ -78,21 +81,21 @@ class MasterClassTopicController extends Controller
         return redirect()->back()->with('danger', 'Master class deleted successfully.!!');
     }
 
-    function addDetail ($id) 
+    function addDetail($id)
     {
         $masterTopic = MasterClassTopic::findOrFail($id);
-        return view('master_class.create',compact('masterTopic'));
+        return view('master_class.create', compact('masterTopic'));
     }
 
-    function addSpeaker ($id) 
+    function addSpeaker($id)
     {
         $masterTopic = MasterClassTopic::findOrFail($id);
-        return view('speakers.create',compact('masterTopic'));
+        return view('speakers.create', compact('masterTopic'));
     }
 
-    function addModerator ($id) 
+    function addModerator($id)
     {
         $masterTopic = MasterClassTopic::findOrFail($id);
-        return view('moderators.create',compact('masterTopic'));
+        return view('moderators.create', compact('masterTopic'));
     }
 }
