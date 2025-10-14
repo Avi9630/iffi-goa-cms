@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\PhotoCategory;
-use App\Services\ConvertToWEBP;
-use App\Services\ExternalApiService;
 use App\Services\GCSService;
 use Illuminate\Http\Request;
 

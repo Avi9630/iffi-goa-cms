@@ -1,5 +1,40 @@
 @extends('layouts.app')
 @section('content')
+
+    <div class="app-content-header">
+        <div class="container-fluid">
+            <span>
+                <h4 class="alert-danger"></h4>
+            </span>
+            @foreach (['success', 'info', 'danger', 'warning'] as $msg)
+                @if (Session::has($msg))
+                    <div id="flash-message" class="alert alert-{{ $msg }}" role="alert">
+                        {{ Session::get($msg) }}
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+
+    {{-- <div class="app-content-header">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h3 class="mb-0">Dashboard</h3>
+                                </div>
+                                <form method="POST" action="{{ route('switch.db') }}">
+                                    @csrf
+                                    <select name="db">
+                                        <option value="main_db">Main DB</option>
+                                        <option value="iffi_goa_db">English</option>
+                                        <option value="hindi_iffi_goa">Hindi</option>
+                                    </select>
+                                    <button type="submit">Switch Database</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div> --}}
+
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">

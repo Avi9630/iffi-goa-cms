@@ -62,7 +62,7 @@
                                         <th>Year</th>
                                         <th>Active</th>
                                         <th>Status</th>
-                                        <th>Highlights</th>
+                                        {{-- <th>Highlights</th> --}}
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -100,7 +100,7 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <form action="{{ route('photo.highlightToggle', $photo->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
@@ -110,7 +110,7 @@
                                                         {{ $photo->highlights === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
                                             <td style="white-space: nowrap;">
                                                 <a href="{{ route('photo.edit', $photo->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
