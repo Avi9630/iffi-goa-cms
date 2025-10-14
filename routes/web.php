@@ -21,6 +21,8 @@ use App\Http\Controllers\TickerController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CubeController;
+use App\Http\Controllers\DatabaseSwitchController;
+use App\Http\Controllers\HighlightController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +35,8 @@ Route::group(['middleware' => 'guest'], function () {
         Route::post('register', 'register')->name('register');
     });
 });
+
+Route::post('/switch-db', [DatabaseSwitchController::class, 'switchDatabase'])->name('switch.db');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resources([
@@ -48,6 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
         'master-class' => MasterClassController::class,
         'permission' => PermissionController::class,
         'moderator' => ModeratorController::class,
+        'highlight' => HighlightController::class,
         'speaker' => SpeakerController::class,
         'peacock' => PeacockController::class,
         'ticker' => TickerController::class,
@@ -111,6 +116,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
     Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
     Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
+    
+    //HIGHLIGHT 
+    Route::put('/highlight/{id}/toggle', [HighlightController::class, 'toggleStatus'])->name('highlight.toggle');
 
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
     Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');

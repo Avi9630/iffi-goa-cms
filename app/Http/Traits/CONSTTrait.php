@@ -21,6 +21,7 @@ trait CONSTTrait
             'Gallery' => 'images/gallery',
             'Cube' => 'images/cube/webp',
             'Jury' => 'images/juries',
+            'Highlight' => 'images/highlights',
         ];
     }
 
