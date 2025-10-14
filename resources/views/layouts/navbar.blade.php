@@ -1,6 +1,6 @@
 <nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
-        <div style="display: flex; width: 30%; white-space: nowrap">
+        {{-- <div style="display: flex; width: 30%; white-space: nowrap">
             <form method="POST" action="{{ route('switch.db') }}" style="display: flex; width: 100%">
                 @csrf
                 <select name="db" class="form-select @error('role_id') is-invalid @enderror">
@@ -13,7 +13,7 @@
                 @enderror
                 <button type="submit" class="btn btn-sm btn-success">Switch Database</button>
             </form>
-        </div>
+        </div> --}}
 
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
