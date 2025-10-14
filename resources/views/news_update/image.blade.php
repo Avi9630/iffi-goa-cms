@@ -94,6 +94,9 @@
 
                 <a href={{ route('getImageByFolder', ['path' => 'images/festival-venue']) }}
                     class="btn btn-primary btn-flat m-1">Festival Venue</a>
+                
+                    <a href={{ route('getImageByFolder', ['path' => 'images/highlights']) }}
+                    class="btn btn-primary btn-flat m-1">Highlights</a>
             </div>
         </div>
     </div>
