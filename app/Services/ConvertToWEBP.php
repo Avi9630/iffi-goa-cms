@@ -98,6 +98,7 @@ class ConvertToWEBP
             } else {
                 $filePath = '/var/www/html/iffi-goa/public/' . $destinationPath . '/' . $file->getClientOriginalName();
             }
+            
             $manager = new ImageManager(new Driver());
             if (!file_exists($filePath)) {
                 throw new \Exception("File does not exist: {$filePath}");
