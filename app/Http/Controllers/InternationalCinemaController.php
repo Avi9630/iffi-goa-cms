@@ -31,7 +31,7 @@ class InternationalCinemaController extends Controller
 
     function search(Request $request)
     {
-        $payload= $request->all();
+        $payload = $request->all();
         $searchTerm = $request->input('search');
         $internationalCinemas = InternationalCinema::where('award_year', $searchTerm)->orderBy('id', 'DESC')->paginate(10);
         $curatedSections = CuratedSection::all();
@@ -92,23 +92,22 @@ class InternationalCinemaController extends Controller
         $internationalCinema->award_year            =   $validated['award_year'];
         $internationalCinema->show_year             =   json_encode([$validated['award_year']]);
         $internationalCinema->status                =   1;
-        
+
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $extension = strtolower($file->getClientOriginalExtension());
             $upload = app(ExternalApiService::class)->postData($file, $this->destination);
-            
+
             if (!$upload['status']) {
                 return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
             }
 
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            
+
             if ($convertInWebp) {
                 $internationalCinema->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $internationalCinema->img_url = null;
             }
-
         } else {
             if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
                 $internationalCinema->img_url = $payload['image_url'];
@@ -129,18 +128,39 @@ class InternationalCinemaController extends Controller
     function update(Request $request, GCSService $gcsService, $id)
     {
         $payload = $request->all();
-        $validated = $request->validate([
+        $internationalCinema = InternationalCinema::findOrFail($id);
+        // $validated = $request->validate([
+        //     'curated_section_id' => 'required|exists:curated_sections,id',
+        //     'title'             =>  'required|string|max:300',
+        //     'slug'              =>  'required|string|max:255',
+        //     'directed_by'       =>  'required|string|max:255',
+        //     'country_of_origin' =>  'required|string|max:255',
+        //     'language'          =>  'required|string|max:255',
+        //     'image'             =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+        //     'image_url'         =>  'required_without:image|nullable|string|max:255',
+        //     'year'              =>  'required|integer|min:1800|max:' . date('Y'),
+        //     'award_year'        =>  'required|integer|min:1800|max:' . date('Y'),
+        // ]);
+
+        $rules = [
             'curated_section_id' => 'required|exists:curated_sections,id',
-            'title'             =>  'required|string|max:300',
-            'slug'              =>  'required|string|max:255',
-            'directed_by'       =>  'required|string|max:255',
-            'country_of_origin' =>  'required|string|max:255',
-            'language'          =>  'required|string|max:255',
-            'image'             =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'image_url'         =>  'required_without:image|nullable|string|max:255',
-            'year'              =>  'required|integer|min:1800|max:' . date('Y'),
-            'award_year'        =>  'required|integer|min:1800|max:' . date('Y'),
-        ]);
+            'title'             => 'required|string|max:300',
+            'slug'              => 'required|string|max:255',
+            'directed_by'       => 'required|string|max:255',
+            'country_of_origin' => 'required|string|max:255',
+            'language'          => 'required|string|max:255',
+            'image_url'         => 'nullable|string|max:255',
+            'year'              => 'required|integer|min:1800|max:' . date('Y'),
+            'award_year'        => 'required|integer|min:1800|max:' . date('Y'),
+        ];
+
+        if ($internationalCinema->img_src == null && !$request->hasFile('image')) {
+            $rules['image'] = 'required|file|mimes:jpg,jpeg,png,webp|max:2048';
+        } else {
+            $rules['image'] = 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048';
+        }
+
+        $validated = $request->validate($rules);
 
         $internationalCinema = InternationalCinema::findOrFail($id);
 
@@ -171,8 +191,10 @@ class InternationalCinemaController extends Controller
                     $internationalCinema->img_url = null;
                 }
             } else {
-                $internationalCinema->img_url = $payload['image_url'];
-                $internationalCinema->img_src = null;
+                if(isset($payload['image_url']) && !empty($payload['image_url'])) {
+                    $internationalCinema->img_url = $payload['image_url'];
+                    $internationalCinema->img_src = null;
+                }
             }
 
             $internationalCinema->save();
@@ -280,7 +302,7 @@ class InternationalCinemaController extends Controller
                         'created_at'            =>  now(),
                     ],
                 );
-                
+
                 InternationalCinemaBasicDetail::updateOrCreate(
                     [
                         'cinema_id' => $cinema->id,
