@@ -73,8 +73,8 @@ class InternationalCinemaController extends Controller
             'title'                 =>  'required|string|max:255',
             'slug'                  =>  'required|string|max:255',
             'directed_by'           =>  'required|string|max:255',
-            'country_of_origin'     =>  'required|string|max:255',
-            'language'              =>  'required|string|max:255',
+            'country_of_origin'     =>  'nullable|string|max:255',
+            'language'              =>  'nullable|string|max:255',
             'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'             =>  'required_without:image|nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
@@ -86,8 +86,8 @@ class InternationalCinemaController extends Controller
         $internationalCinema->title                 =   $validated['title'];
         $internationalCinema->slug                  =   $validated['slug'];
         $internationalCinema->directed_by           =   $validated['directed_by'];
-        $internationalCinema->country_of_origin     =   $validated['country_of_origin'];
-        $internationalCinema->language              =   $validated['language'];
+        $internationalCinema->country_of_origin     =   $validated['country_of_origin']?? null;
+        $internationalCinema->language              =   $validated['language'] ?? null;
         $internationalCinema->year                  =   $validated['year'];
         $internationalCinema->award_year            =   $validated['award_year'];
         $internationalCinema->show_year             =   json_encode([$validated['award_year']]);
@@ -147,8 +147,8 @@ class InternationalCinemaController extends Controller
             'title'             => 'required|string|max:300',
             'slug'              => 'required|string|max:255',
             'directed_by'       => 'required|string|max:255',
-            'country_of_origin' => 'required|string|max:255',
-            'language'          => 'required|string|max:255',
+            'country_of_origin' => 'nullable|string|max:255',
+            'language'          => 'nullable|string|max:255',
             'image_url'         => 'nullable|string|max:255',
             'year'              => 'required|integer|min:1800|max:' . date('Y'),
             'award_year'        => 'required|integer|min:1800|max:' . date('Y'),
@@ -169,8 +169,8 @@ class InternationalCinemaController extends Controller
             $internationalCinema->title                 =   $validated['title'];
             $internationalCinema->slug                  =   $validated['slug'];
             $internationalCinema->directed_by           =   $validated['directed_by'];
-            $internationalCinema->country_of_origin     =   $validated['country_of_origin'];
-            $internationalCinema->language              =   $validated['language'];
+            $internationalCinema->country_of_origin     =   $validated['country_of_origin'] ?? $internationalCinema->country_of_origin;
+            $internationalCinema->language              =   $validated['language'] ?? $internationalCinema->language;
             $internationalCinema->year                  =   $validated['year'];
             $internationalCinema->award_year            =   $validated['award_year'];
             $internationalCinema->show_year             =   json_encode([$validated['award_year']]);
