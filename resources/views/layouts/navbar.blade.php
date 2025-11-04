@@ -1,5 +1,20 @@
 <nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
+        {{-- <div style="display: flex; width: 30%; white-space: nowrap">
+            <form method="POST" action="{{ route('switch.db') }}" style="display: flex; width: 100%">
+                @csrf
+                <select name="db" class="form-select @error('role_id') is-invalid @enderror">
+                    <option value="">Select Database</option>
+                    <option value="iffi_goa_db">English</option>
+                    <option value="hindi_iffi_goa">Hindi</option>
+                </select>
+                @error('db')
+                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                @enderror
+                <button type="submit" class="btn btn-sm btn-success">Switch Database</button>
+            </form>
+        </div> --}}
+
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
                 <a class="nav-link" href="#" data-lte-toggle="fullscreen">
@@ -7,6 +22,7 @@
                     <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none;"></i>
                 </a>
             </li>
+
             <li class="nav-item dropdown user-menu">
                 @auth
                     <a href="{{ url('/') }}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">

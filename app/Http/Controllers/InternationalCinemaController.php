@@ -31,7 +31,7 @@ class InternationalCinemaController extends Controller
 
     function search(Request $request)
     {
-        $payload = $request->all();
+        $payload= $request->all();
         $searchTerm = $request->input('search');
         $internationalCinemas = InternationalCinema::where('award_year', $searchTerm)->orderBy('id', 'DESC')->paginate(10);
         $curatedSections = CuratedSection::all();
@@ -69,50 +69,46 @@ class InternationalCinemaController extends Controller
     {
         $payload = $request->all();
         $validated = $request->validate([
-            'curated_section_id' => 'required|exists:curated_sections,id',
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255',
-            'directed_by' => 'required|string|max:255',
-            'country_of_origin' => 'required|string|max:255',
-            'language' => 'required|string|max:255',
-            // 'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'image' => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'image_url' => 'required_without:image|nullable|string|max:255',
-            'year' => 'required|integer|min:1800|max:' . date('Y'),
-            'award_year' => 'required|integer|min:1800|max:' . date('Y'),
+            'curated_section_id'    =>  'required|exists:curated_sections,id',
+            'title'                 =>  'required|string|max:255',
+            'slug'                  =>  'required|string|max:255',
+            'directed_by'           =>  'required|string|max:255',
+            'country_of_origin'     =>  'required|string|max:255',
+            'language'              =>  'required|string|max:255',
+            'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'             =>  'required_without:image|nullable|string|max:255',
+            'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
+            'award_year'            =>  'required|integer|min:1800|max:' . date('Y'),
         ]);
 
         $internationalCinema = new InternationalCinema();
-        $internationalCinema->curated_section_id = $validated['curated_section_id'];
-        $internationalCinema->title = $validated['title'];
-        $internationalCinema->slug = $validated['slug'];
-        $internationalCinema->directed_by = $validated['directed_by'];
-        $internationalCinema->country_of_origin = $validated['country_of_origin'];
-        $internationalCinema->language = $validated['language'];
-        $internationalCinema->year = $validated['year'];
-        $internationalCinema->award_year = $validated['award_year'];
-        $internationalCinema->status = 1;
-
+        $internationalCinema->curated_section_id    =   $validated['curated_section_id'];
+        $internationalCinema->title                 =   $validated['title'];
+        $internationalCinema->slug                  =   $validated['slug'];
+        $internationalCinema->directed_by           =   $validated['directed_by'];
+        $internationalCinema->country_of_origin     =   $validated['country_of_origin'];
+        $internationalCinema->language              =   $validated['language'];
+        $internationalCinema->year                  =   $validated['year'];
+        $internationalCinema->award_year            =   $validated['award_year'];
+        $internationalCinema->show_year             =   json_encode([$validated['award_year']]);
+        $internationalCinema->status                =   1;
+        
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
-            // $originalFilename = $file->getClientOriginalName();
-            // app(ExternalApiService::class)->postData($file, $this->destination);
-            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            // if ($convertInWebp) {
-            //     $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-            //     // $internationalCinema->img_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-            //     $internationalCinema->img_url = null;
-            // }
             $extension = strtolower($file->getClientOriginalExtension());
             $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+            
             if (!$upload['status']) {
                 return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
             }
+
             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            
             if ($convertInWebp) {
                 $internationalCinema->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                 $internationalCinema->img_url = null;
             }
+
         } else {
             if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
                 $internationalCinema->img_url = $payload['image_url'];
@@ -135,42 +131,35 @@ class InternationalCinemaController extends Controller
         $payload = $request->all();
         $validated = $request->validate([
             'curated_section_id' => 'required|exists:curated_sections,id',
-            'title' => 'required|string|max:300',
-            'slug' => 'required|string|max:255',
-            'directed_by' => 'required|string|max:255',
-            'country_of_origin' => 'required|string|max:255',
-            'language' => 'required|string|max:255',
-            // 'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'image' => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'image_url' => 'required_without:image|nullable|string|max:255',
-            'year' => 'required|integer|min:1800|max:' . date('Y'),
-            'award_year' => 'required|integer|min:1800|max:' . date('Y'),
+            'title'             =>  'required|string|max:300',
+            'slug'              =>  'required|string|max:255',
+            'directed_by'       =>  'required|string|max:255',
+            'country_of_origin' =>  'required|string|max:255',
+            'language'          =>  'required|string|max:255',
+            'image'             =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'         =>  'required_without:image|nullable|string|max:255',
+            'year'              =>  'required|integer|min:1800|max:' . date('Y'),
+            'award_year'        =>  'required|integer|min:1800|max:' . date('Y'),
         ]);
 
         $internationalCinema = InternationalCinema::findOrFail($id);
 
         if ($internationalCinema) {
-            $internationalCinema->curated_section_id = $validated['curated_section_id'] ?? null;
-            $internationalCinema->title = $validated['title'];
-            $internationalCinema->slug = $validated['slug'];
-            $internationalCinema->directed_by = $validated['directed_by'];
-            $internationalCinema->country_of_origin = $validated['country_of_origin'];
-            $internationalCinema->language = $validated['language'];
-            $internationalCinema->year = $validated['year'];
-            $internationalCinema->award_year = $validated['award_year'];
+            $internationalCinema->curated_section_id    =   $validated['curated_section_id'] ?? null;
+            $internationalCinema->title                 =   $validated['title'];
+            $internationalCinema->slug                  =   $validated['slug'];
+            $internationalCinema->directed_by           =   $validated['directed_by'];
+            $internationalCinema->country_of_origin     =   $validated['country_of_origin'];
+            $internationalCinema->language              =   $validated['language'];
+            $internationalCinema->year                  =   $validated['year'];
+            $internationalCinema->award_year            =   $validated['award_year'];
+            $internationalCinema->show_year             =   json_encode([$validated['award_year']]);
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
                 if ($internationalCinema->img_url) {
                     $gcsService->deleteImageFromGCS($internationalCinema->img_url);
                 }
                 $file = $request->file('image');
-                // $originalFilename = $file->getClientOriginalName();
-                // app(ExternalApiService::class)->postData($file, $this->destination);
-                // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-                // if ($convertInWebp) {
-                //     $internationalCinema->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                //     $internationalCinema->img_url = null;
-                // }
                 $extension = strtolower($file->getClientOriginalExtension());
                 $upload = app(ExternalApiService::class)->postData($file, $this->destination);
                 if (!$upload['status']) {
@@ -209,7 +198,6 @@ class InternationalCinemaController extends Controller
     public function uploadCSV(Request $request)
     {
         $payload = $request->all();
-
         $request->validate([
             'file' => 'required',
         ]);
@@ -217,11 +205,12 @@ class InternationalCinemaController extends Controller
         if (!$request->hasFile('file') && !$request->file('file')->isValid()) {
             return redirect()->back()->with('warning', 'Upload valid CSV.');
         }
-        // $csvFile = storage_path('app/CSV/test1.csv');
+
         $csvFile = $payload['file'];
         if (!file_exists($csvFile)) {
             return response()->json(['error' => 'File not found.'], 404);
         }
+
         if (($handle = fopen($csvFile, 'r')) === false) {
             return response()->json(['error' => 'Could not open file.'], 500);
         }
@@ -267,28 +256,31 @@ class InternationalCinemaController extends Controller
                     'cinematographer' => $row[31] ?? null,
                     'producer_bio' => $row[32] ?? null,
                 ];
+
                 $curated = CuratedSection::where('title', $data['section'])->first();
                 if (!$curated) {
                     continue;
                 }
+
                 $cinema = InternationalCinema::updateOrCreate(
                     [
-                        'title' => $data['title'],
-                        'award_year' => $data['award_year'],
+                        'title'         =>  $data['title'],
+                        'award_year'    =>  $data['award_year'],
+                        'show_year'     =>  json_encode([$data['award_year']]),
                     ],
                     [
-                        'curated_section_id' => $curated->id,
-                        'slug' => str_replace(' ', '-', $data['title']),
-                        'directed_by' => $data['director'],
-                        'country_of_origin' => $data['country'],
-                        'language' => $data['language'],
-                        'year' => $data['production_year'],
-                        'status' => 1,
-                        'updated_at' => now(),
-                        'created_at' => now(),
+                        'curated_section_id'    =>  $curated->id,
+                        'slug'                  =>  str_replace(' ', '-', $data['title']),
+                        'directed_by'           =>  $data['director'],
+                        'country_of_origin'     =>  $data['country'],
+                        'language'              =>  $data['language'],
+                        'year'                  =>  $data['production_year'],
+                        'status'                =>  1,
+                        'updated_at'            =>  now(),
+                        'created_at'            =>  now(),
                     ],
                 );
-
+                
                 InternationalCinemaBasicDetail::updateOrCreate(
                     [
                         'cinema_id' => $cinema->id,

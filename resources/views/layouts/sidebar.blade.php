@@ -159,6 +159,14 @@
                                     <p>Gallery</p>
                                 </a>
                             </li>
+                            
+                            {{-- Highlights --}}
+                            <li class="nav-item">
+                                <a href="{{ route('highlight.index') }}" class="nav-link {{ request()->is('highlight*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Highlight</p>
+                                </a>
+                            </li>
 
                             {{-- Internation Media --}}
                             <li class="nav-item">

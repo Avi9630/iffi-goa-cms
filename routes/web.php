@@ -6,6 +6,7 @@ use App\Http\Controllers\InternationalMediaController;
 use App\Http\Controllers\MasterClassTopicController;
 use App\Http\Controllers\MasterClassDateController;
 use App\Http\Controllers\IndianPanoramaController;
+use App\Http\Controllers\DatabaseSwitchController;
 use App\Http\Controllers\FestivalVenueController;
 use App\Http\Controllers\LatestUpdateController;
 use App\Http\Controllers\PressReleaseController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\JuryDetailController;
 use App\Http\Controllers\NewsUpdateController;
 use App\Http\Controllers\ModeratorController;
+use App\Http\Controllers\HighlightController;
 use App\Http\Controllers\PeacockController;
 use App\Http\Controllers\SpeakerController;
 use App\Http\Controllers\CommonController;
@@ -34,6 +36,8 @@ Route::group(['middleware' => 'guest'], function () {
     });
 });
 
+Route::post('/switch-db', [DatabaseSwitchController::class, 'switchDatabase'])->name('switch.db');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::resources([
         'ic-basic-detail' => InternationalCinemaBasicDetailController::class,
@@ -48,6 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
         'master-class' => MasterClassController::class,
         'permission' => PermissionController::class,
         'moderator' => ModeratorController::class,
+        'highlight' => HighlightController::class,
         'speaker' => SpeakerController::class,
         'peacock' => PeacockController::class,
         'ticker' => TickerController::class,
@@ -111,6 +116,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
     Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
     Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
+    
+    //HIGHLIGHT 
+    Route::put('/highlight/{id}/toggle', [HighlightController::class, 'toggleStatus'])->name('highlight.toggle');
 
     Route::put('/ic-basic-detail/{id}/toggle', [InternationalCinemaBasicDetailController::class, 'toggleStatus'])->name('icBasicDetail.toggle');
     Route::get('/search', [InternationalCinemaBasicDetailController::class, 'search'])->name('icBasicDetail.search');
