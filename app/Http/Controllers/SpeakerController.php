@@ -33,14 +33,14 @@ class SpeakerController extends Controller
         $request->validate([
             'topic_id' => 'required|numeric',
             'speaker_name' => 'required|string',
-            'speaker_detail' => 'required|string',
+            'speaker_detail' => 'nullable|string',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $speaker = new Speaker();
         $speaker['topic_id'] = $payload['topic_id'];
         $speaker['speaker_name'] = $payload['speaker_name'];
-        $speaker['speaker_detail'] = $payload['speaker_detail'];
+        $speaker['speaker_detail'] = $payload['speaker_detail'] ?? null;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -71,7 +71,7 @@ class SpeakerController extends Controller
         $request->validate([
             'topic_id' => 'required|numeric',
             'speaker_name' => 'required|string',
-            'speaker_detail' => 'required|string',
+            'speaker_detail' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -79,7 +79,7 @@ class SpeakerController extends Controller
 
         $speaker['topic_id'] = $payload['topic_id'];
         $speaker['speaker_name'] = $payload['speaker_name'];
-        $speaker['speaker_detail'] = $payload['speaker_detail'];
+        $speaker['speaker_detail'] = $payload['speaker_detail'] ?? null;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
