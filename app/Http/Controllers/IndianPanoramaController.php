@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\IndianPanorama;
 use App\Models\IndianPanoramaOfficialSelection;
-use App\Services\ConvertToWEBP;
 use App\Services\ExternalApiService;
+use App\Services\ConvertToWEBP;
+use App\Models\IndianPanorama;
 use Illuminate\Http\Request;
 
 class IndianPanoramaController extends Controller
@@ -19,10 +19,158 @@ class IndianPanoramaController extends Controller
 
     public function index(Request $request)
     {
-        $payload = $request->all();
-        $indianPanoramas = IndianPanorama::orderBy('id', 'DESC')->paginate(10);
-        $IPOfficialSelection = IndianPanoramaOfficialSelection::all();
+        $payload                =   $request->all();
+        $indianPanoramas        =   IndianPanorama::orderBy('id', 'DESC')->paginate(10);
+        $IPOfficialSelection    =   IndianPanoramaOfficialSelection::all();
         return view('indian_panorama.index', compact(['indianPanoramas', 'IPOfficialSelection', 'payload']));
+    }
+
+    function create()
+    {
+        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
+        return view('indian_panorama.create', compact('IPOfficialSelections'));
+    }
+
+    public function store(Request $request)
+    {
+        $payload = $request->all();
+        $validated = $request->validate([
+            'official_selection_id' =>  'required|exists:curated_sections,id',
+            'title'                 =>  'required|string|max:255',
+            'directed_by'           =>  'required|string|max:255',
+            'country_of_origin'     =>  'nullable|string|max:255',
+            'language'              =>  'required|string|max:255',
+            'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'             =>  'required_without:image|nullable|string|max:255',
+            'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
+        ]);
+
+        $indianPanorama = new IndianPanorama();
+        $indianPanorama->official_selection_id = $validated['official_selection_id'];
+        $indianPanorama->title = $validated['title'];
+        $indianPanorama->slug = str_replace(' ', '-', strtolower($validated['title']));
+        $indianPanorama->directed_by = $validated['directed_by'];
+        $indianPanorama->country_of_origin = $validated['country_of_origin'];
+        $indianPanorama->language = $validated['language'];
+        $indianPanorama->year = $validated['year'];
+        $indianPanorama->created_by = 1;
+        $indianPanorama->status = 1;
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file = $request->file('image');
+            $extension = strtolower($file->getClientOriginalExtension());
+            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+            if (!$upload['status']) {
+                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+            }
+            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+            if ($convertInWebp) {
+                $indianPanorama->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
+                $indianPanorama->img_url = null;
+            }
+        } else {
+            if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
+                $indianPanorama->img_url = $payload['image_url'];
+                $indianPanorama->img_src = null;
+            }
+        }
+        if ($indianPanorama->save()) {
+            return redirect()->route('indian-panorama.index')->with('success', 'Indian Panorama created successfully.!!');
+        } else {
+            return redirect()->back()->with('warning', 'Something went wrong with records.!!');
+        }
+    }
+
+    function edit($id)
+    {
+        $indianPanorama = IndianPanorama::findOrFail($id);
+        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
+        return view('indian_panorama.edit', compact(['indianPanorama', 'IPOfficialSelections']));
+    }
+
+    function update(Request $request, $id)
+    {
+        $payload = $request->all();
+        $indianPanorama = IndianPanorama::findOrFail($id);
+
+        // $validated = $request->validate([
+        //     'official_selection_id' => 'required|exists:curated_sections,id',
+        //     'title' => 'required|string|max:255',
+        //     'directed_by' => 'required|string|max:255',
+        //     'country_of_origin' => 'nullable|string|max:255',
+        //     'language' => 'required|string|max:255',
+        //     'image' => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+        //     'image_url' => 'required_without:image|nullable|string|max:255',
+        //     'year' => 'required|integer|min:1800|max:' . date('Y'),
+        // ]);
+
+        $rules = [
+            'official_selection_id' =>  'required|exists:curated_sections,id',
+            'title'                 =>  'required|string|max:255',
+            'directed_by'           =>  'nullable|string|max:255',
+            'country_of_origin'     =>  'nullable|string|max:255',
+            'language'              =>  'nullable|string|max:255',
+            // 'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'             => 'nullable|string|max:255',
+            'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
+        ];
+
+        if ($indianPanorama->img_src == null && !$request->hasFile('image')) {
+            $rules['image'] = 'required|file|mimes:jpg,jpeg,png,webp|max:2048';
+        } else {
+            $rules['image'] = 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048';
+        }
+
+        $validated = $request->validate($rules);
+
+        // $indianPanorama = IndianPanorama::findOrFail($id);
+
+        if ($indianPanorama) {
+            $indianPanorama->official_selection_id  =   $validated['official_selection_id'] ?? $indianPanorama->official_selection_id;
+            $indianPanorama->title                  =   $validated['title'] ?? null;
+            $indianPanorama->slug                   =   str_replace(' ', '-', strtolower($indianPanorama->title));
+            $indianPanorama->directed_by            =   $validated['directed_by'] ?? null;
+            $indianPanorama->country_of_origin      =   $validated['country_of_origin'] ?? null;
+            $indianPanorama->language               =   $validated['language'] ?? null;
+            $indianPanorama->year                   =   $validated['year'] ?? null;
+
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $file       =   $request->file('image');
+                $extension  =   strtolower($file->getClientOriginalExtension());
+
+                $upload     =   app(ExternalApiService::class)->postData($file, $this->destination);
+                
+                if (!$upload['status']) {
+                    return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+                }
+
+                $convertInWebp  =   app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+                
+                if ($convertInWebp) {
+                    $indianPanorama->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
+                    $indianPanorama->img_url = null;
+                }
+            } else {
+                if (isset($payload['image_url']) && !empty($payload['image_url'])) {
+                    $indianPanorama->img_url = $payload['image_url'];
+                    $indianPanorama->img_src = null;
+                }
+            }
+            if ($indianPanorama->save()) {
+                return redirect()->route('indian-panorama.index')->with('success', 'Indian Panorama entry updated successfully.!!');
+            } else {
+                return redirect()->back()->with('warning', 'Something went wrong with records.!!');
+            }
+        } else {
+            return redirect()->back()->with('warning', 'Something went wrong.!!');
+        }
+    }
+
+    function destroy($id)
+    {
+        $indianPanorama = IndianPanorama::findOrFail($id);
+        $indianPanorama->delete();
+        return redirect()->route('indian-panorama.index')->with('danger', 'Entry deleted successfully.!!');
     }
 
     public function search(Request $request)
@@ -58,144 +206,6 @@ class IndianPanoramaController extends Controller
         return redirect()->back()->with('success', 'Status updated successfully.');
     }
 
-    function create()
-    {
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('indian_panorama.create', compact('IPOfficialSelections'));
-    }
-
-    public function store(Request $request)
-    {
-        $payload = $request->all();
-        $validated = $request->validate([
-            'official_selection_id' => 'required|exists:curated_sections,id',
-            'title' => 'required|string|max:255',
-            'directed_by' => 'required|string|max:255',
-            'country_of_origin' => 'nullable|string|max:255',
-            'language' => 'required|string|max:255',
-            // 'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'image' => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'image_url' => 'required_without:image|nullable|string|max:255',
-            'year' => 'required|integer|min:1800|max:' . date('Y'),
-        ]);
-
-        $indianPanorama = new IndianPanorama();
-        $indianPanorama->official_selection_id = $validated['official_selection_id'];
-        $indianPanorama->title = $validated['title'];
-        $indianPanorama->slug = str_replace(' ', '-', strtolower($validated['title']));
-        $indianPanorama->directed_by = $validated['directed_by'];
-        $indianPanorama->country_of_origin = $validated['country_of_origin'];
-        $indianPanorama->language = $validated['language'];
-        $indianPanorama->year = $validated['year'];
-        $indianPanorama->created_by = 1;
-        $indianPanorama->status = 1;
-
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file = $request->file('image');
-            // $originalFilename = $file->getClientOriginalName();
-            // app(ExternalApiService::class)->postData($file, $this->destination);
-            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            // if ($convertInWebp) {
-            //     $indianPanorama->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-            //     $indianPanorama->img_url = null;
-            // }
-            $extension = strtolower($file->getClientOriginalExtension());
-            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
-            if (!$upload['status']) {
-                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
-            }
-            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            if ($convertInWebp) {
-                $indianPanorama->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
-                $indianPanorama->img_url = null;
-            }
-        } else {
-            if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
-                $indianPanorama->img_url = $payload['image_url'];
-                $indianPanorama->img_src = null;
-            }
-        }
-        if ($indianPanorama->save()) {
-            return redirect()->route('indian-panorama.index')->with('success', 'Indian Panorama created successfully.!!');
-        } else {
-            return redirect()->back()->with('warning', 'Something went wrong with records.!!');
-        }
-    }
-
-    function edit($id)
-    {
-        $indianPanorama = IndianPanorama::findOrFail($id);
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('indian_panorama.edit', compact(['indianPanorama', 'IPOfficialSelections']));
-    }
-
-    function update(Request $request, $id)
-    {
-        $payload = $request->all();
-
-        $validated = $request->validate([
-            'official_selection_id' => 'required|exists:curated_sections,id',
-            'title' => 'required|string|max:255',
-            'directed_by' => 'required|string|max:255',
-            'country_of_origin' => 'nullable|string|max:255',
-            'language' => 'required|string|max:255',
-            // 'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'image' => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
-            'image_url' => 'required_without:image|nullable|string|max:255',
-            'year' => 'required|integer|min:1800|max:' . date('Y'),
-        ]);
-
-        $indianPanorama = IndianPanorama::findOrFail($id);
-
-        if ($indianPanorama) {
-            $indianPanorama->official_selection_id = $validated['official_selection_id'] ?? $indianPanorama->official_selection_id;
-            $indianPanorama->title = $validated['title'] ?? $indianPanorama->title;
-            $indianPanorama->slug = str_replace(' ', '-', strtolower($indianPanorama->title));
-            $indianPanorama->directed_by = $validated['directed_by'] ?? $indianPanorama->directed_by;
-            $indianPanorama->country_of_origin = $validated['country_of_origin'] ?? $indianPanorama->country_of_origin;
-            $indianPanorama->language = $validated['language'] ?? $indianPanorama->language;
-            $indianPanorama->year = $validated['year'] ?? $indianPanorama->year;
-
-            if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                $file = $request->file('image');
-                // $originalFilename = $file->getClientOriginalName();
-                // app(ExternalApiService::class)->postData($file, $this->destination);
-                // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-                // if ($convertInWebp) {
-                //     $indianPanorama->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-                //     $indianPanorama->img_url = null;
-                // }
-                $extension = strtolower($file->getClientOriginalExtension());
-                $upload = app(ExternalApiService::class)->postData($file, $this->destination);
-                if (!$upload['status']) {
-                    return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
-                }
-                $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-                if ($convertInWebp) {
-                    $indianPanorama->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
-                    $indianPanorama->img_url = null;
-                }
-            } else {
-                $indianPanorama->img_url = $payload['image_url'];
-                $indianPanorama->img_src = null;
-            }
-            if ($indianPanorama->save()) {
-                return redirect()->route('indian-panorama.index')->with('success', 'Indian Panorama entry updated successfully.!!');
-            } else {
-                return redirect()->back()->with('warning', 'Something went wrong with records.!!');
-            }
-        } else {
-            return redirect()->back()->with('warning', 'Something went wrong.!!');
-        }
-    }
-
-    function destroy($id)
-    {
-        $indianPanorama = IndianPanorama::findOrFail($id);
-        $indianPanorama->delete();
-        return redirect()->route('indian-panorama.index')->with('danger', 'Entry deleted successfully.!!');
-    }
-
     public function uploadCSV(Request $request)
     {
         $payload = $request->all();
@@ -206,7 +216,7 @@ class IndianPanoramaController extends Controller
         if (!$request->hasFile('file') && !$request->file('file')->isValid()) {
             return redirect()->back()->with('warning', 'Upload valid CSV.');
         }
-        // $csvFile = storage_path('app/CSV/test1.csv');
+
         $csvFile = $payload['file'];
 
         if (!file_exists($csvFile)) {
@@ -239,14 +249,14 @@ class IndianPanoramaController extends Controller
                     ],
                     [
                         'official_selection_id' =>  $data['official_selection_id'],
-                        'slug' => str_replace(' ', '-', strtolower($data['title'])),
-                        'directed_by' => $data['directed_by'],
-                        'country_of_origin' => $data['country_of_origin'],
-                        'language' => $data['language'],
-                        'year' => $data['year'],
-                        'status' => 1,
-                        'updated_at' => now(),
-                        'created_at' => now(),
+                        'slug'                  =>  str_replace(' ', '-', strtolower($data['title'])),
+                        'directed_by'           =>  $data['directed_by'],
+                        'country_of_origin'     =>  $data['country_of_origin'],
+                        'language'              =>  $data['language'],
+                        'year'                  =>  $data['year'],
+                        'status'                =>  1,
+                        'updated_at'            =>  now(),
+                        'created_at'            =>  now(),
                     ],
                 );
             }
