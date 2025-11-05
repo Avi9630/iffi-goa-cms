@@ -162,7 +162,7 @@ class InternationalCinemaController extends Controller
 
         $validated = $request->validate($rules);
 
-        $internationalCinema = InternationalCinema::findOrFail($id);
+        // $internationalCinema = InternationalCinema::findOrFail($id);
 
         if ($internationalCinema) {
             $internationalCinema->curated_section_id    =   $validated['curated_section_id'] ?? null;
