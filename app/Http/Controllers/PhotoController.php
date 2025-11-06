@@ -19,9 +19,10 @@ class PhotoController extends Controller
 
     function index()
     {
-        $photos = Photo::whereNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
-        $videos = Photo::whereNotNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
-        return view('photos.index', compact(['photos', 'videos']));
+        $photos = Photo::whereNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(10);
+        $videos = Photo::whereNotNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->get();
+        $photoCategories = PhotoCategory::all();
+        return view('photos.index', compact(['photos', 'videos', 'photoCategories']));
     }
 
     function create()
@@ -75,7 +76,7 @@ class PhotoController extends Controller
             $photo = new Photo();
             $photo->year = $payload['year'];
             $photo->category_id = $payload['category_id'];
-            $photo->img_caption =$payload['caption'];
+            $photo->img_caption = $payload['caption'];
             $photo->video_url = $request->video_url;
             $photo->image = null;
             $photo->img_url = null;
@@ -162,10 +163,12 @@ class PhotoController extends Controller
 
     function highlightToggle($id)
     {
+        $photoCategories = PhotoCategory::all();
         $photo = Photo::findOrFail($id);
         $photo->highlights = !$photo->highlights;
         $photo->save();
-        return redirect()->route('photo.index')->with('success', 'Photo highlight status updated successfully.');
+        // return redirect()->route('photo.index')->with('success', 'Photo highlight status updated successfully.');
+        return redirect()->back()->with('success', 'Photo highlight status updated successfully.');
     }
 
     function activeToggle($id)
@@ -185,5 +188,32 @@ class PhotoController extends Controller
 
         $videos = Photo::where('video_url', '!=', null)->where('year', $searchTerm)->orderBy('id', 'DESC')->paginate(5);
         return view('photos.index', compact(['photos', 'videos']));
+    }
+
+    public function fullSearch(Request $request)
+    {
+        $payload = $request->only(['photo_category_id', 'highlights', 'year']);
+        $photos = Photo::query()
+            ->whereNull('video_url')
+            ->when(isset($payload['photo_category_id']), fn($q) => $q->where('category_id', $payload['photo_category_id']))
+            ->when(isset($payload['year']), fn($q) => $q->where('year', $payload['year']))
+            ->when(isset($payload['highlights']), fn($q) => $q->where('highlights', $payload['highlights']))
+            ->orderByDesc('id')
+            ->paginate(10);
+
+        $videos = Photo::query()
+            ->whereNotNull('video_url')
+            ->where('category_id', 12)
+            // ->when(isset($payload['photo_category_id']), fn($q) => $q->where('photo_category_id', $payload['curated_section_id']))
+            ->when(isset($payload['year']), fn($q) => $q->where('year', $payload['year']))
+            ->orderByDesc('id')
+            // ->paginate(10);
+            ->get();
+
+        // $photos = Photo::whereNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
+        // $videos = Photo::whereNotNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(5);
+        $photoCategories = PhotoCategory::all();
+        return view('photos.index', compact(['photos', 'videos', 'photoCategories', 'payload']));
+        // return view('international_cinema.index', compact('internationalCinemas', 'curatedSections', 'payload'));
     }
 }

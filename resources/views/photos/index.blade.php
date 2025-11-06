@@ -21,6 +21,100 @@
             </div>
         </div>
     </div>
+
+    <div class="app-content mt-2">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header">
+                            <div class="card-title">Search</div>
+                        </div>
+                        <form action="{{ route('photo.fullSearch') }}" method="GET">
+                            @csrf @method('GET')
+                            <div class="card-body">
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="photo_category_id" class="form-label">
+                                            <strong>Photo category</strong>
+                                        </label>
+                                        <select name="photo_category_id" id="photo_category_id"
+                                            class="form-select @error('photo_category_id') is-invalid @enderror">
+                                            <option value="" selected>Select photo category</option>
+
+                                            @foreach ($photoCategories as $key => $categories)
+                                                <option name="photo_category_id" value="{{ $categories->id }}"
+                                                    {{ isset($payload['photo_category_id']) && $payload['photo_category_id'] == $categories->id ? 'selected' : '' }}>
+                                                    {{ $categories->category }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                        @error('photo_category_id')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="year" class="form-label"><strong>Year</strong></label>
+                                        <select name="year" id="year"
+                                            class="form-select @error('year') is-invalid @enderror">
+                                            <option value="" selected>Select Year</option>
+                                            <option value="2025"
+                                                {{ isset($payload['year']) && $payload['year'] == 2025 ? 'selected' : '' }}>
+                                                2025
+                                            </option>
+                                            <option value="2024"
+                                                {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>
+                                                2024
+                                            </option>
+                                            <option value="2023"
+                                                {{ isset($payload['year']) && $payload['year'] == 2023 ? 'selected' : '' }}>
+                                                2023
+                                            </option>
+                                            <option value="2022"
+                                                {{ isset($payload['year']) && $payload['year'] == 2022 ? 'selected' : '' }}>
+                                                2022
+                                            </option>
+                                        </select>
+                                        @error('year')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="photo_category_id" class="form-label">
+                                            <strong>Highlights</strong>
+                                        </label>
+                                        <select name="highlights" id="highlights"
+                                            class="form-select @error('highlights') is-invalid @enderror">
+                                            <option value="" selected>Select highlights</option>
+                                            <option value="1"
+                                                {{ isset($payload['highlights']) && $payload['highlights'] == 1 ? 'selected' : '' }}>
+                                                Yes
+                                            </option>
+                                            <option value="0"
+                                                {{ isset($payload['highlights']) && $payload['highlights'] == 0 ? 'selected' : '' }}>
+                                                No
+                                            </option>
+                                        </select>
+                                        @error('highlights')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
@@ -31,11 +125,11 @@
                                 <a href={{ route('photo.create') }} class="btn btn-sm btn-primary btn-flat">
                                     Add Photos
                                 </a>
-                                <a href={{ route('photo.index') }} class="btn btn-sm btn-info btn-flat">
+                                <a href={{ route('photo.index') }} class="btn btn-sm btn-warning btn-flat">
                                     Reset
                                 </a>
                             </h3>
-                            <form action="{{ route('photo.search') }}">
+                            {{-- <form action="{{ route('photo.search') }}">
                                 @csrf
                                 <div class="input-group input-group-sm float-end" style="width: 300px;">
                                     <select name="search" class="form-select">
@@ -49,7 +143,7 @@
                                         <button type="submit" class="btn btn-info btn-sm btn-flat">Search</button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> --}}
                         </div>
                         <h3 class="text-center"><strong>Images</strong></h3>
                         <div class="card-body">
@@ -62,7 +156,7 @@
                                         <th>Year</th>
                                         <th>Active</th>
                                         <th>Status</th>
-                                        {{-- <th>Highlights</th> --}}
+                                        <th>Highlights</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -100,7 +194,7 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            {{-- <td>
+                                            <td>
                                                 <form action="{{ route('photo.highlightToggle', $photo->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
@@ -110,7 +204,7 @@
                                                         {{ $photo->highlights === 1 ? 'Enabled' : 'Disabled' }}
                                                     </button>
                                                 </form>
-                                            </td> --}}
+                                            </td>
                                             <td style="white-space: nowrap;">
                                                 <a href="{{ route('photo.edit', $photo->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
@@ -128,6 +222,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        {{-- card-footer clearfix --}}
+                        <div class="text-center card-footer clearfix">
+                            <ul class="pagination pagination-sm m-0 float-end">
+                                {{ $photos->withQueryString()->links() }}
+                            </ul>
+                        </div>
+                        <br><br>
                         <h3 class="text-center"><strong>Videos</strong></h3>
                         <div class="card-body">
                             <table class="table table-bordered">
@@ -179,11 +280,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="card-footer clearfix">
-                            <ul class="pagination pagination-sm m-0 float-end">
-                                {{ $photos->withQueryString()->links() }}
-                            </ul>
                         </div>
                     </div>
                 </div>
