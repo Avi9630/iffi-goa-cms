@@ -106,7 +106,11 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('{id}/highlight', 'highlightToggle')->name('highlightToggle');
             Route::put('{id}/activeToggle', 'activeToggle')->name('activeToggle');
             Route::put('{id}/toggle', 'toggleStatus')->name('toggle');
+            // Route::get('full-search', 'fullSearch')->name('fullSearch');
+            // Route::get('full-search', [PhotoController::class, 'fullSearch'])->name('fullSearch');
         });
+    
+    Route::get('full-search', [PhotoController::class, 'fullSearch'])->name('photo.fullSearch');
 
     Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
 
