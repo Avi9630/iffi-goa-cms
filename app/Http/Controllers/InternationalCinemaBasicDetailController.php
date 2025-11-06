@@ -106,6 +106,7 @@ class InternationalCinemaBasicDetailController extends Controller
             $icBasicDetail['drama']                 =   $payload['drama'] ?? null;
             $icBasicDetail['history']               =   $payload['history'] ?? null;
             $icBasicDetail['nomination']            =   $payload['nomination'] ?? null;
+            $icBasicDetail['premiere']              =   $payload['premiere'] ?? null;
             $icBasicDetail['festival_history']      =   $payload['festival_history'] ?? null;
             $icBasicDetail['link_trailer']          =   $payload['link_trailer'] ?? null;
             $icBasicDetail['tags']                  =   $payload['tags'] ?? null;
