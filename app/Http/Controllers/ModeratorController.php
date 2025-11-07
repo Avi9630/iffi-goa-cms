@@ -34,9 +34,9 @@ class ModeratorController extends Controller
             'moderator_name' => 'required|string',
         ]);
 
-        $alreadyFindDetail = Moderator::find($payload['topic_id']);
+        $alreadyFindDetail = Moderator::where('topic_id', $payload['topic_id'])->first();
         if ($alreadyFindDetail) {
-            return redirect()->back()->with('warning', 'Master Details already addedd.!!');
+            return redirect()->back()->with('warning', 'Modarator already addedd.!!');
         }
         $moderator = new Moderator();
         $moderator['topic_id'] = $payload['topic_id'];
