@@ -20,7 +20,7 @@ class IndianPanoramaController extends Controller
     public function index(Request $request)
     {
         $payload                =   $request->all();
-        $indianPanoramas        =   IndianPanorama::orderBy('id', 'DESC')->paginate(10);
+        $indianPanoramas        =   IndianPanorama::where(['year' => 2025])->orderBy('id', 'DESC')->paginate(10);
         $IPOfficialSelection    =   IndianPanoramaOfficialSelection::all();
         return view('indian_panorama.index', compact(['indianPanoramas', 'IPOfficialSelection', 'payload']));
     }
