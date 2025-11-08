@@ -115,11 +115,15 @@ class IndianPanoramaController extends Controller
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
         ];
 
-        if ($indianPanorama->img_src == null && !$request->hasFile('image')) {
-            $rules['image'] = 'required|file|mimes:jpg,jpeg,png,webp|max:2048';
-        } else {
-            $rules['image'] = 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048';
+        if (empty($payload['image_url'])) {
+            if ($indianPanorama->img_src == null && !$request->hasFile('image')) {
+                $rules['image'] = 'required|file|mimes:jpg,jpeg,png,webp|max:2048';
+            } else {
+                $rules['image'] = 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048';
+            }
         }
+
+
 
         $validated = $request->validate($rules);
 
@@ -139,13 +143,13 @@ class IndianPanoramaController extends Controller
                 $extension  =   strtolower($file->getClientOriginalExtension());
 
                 $upload     =   app(ExternalApiService::class)->postData($file, $this->destination);
-                
+
                 if (!$upload['status']) {
                     return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
                 }
 
                 $convertInWebp  =   app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-                
+
                 if ($convertInWebp) {
                     $indianPanorama->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
                     $indianPanorama->img_url = null;
