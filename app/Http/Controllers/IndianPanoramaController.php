@@ -123,8 +123,6 @@ class IndianPanoramaController extends Controller
             }
         }
 
-
-
         $validated = $request->validate($rules);
 
         // $indianPanorama = IndianPanorama::findOrFail($id);
