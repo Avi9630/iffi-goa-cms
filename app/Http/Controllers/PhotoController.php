@@ -19,8 +19,8 @@ class PhotoController extends Controller
 
     function index()
     {
-        $photos = Photo::whereNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->paginate(10);
-        $videos = Photo::whereNotNull('video_url')->where('year', 2024)->orderBy('id', 'DESC')->get();
+        $photos = Photo::whereNull('video_url')->where('year', 2025)->orderBy('id', 'DESC')->paginate(10);
+        $videos = Photo::whereNotNull('video_url')->where('year', 2025)->orderBy('id', 'DESC')->get();
         $photoCategories = PhotoCategory::all();
         return view('photos.index', compact(['photos', 'videos', 'photoCategories']));
     }

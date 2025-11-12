@@ -94,7 +94,7 @@ class InternationalCinemaBasicDetailController extends Controller
             $icBasicDetail['director_bio']          =   $payload['director_bio'] ?? null;
             $icBasicDetail['producer_bio']          =   $payload['producer_bio'] ?? null;
             $icBasicDetail['sales_agent']           =   $payload['sales_agent'] ?? null;
-            $icBasicDetail['award']                 =   $payload['award'] ?? null;
+            $icBasicDetail['award']                 =   isset($payload['award']) ? $payload['award'] : null;
             $icBasicDetail['writer']                =   $payload['writer'] ?? null;
             $icBasicDetail['trailer_link']          =   $payload['trailer_link'] ?? null;
             $icBasicDetail['official_selection']    =   $payload['official_selection'] ?? null;
