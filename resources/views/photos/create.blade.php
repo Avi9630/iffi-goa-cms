@@ -37,9 +37,9 @@
                                         <label for="year" class="form-label">Year</label>
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
-                                            <option value="" selected>Select Year</option>
-                                            <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
-                                            </option>
+                                            {{-- <option value="" selected>Select Year</option> --}}
+                                            {{-- <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
+                                            </option> --}}
                                             <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025
                                             </option>
                                         </select>
