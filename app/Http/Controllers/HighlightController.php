@@ -17,7 +17,7 @@ class HighlightController extends Controller
     }
     function index()
     {
-        $highlights = Highlight::paginate(10);
+        $highlights = Highlight::orderBy('id','DESC')->paginate(10);
         return view('highlights.index', compact('highlights'));
     }
 
@@ -122,6 +122,7 @@ class HighlightController extends Controller
         $highlight = Highlight::findOrFail($id);
         $highlight->status = !$highlight->status;
         $highlight->save();
-        return redirect()->route('highlight.index')->with('success', 'Highlight status updated successfully.!!');
+        return redirect()->back()->with('success', 'Highlight status updated successfully.!!');
+        // return redirect()->route('highlight.index')->with('success', 'Highlight status updated successfully.!!');
     }
 }
