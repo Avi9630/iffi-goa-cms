@@ -32,6 +32,9 @@
                                 <a href={{ route('highlight.create') }} class="btn btn-sm btn-primary btn-flat">
                                     Add Highlight
                                 </a>
+                                <a href={{ route('highlight.index') }} class="btn btn-sm btn-warning btn-flat">
+                                    Reset
+                                </a>
                             </h3>
                         </div>
                         <div class="card-body">
