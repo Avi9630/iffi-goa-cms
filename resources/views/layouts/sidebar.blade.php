@@ -10,12 +10,14 @@
                 aria-label="Main navigation" data-accordion="true" id="navigation">
 
                 @auth
+                @can('create')
                     <a href="{{ url('/') }}" class="nav-link active">
                         <i class="nav-icon bi bi-speedometer"></i>
                         <p>Dashboard</p>
                     </a>
-
+                @endcan
                     {{-- Roles && Permissions --}}
+                     @can('create')
                     <li
                         class="nav-item {{ request()->is('user*') || request()->is('role*') || request()->is('permission*') ? 'menu-open' : '' }}">
                         <a href="#"
@@ -50,7 +52,7 @@
                             </li>
                         </ul>
                     </li>
-
+                @endcan
                     {{-- Iffi-sections --}}
                     <li
                         class="nav-item {{ request()->is('ticker*') || request()->is('news-update*') || request()->is('press-release*') || request()->is('latest-update*') || request()->is('photo*') || request()->is('international-media*') || request()->is('peacock*') || request()->is('international-cinema*') || request()->is('indian-panorama*') || request()->is('cube*') || request()->is('master-class*') || request()->is('speaker*') ? 'menu-open' : '' }}">
@@ -64,7 +66,7 @@
                         </a>
                         
                         <ul class="nav nav-treeview">
-                            
+                             @can('create')
                             {{-- Master Class --}}
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
@@ -167,15 +169,22 @@
                                     <p>Highlight</p>
                                 </a>
                             </li>
-
+                            @endcan
                             {{-- Internation Media --}}
+                             <li class="nav-item">
+                                <a href="{{ route('international-cinema.index') }}" class="nav-link {{ request()->is('international-cinema*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>International Cinema</p>
+                                </a>
+                            </li>
+                               @can('create')
                             <li class="nav-item">
                                 <a href="{{ route('international-media.index') }}" class="nav-link {{ request()->is('international-media*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>International Media</p>
                                 </a>
                             </li>
-
+                             
                             {{-- Peacock --}}
                             <li class="nav-item">
                                 <a href="{{ route('peacock.index') }}" class="nav-link {{ request()->is('peacock*') ? 'active' : '' }}">
@@ -184,14 +193,9 @@
                                 </a>
                             </li>
 
-                            {{-- International Cinema --}}
-                            <li class="nav-item">
-                                <a href="{{ route('international-cinema.index') }}" class="nav-link {{ request()->is('international-cinema*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>International Cinema</p>
-                                </a>
-                            </li>
-
+                          
+                           
+ 
                             {{-- Indian Panorama --}}
                             <li class="nav-item">
                                 <a href="{{ route('indian-panorama.index') }}" class="nav-link {{ request()->is('indian-panorama*') ? 'active' : '' }}">
@@ -215,6 +219,7 @@
                                     <p>Jury Details</p>
                                 </a>
                             </li>
+                             @endcan
                         </ul>
                     </li>
 
