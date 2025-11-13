@@ -279,6 +279,7 @@ class InternationalCinemaController extends Controller
                     'co_screenplay' => $row[30] ?? null,
                     'cinematographer' => $row[31] ?? null,
                     'producer_bio' => $row[32] ?? null,
+                    'slug' => $row[33] ?? null,
                 ];
 
                 $curated = CuratedSection::where('title', $data['section'])->first();
@@ -294,7 +295,8 @@ class InternationalCinemaController extends Controller
                     ],
                     [
                         'curated_section_id'    =>  $curated->id,
-                        'slug'                  =>  str_replace(' ', '-', $data['title']),
+                        // 'slug'                  =>  str_replace(' ', '-', $data['title']),
+                        'slug'                  =>  $data['slug'],
                         'directed_by'           =>  $data['director'],
                         'country_of_origin'     =>  $data['country'],
                         'language'              =>  $data['language'],
