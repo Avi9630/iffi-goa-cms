@@ -120,11 +120,12 @@ class NewsUpdateController extends Controller
                 $newsUpdate->image_url = null;
             }
         } else {
-            if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
+            
+            // if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
                 $newsUpdate->image_url = $payload['image_url'];
                 $newsUpdate->image_name = null;
                 $newsUpdate->img_src = null;
-            }
+            // }
         }
         if ($newsUpdate->save()) {
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
