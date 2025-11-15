@@ -6,15 +6,18 @@ use App\Models\IndianPanoramaOfficialSelection;
 use App\Services\ExternalApiService;
 use App\Services\ConvertToWEBP;
 use App\Models\IndianPanorama;
+use App\Services\CommonZone;
 use Illuminate\Http\Request;
 
 class IndianPanoramaController extends Controller
 {
     protected $bucketName;
+    protected $commonZone;
 
-    public function __construct()
+    public function __construct(CommonZone $commonZone)
     {
         $this->destination = env('INDIAN_PANORAMA');
+        $this->commonZone = $commonZone;
     }
 
     public function index(Request $request)
@@ -22,13 +25,15 @@ class IndianPanoramaController extends Controller
         $payload                =   $request->all();
         $indianPanoramas        =   IndianPanorama::where(['year' => 2025])->orderBy('id', 'DESC')->paginate(10);
         $IPOfficialSelection    =   IndianPanoramaOfficialSelection::all();
-        return view('indian_panorama.index', compact(['indianPanoramas', 'IPOfficialSelection', 'payload']));
+        $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
+        return view('indian_panorama.index', compact(['indianPanoramas', 'IPOfficialSelection', 'payload', 'specialSubCategory']));
     }
 
     function create()
     {
         $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('indian_panorama.create', compact('IPOfficialSelections'));
+        $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
+        return view('indian_panorama.create', compact(['IPOfficialSelections','specialSubCategory']));
     }
 
     public function store(Request $request)
@@ -40,11 +45,11 @@ class IndianPanoramaController extends Controller
             'directed_by'           =>  'required|string|max:255',
             'country_of_origin'     =>  'nullable|string|max:255',
             'language'              =>  'required|string|max:255',
+            'sub_category'          =>  'nullable|numeric',
             'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'             =>  'required_without:image|nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
         ]);
-
         $indianPanorama = new IndianPanorama();
         $indianPanorama->official_selection_id = $validated['official_selection_id'];
         $indianPanorama->title = $validated['title'];
@@ -52,6 +57,7 @@ class IndianPanoramaController extends Controller
         $indianPanorama->directed_by = $validated['directed_by'];
         $indianPanorama->country_of_origin = $validated['country_of_origin'];
         $indianPanorama->language = $validated['language'];
+        $indianPanorama->sub_category = $validated['sub_category'] ?? null;
         $indianPanorama->year = $validated['year'];
         $indianPanorama->created_by = 1;
         $indianPanorama->status = 1;
@@ -74,6 +80,7 @@ class IndianPanoramaController extends Controller
                 $indianPanorama->img_src = null;
             }
         }
+
         if ($indianPanorama->save()) {
             return redirect()->route('indian-panorama.index')->with('success', 'Indian Panorama created successfully.!!');
         } else {
@@ -85,31 +92,21 @@ class IndianPanoramaController extends Controller
     {
         $indianPanorama = IndianPanorama::findOrFail($id);
         $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
-        return view('indian_panorama.edit', compact(['indianPanorama', 'IPOfficialSelections']));
+        $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
+        return view('indian_panorama.edit', compact(['indianPanorama', 'IPOfficialSelections', 'specialSubCategory']));
     }
 
     function update(Request $request, $id)
     {
         $payload = $request->all();
         $indianPanorama = IndianPanorama::findOrFail($id);
-
-        // $validated = $request->validate([
-        //     'official_selection_id' => 'required|exists:curated_sections,id',
-        //     'title' => 'required|string|max:255',
-        //     'directed_by' => 'required|string|max:255',
-        //     'country_of_origin' => 'nullable|string|max:255',
-        //     'language' => 'required|string|max:255',
-        //     'image' => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
-        //     'image_url' => 'required_without:image|nullable|string|max:255',
-        //     'year' => 'required|integer|min:1800|max:' . date('Y'),
-        // ]);
-
         $rules = [
             'official_selection_id' =>  'required|exists:curated_sections,id',
             'title'                 =>  'required|string|max:255',
             'directed_by'           =>  'nullable|string|max:255',
             'country_of_origin'     =>  'nullable|string|max:255',
             'language'              =>  'nullable|string|max:255',
+            'sub_category'          =>  'nullable|numeric',
             // 'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'             => 'nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
@@ -125,8 +122,6 @@ class IndianPanoramaController extends Controller
 
         $validated = $request->validate($rules);
 
-        // $indianPanorama = IndianPanorama::findOrFail($id);
-
         if ($indianPanorama) {
             $indianPanorama->official_selection_id  =   $validated['official_selection_id'] ?? $indianPanorama->official_selection_id;
             $indianPanorama->title                  =   $validated['title'] ?? null;
@@ -134,6 +129,7 @@ class IndianPanoramaController extends Controller
             $indianPanorama->directed_by            =   $validated['directed_by'] ?? null;
             $indianPanorama->country_of_origin      =   $validated['country_of_origin'] ?? null;
             $indianPanorama->language               =   $validated['language'] ?? null;
+            $indianPanorama->sub_category           =   $validated['sub_category'] ?? null;
             $indianPanorama->year                   =   $validated['year'] ?? null;
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
