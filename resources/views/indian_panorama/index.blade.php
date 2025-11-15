@@ -147,6 +147,7 @@
                                         <th>Title</th>
                                         <th>Directed By</th>
                                         <th>Language</th>
+                                        {{-- <th>SubCategory</th> --}}
                                         <th>Year</th>
                                         <th>status</th>
                                         <th>Action</th>

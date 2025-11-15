@@ -92,6 +92,25 @@
                                     </div>
 
                                     <div class="col-md-6 mb-3">
+                                        <label for="curated_section_id" class="form-label">
+                                            <strong>Curated Sections</strong>
+                                        </label>
+                                        <select name="sub_category" id="sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Curated Sections</option>
+                                            @foreach ($specialSubCategory as $key => $subCategory)
+                                                <option value="{{ $key }}"
+                                                    {{ $key == $indianPanorama['sub_category'] ? 'selected' : '' }}>
+                                                    {{ $subCategory }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('sub_category')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
                                         <label for="image" class="form-label">Image</label>
                                         <input type="file" class="form-control @error('image') is-invalid @enderror"
                                             id="image" name="image" />
