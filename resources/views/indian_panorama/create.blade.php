@@ -14,7 +14,7 @@
             @endforeach
         </div>
     </div>
-    
+
     <div class="app-content mt-2">
         <div class="container-fluid">
             <div class="row g-4">
@@ -77,7 +77,8 @@
                                         <input type="text"
                                             class="form-control @error('country_of_origin') is-invalid @enderror"
                                             id="country_of_origin" name="country_of_origin"
-                                            value="{{ old('country_of_origin') }}" placeholder="Enter country of origin.!!" />
+                                            value="{{ old('country_of_origin') }}"
+                                            placeholder="Enter country of origin.!!" />
                                         @error('country_of_origin')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -111,6 +112,26 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="official_selection_id" class="form-label">
+                                            <strong>Sub Category</strong>
+                                        </label>
+                                        <select name="sub_category" id="sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Sub Category</option>
+                                            @foreach ($specialSubCategory as $key => $subCategory)
+                                                <option value="{{ $key }}"
+                                                    {{ old('sub_category') == $key ? 'selected' : '' }}>
+                                                    {{ $subCategory }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('sub_category')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
 
                                     <div class="col-md-6 mb-3">
                                         <label for="year" class="form-label"><strong>Year</strong></label>
