@@ -31,7 +31,7 @@ class IndianPanoramaController extends Controller
 
     function create()
     {
-        $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
+        $IPOfficialSelections   =   IndianPanoramaOfficialSelection::all();
         $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
         return view('indian_panorama.create', compact(['IPOfficialSelections','specialSubCategory']));
     }
@@ -133,9 +133,9 @@ class IndianPanoramaController extends Controller
             $indianPanorama->year                   =   $validated['year'] ?? null;
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                
                 $file       =   $request->file('image');
                 $extension  =   strtolower($file->getClientOriginalExtension());
-
                 $upload     =   app(ExternalApiService::class)->postData($file, $this->destination);
 
                 if (!$upload['status']) {
