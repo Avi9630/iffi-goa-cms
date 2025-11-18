@@ -24,14 +24,14 @@ class IndianPanoramaController extends Controller
     {
         $payload                =   $request->all();
         $indianPanoramas        =   IndianPanorama::where(['year' => 2025])->orderBy('id', 'DESC')->paginate(10);
-        $IPOfficialSelection    =   IndianPanoramaOfficialSelection::all();
+        $IPOfficialSelection    =   IndianPanoramaOfficialSelection::where('status',1)->get();
         $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
         return view('indian_panorama.index', compact(['indianPanoramas', 'IPOfficialSelection', 'payload', 'specialSubCategory']));
     }
 
     function create()
     {
-        $IPOfficialSelections   =   IndianPanoramaOfficialSelection::all();
+        $IPOfficialSelections   =   IndianPanoramaOfficialSelection::where('status',1)->get();
         $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
         return view('indian_panorama.create', compact(['IPOfficialSelections','specialSubCategory']));
     }
