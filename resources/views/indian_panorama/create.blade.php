@@ -132,6 +132,24 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-6 mb-3">
+                                        <label for="restored_by_nfai" class="form-label">Restored By NFAI</label>
+                                        <input type="text" class="form-control @error('restored_by_nfai') is-invalid @enderror"
+                                            id="restored_by_nfai" name="restored_by_nfai" value="{{ old('restored_by_nfai') }}">
+                                        @error('restored_by_nfai')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="num_of_years" class="form-label">Number Of Years</label>
+                                        <input type="text" class="form-control @error('num_of_years') is-invalid @enderror"
+                                            id="num_of_years" name="num_of_years" value="{{ old('num_of_years') }}">
+                                        @error('num_of_years')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
 
                                     <div class="col-md-6 mb-3">
                                         <label for="year" class="form-label"><strong>Year</strong></label>
