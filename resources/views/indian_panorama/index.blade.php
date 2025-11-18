@@ -149,6 +149,8 @@
                                         <th>Language</th>
                                         {{-- <th>SubCategory</th> --}}
                                         <th>Year</th>
+                                        <th>Restored By NFAI</th>
+                                        <th>Number Of Years</th>
                                         <th>status</th>
                                         <th>Action</th>
                                     </tr>
@@ -162,6 +164,8 @@
                                             <td>{{ $indianPanorama->directed_by }}</td>
                                             <td>{{ $indianPanorama->language }}</td>
                                             <td>{{ $indianPanorama->year }}</td>
+                                            <td>{{ $indianPanorama->restored_by_nfai }}</td>
+                                            <td>{{ $indianPanorama->num_of_years }}</td>
                                             <td>
                                                 <form action="{{ route('indianPanorama.toggle', $indianPanorama->id) }}"
                                                     method="POST" style="display:inline;">
@@ -185,6 +189,7 @@
                                                     </form>
                                                 @endcan
                                             </td>
+                                            
                                         </tr>
                                     @endforeach
                                 </tbody>
