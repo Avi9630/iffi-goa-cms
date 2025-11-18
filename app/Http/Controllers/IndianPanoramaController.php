@@ -24,16 +24,16 @@ class IndianPanoramaController extends Controller
     {
         $payload                =   $request->all();
         $indianPanoramas        =   IndianPanorama::where(['year' => 2025])->orderBy('id', 'DESC')->paginate(10);
-        $IPOfficialSelection    =   IndianPanoramaOfficialSelection::where('status',1)->get();
+        $IPOfficialSelection    =   IndianPanoramaOfficialSelection::where('status', 1)->get();
         $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
         return view('indian_panorama.index', compact(['indianPanoramas', 'IPOfficialSelection', 'payload', 'specialSubCategory']));
     }
 
     function create()
     {
-        $IPOfficialSelections   =   IndianPanoramaOfficialSelection::where('status',1)->get();
+        $IPOfficialSelections   =   IndianPanoramaOfficialSelection::where('status', 1)->get();
         $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
-        return view('indian_panorama.create', compact(['IPOfficialSelections','specialSubCategory']));
+        return view('indian_panorama.create', compact(['IPOfficialSelections', 'specialSubCategory']));
     }
 
     public function store(Request $request)
@@ -49,18 +49,22 @@ class IndianPanoramaController extends Controller
             'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'             =>  'required_without:image|nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
+            'restored_by_nfai'      =>  'nullable',
+            'num_of_years'          =>  'nullable',
         ]);
         $indianPanorama = new IndianPanorama();
-        $indianPanorama->official_selection_id = $validated['official_selection_id'];
-        $indianPanorama->title = $validated['title'];
-        $indianPanorama->slug = str_replace(' ', '-', strtolower($validated['title']));
-        $indianPanorama->directed_by = $validated['directed_by'];
-        $indianPanorama->country_of_origin = $validated['country_of_origin'];
-        $indianPanorama->language = $validated['language'];
-        $indianPanorama->sub_category = $validated['sub_category'] ?? null;
-        $indianPanorama->year = $validated['year'];
-        $indianPanorama->created_by = 1;
-        $indianPanorama->status = 1;
+        $indianPanorama->official_selection_id  =   $validated['official_selection_id'];
+        $indianPanorama->title                  =   $validated['title'];
+        $indianPanorama->slug                   =   str_replace(' ', '-', strtolower($validated['title']));
+        $indianPanorama->directed_by            =   $validated['directed_by'];
+        $indianPanorama->country_of_origin      =   $validated['country_of_origin'];
+        $indianPanorama->language               =   $validated['language'];
+        $indianPanorama->sub_category           =   $validated['sub_category'] ?? null;
+        $indianPanorama->year                   =   $validated['year'];
+        $indianPanorama->restored_by_nfai       =   $validated['restored_by_nfai'] ?? '';
+        $indianPanorama->num_of_years           =   $validated['num_of_years'] ?? '';
+        $indianPanorama->created_by             =   1;
+        $indianPanorama->status                 =   1;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -110,6 +114,8 @@ class IndianPanoramaController extends Controller
             // 'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'             => 'nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
+            'restored_by_nfai'      =>  'nullable|string',
+            'num_of_years'          =>  'nullable|string',
         ];
 
         if (empty($payload['image_url'])) {
@@ -131,9 +137,11 @@ class IndianPanoramaController extends Controller
             $indianPanorama->language               =   $validated['language'] ?? null;
             $indianPanorama->sub_category           =   $validated['sub_category'] ?? null;
             $indianPanorama->year                   =   $validated['year'] ?? null;
+            $indianPanorama->restored_by_nfai       =   $validated['restored_by_nfai'] ?? '';
+            $indianPanorama->num_of_years           =   $validated['num_of_years'] ?? '';
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                
+
                 $file       =   $request->file('image');
                 $extension  =   strtolower($file->getClientOriginalExtension());
                 $upload     =   app(ExternalApiService::class)->postData($file, $this->destination);
