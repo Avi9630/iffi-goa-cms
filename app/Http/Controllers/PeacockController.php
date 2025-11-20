@@ -21,7 +21,7 @@ class PeacockController extends Controller
 
     function index()
     {
-        $peacocks = Peacock::orderBy('id', 'DESC')->paginate(10);
+        $peacocks = Peacock::where('year',2025)->orderBy('id', 'DESC')->paginate(10);
         return view('peacock.index', compact('peacocks'));
     }
 
