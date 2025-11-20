@@ -48,7 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
         'indian-panorama' => IndianPanoramaController::class,
         'festival-venue' => FestivalVenueController::class,
         'latest-update' => LatestUpdateController::class,
-        'press-release' => PressReleaseController::class,
+        // 'press-release' => PressReleaseController::class,
         'master-class' => MasterClassController::class,
         'permission' => PermissionController::class,
         'moderator' => ModeratorController::class,
@@ -63,6 +63,7 @@ Route::group(['middleware' => 'auth'], function () {
     ]);
 
     Route::resource('news-update', NewsUpdateController::class)->except(['show']);
+    Route::resource('press-release', PressReleaseController::class)->except(['show']);
     Route::resource('jury-detail', JuryDetailController::class);
 
     Route::controller(IndianPanoramaController::class)
@@ -109,7 +110,7 @@ Route::group(['middleware' => 'auth'], function () {
             // Route::get('full-search', 'fullSearch')->name('fullSearch');
             // Route::get('full-search', [PhotoController::class, 'fullSearch'])->name('fullSearch');
         });
-    
+
     Route::get('full-search', [PhotoController::class, 'fullSearch'])->name('photo.fullSearch');
 
     Route::get('/photo-search', [PhotoController::class, 'search'])->name('photo.search');
@@ -120,7 +121,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master-class/{id}/add-speaker', [MasterClassTopicController::class, 'addSpeaker'])->name('masterClass.addSpeaker');
     Route::get('/master-class/{id}/add-moderator', [MasterClassTopicController::class, 'addModerator'])->name('masterClass.addModerator');
     Route::put('/master-class-topic/{id}/toggle', [MasterClassTopicController::class, 'toggleStatus'])->name('masterClassTopic.toggleStatus');
-    
+
     //HIGHLIGHT 
     Route::put('/highlight/{id}/toggle', [HighlightController::class, 'toggleStatus'])->name('highlight.toggle');
 
@@ -141,12 +142,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('/cube/{id}/toggle', [CubeController::class, 'toggleStatus'])->name('cube.toggleStatus');
 
-    Route::put('/press-release/{id}/toggle', [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
+    Route::put('/press-release/{id}/toggle',    [PressReleaseController::class, 'toggleStatus'])->name('pressRelease.toggle');
+    Route::get('/press-release/search', [PressReleaseController::class, 'pressSearch'])->name('pressRelease.search');
 
     Route::put('/latest-update/{id}/toggle', [LatestUpdateController::class, 'toggleStatus'])->name('latestUpdate.toggle');
 
     Route::put('/tickers/{id}/toggle', [TickerController::class, 'toggleStatus'])->name('ticker.toggle');
-    
+
     Route::put('/festival-venue/{id}/toggle', [FestivalVenueController::class, 'toggle'])->name('festivalVenue.toggle');
 
     Route::get('get_images_by_folder/{path}', [CommonController::class, 'getImageByFolder'])
