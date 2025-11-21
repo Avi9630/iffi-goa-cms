@@ -69,6 +69,7 @@ class PhotoController extends Controller
                     $photo->image = $originalFilename;
                     $photo->img_url = $publicUrl;
                     $photo->video_url = null;
+                    $photo->uploaded_date = date('Y-m-d');
                     $photo->save();
                 }
             }
