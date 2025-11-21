@@ -157,6 +157,7 @@
                                         <th>Active</th>
                                         <th>Status</th>
                                         <th>Highlights</th>
+                                        <th>Uploaded Date</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -205,6 +206,7 @@
                                                     </button>
                                                 </form>
                                             </td>
+                                            <td>{{ $photo->uploaded_date }}</td>
                                             <td style="white-space: nowrap;">
                                                 <a href="{{ route('photo.edit', $photo->id) }}"
                                                     class="btn btn-info btn-sm">Edit</a>
