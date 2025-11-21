@@ -37,9 +37,6 @@
                                         <label for="year" class="form-label">Year</label>
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
-                                            {{-- <option value="" selected>Select Year</option> --}}
-                                            {{-- <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
-                                            </option> --}}
                                             <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025
                                             </option>
                                         </select>
@@ -92,6 +89,16 @@
                                             class="form-control @error('caption') is-invalid @enderror" id="caption"
                                             name="caption" value="{{ old('caption') }}" />
                                         @error('caption')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="uploaded_date" class="form-label">Uploaded Date</label>
+                                        <input type="date"
+                                            class="form-control @error('uploaded_date') is-invalid @enderror" id="uploaded_date"
+                                            name="uploaded_date" value="{{ old('uploaded_date') }}" />
+                                        @error('uploaded_date')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
