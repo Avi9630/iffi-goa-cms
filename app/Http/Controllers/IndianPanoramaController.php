@@ -31,9 +31,12 @@ class IndianPanoramaController extends Controller
 
     function create()
     {
-        $IPOfficialSelections   =   IndianPanoramaOfficialSelection::where('status', 1)->get();
-        $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
-        return view('indian_panorama.create', compact(['IPOfficialSelections', 'specialSubCategory']));
+        $IPOfficialSelections       =   IndianPanoramaOfficialSelection::where('status', 1)->get();
+        $specialSubCategory         =   $this->commonZone->specialPresentationSubCat();
+        $aiCompetitionCategory      =   $this->commonZone->aiCompetitionFilmsCategory();
+        $aiNonCompetitionCategory   =   $this->commonZone->aiNonCompetitionFilmsCategory();
+
+        return view('indian_panorama.create', compact(['IPOfficialSelections', 'specialSubCategory', 'aiCompetitionCategory', 'aiNonCompetitionCategory']));
     }
 
     public function store(Request $request)
@@ -45,13 +48,19 @@ class IndianPanoramaController extends Controller
             'directed_by'           =>  'required|string|max:255',
             'country_of_origin'     =>  'nullable|string|max:255',
             'language'              =>  'required|string|max:255',
-            'sub_category'          =>  'nullable|numeric',
+            // 'sub_category'          =>  'nullable|numeric',
+
+            'sub_category'                  =>  'required_if:official_selection_id,4|nullable|numeric',
+            'ai_competition_sub_category'   =>  'required_if:official_selection_id,7|nullable|numeric',
+            'ai_non_sub_category'           =>  'required_if:official_selection_id,8|nullable|numeric',
+
             'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'             =>  'required_without:image|nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
             'restored_by_nfai'      =>  'nullable',
             'num_of_years'          =>  'nullable',
         ]);
+
         $indianPanorama = new IndianPanorama();
         $indianPanorama->official_selection_id  =   $validated['official_selection_id'];
         $indianPanorama->title                  =   $validated['title'];
@@ -59,7 +68,17 @@ class IndianPanoramaController extends Controller
         $indianPanorama->directed_by            =   $validated['directed_by'];
         $indianPanorama->country_of_origin      =   $validated['country_of_origin'];
         $indianPanorama->language               =   $validated['language'];
-        $indianPanorama->sub_category           =   $validated['sub_category'] ?? null;
+
+        if ($payload['official_selection_id'] == 4) {
+            $indianPanorama->sub_category = $validated['sub_category'];
+        } elseif ($payload['official_selection_id'] == 7) {
+            $indianPanorama->sub_category = $validated['ai_competition_sub_category'];
+        } elseif ($payload['official_selection_id'] == 8) {
+            $indianPanorama->sub_category = $validated['ai_non_sub_category'];
+        } else {
+            $indianPanorama->sub_category = null;
+        }
+
         $indianPanorama->year                   =   $validated['year'];
         $indianPanorama->restored_by_nfai       =   $validated['restored_by_nfai'] ?? '';
         $indianPanorama->num_of_years           =   $validated['num_of_years'] ?? '';
@@ -97,7 +116,10 @@ class IndianPanoramaController extends Controller
         $indianPanorama = IndianPanorama::findOrFail($id);
         $IPOfficialSelections = IndianPanoramaOfficialSelection::all();
         $specialSubCategory     =   $this->commonZone->specialPresentationSubCat();
-        return view('indian_panorama.edit', compact(['indianPanorama', 'IPOfficialSelections', 'specialSubCategory']));
+        $aiCompetitionCategory      =   $this->commonZone->aiCompetitionFilmsCategory();
+        $aiNonCompetitionCategory   =   $this->commonZone->aiNonCompetitionFilmsCategory();
+
+        return view('indian_panorama.edit', compact(['indianPanorama', 'IPOfficialSelections', 'specialSubCategory', 'aiCompetitionCategory', 'aiNonCompetitionCategory']));
     }
 
     function update(Request $request, $id)
@@ -110,8 +132,13 @@ class IndianPanoramaController extends Controller
             'directed_by'           =>  'nullable|string|max:255',
             'country_of_origin'     =>  'nullable|string|max:255',
             'language'              =>  'nullable|string|max:255',
-            'sub_category'          =>  'nullable|numeric',
-            // 'image'                 =>  'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+
+            // 'sub_category'          =>  'nullable|numeric',
+
+            'sub_category'                   => 'required_if:official_selection_id,4|numeric',
+            'ai_competition_sub_category'   => 'required_if:official_selection_id,7|numeric',
+            'ai_non_sub_category'           => 'required_if:official_selection_id,8|numeric',
+
             'image_url'             => 'nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
             'restored_by_nfai'      =>  'nullable|string',
@@ -135,7 +162,17 @@ class IndianPanoramaController extends Controller
             $indianPanorama->directed_by            =   $validated['directed_by'] ?? null;
             $indianPanorama->country_of_origin      =   $validated['country_of_origin'] ?? null;
             $indianPanorama->language               =   $validated['language'] ?? null;
-            $indianPanorama->sub_category           =   $validated['sub_category'] ?? null;
+            
+            if ($validated['official_selection_id'] == 4) {
+                $indianPanorama->sub_category = $validated['sub_category'];
+            } elseif ($validated['official_selection_id'] == 7) {
+                $indianPanorama->sub_category = $validated['ai_competition_sub_category'];
+            } elseif ($validated['official_selection_id'] == 8) {
+                $indianPanorama->sub_category = $validated['ai_non_sub_category'];
+            } else {
+                $indianPanorama->sub_category = null;
+            }
+
             $indianPanorama->year                   =   $validated['year'] ?? null;
             $indianPanorama->restored_by_nfai       =   $validated['restored_by_nfai'] ?? '';
             $indianPanorama->num_of_years           =   $validated['num_of_years'] ?? '';
