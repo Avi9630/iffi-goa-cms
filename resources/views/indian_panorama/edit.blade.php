@@ -151,6 +151,9 @@
                                                 </option>
                                             @endforeach
                                         </select>
+                                        @error('ai_competition_sub_category')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
                                     </div>
 
                                     {{-- AI-Non-Competition --}}
