@@ -125,6 +125,7 @@ class IndianPanoramaController extends Controller
     function update(Request $request, $id)
     {
         $payload = $request->all();
+
         $indianPanorama = IndianPanorama::findOrFail($id);
         $rules = [
             'official_selection_id' =>  'required|exists:curated_sections,id',
@@ -132,18 +133,26 @@ class IndianPanoramaController extends Controller
             'directed_by'           =>  'nullable|string|max:255',
             'country_of_origin'     =>  'nullable|string|max:255',
             'language'              =>  'nullable|string|max:255',
-
             // 'sub_category'          =>  'nullable|numeric',
-
-            'sub_category'                   => 'required_if:official_selection_id,4|numeric',
-            'ai_competition_sub_category'   => 'required_if:official_selection_id,7|numeric',
-            'ai_non_sub_category'           => 'required_if:official_selection_id,8|numeric',
+            // 'sub_category'                  => 'required_if:official_selection_id,4|numeric',
+            // 'ai_competition_sub_category'   => 'required_if:official_selection_id,7|numeric',
+            // 'ai_non_sub_category'           => 'required_if:official_selection_id,8|numeric',
 
             'image_url'             => 'nullable|string|max:255',
             'year'                  =>  'required|integer|min:1800|max:' . date('Y'),
             'restored_by_nfai'      =>  'nullable|string',
             'num_of_years'          =>  'nullable|string',
         ];
+
+        if ($payload['official_selection_id']) {
+            if ($payload['official_selection_id'] == 4) {
+                $rules['sub_category'] = 'required|numeric';
+            } elseif ($payload['official_selection_id'] == 7) {
+                $rules['ai_competition_sub_category'] = 'required|numeric';
+            } elseif ($payload['official_selection_id'] == 8) {
+                $rules['ai_non_sub_category'] = 'required|numeric';
+            }
+        }
 
         if (empty($payload['image_url'])) {
             if ($indianPanorama->img_src == null && !$request->hasFile('image')) {
@@ -154,7 +163,7 @@ class IndianPanoramaController extends Controller
         }
 
         $validated = $request->validate($rules);
-
+        
         if ($indianPanorama) {
             $indianPanorama->official_selection_id  =   $validated['official_selection_id'] ?? $indianPanorama->official_selection_id;
             $indianPanorama->title                  =   $validated['title'] ?? null;
@@ -162,7 +171,7 @@ class IndianPanoramaController extends Controller
             $indianPanorama->directed_by            =   $validated['directed_by'] ?? null;
             $indianPanorama->country_of_origin      =   $validated['country_of_origin'] ?? null;
             $indianPanorama->language               =   $validated['language'] ?? null;
-            
+
             if ($validated['official_selection_id'] == 4) {
                 $indianPanorama->sub_category = $validated['sub_category'];
             } elseif ($validated['official_selection_id'] == 7) {
