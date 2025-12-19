@@ -98,10 +98,11 @@
                                         <small class="form-text text-muted">Upload an image file (jpg, jpeg, png).</small>
                                         @if (!empty($indianPanorama->img_src))
                                             @php
-                                                $path = env('IMAGE_UPLOAD_BASE_URL').'/'. env('INDIAN_PANORAMA');
+                                                $path = env('IMAGE_UPLOAD_BASE_URL') . '/' . env('INDIAN_PANORAMA');
                                             @endphp
                                             <img src="{{ $path . '/' . $indianPanorama->img_src }}" alt="Current Image"
-                                                class="img-fluid mt-2" style="max-width: 50px;" height="50px" width="50px">
+                                                class="img-fluid mt-2" style="max-width: 50px;" height="50px"
+                                                width="50px">
                                         @endif
                                         @error('image')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
@@ -118,6 +119,77 @@
                                                 class="img-fluid mt-2" style="max-width: 50px;">
                                         @endif
                                         @error('image_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- General Sub Category --}}
+                                    <div class="col-md-6 mb-3" id="general_sub_category_div" style="display:none;">
+                                        <label class="form-label"><strong>Sub Category</strong></label>
+                                        <select name="sub_category" id="general_sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Sub Category</option>
+                                            @foreach ($specialSubCategory as $key => $subCategory)
+                                                <option value="{{ $key }}"
+                                                    {{ $key == $indianPanorama->sub_category ? 'selected' : '' }}>
+                                                    {{ $subCategory }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- AI-Competition --}}
+                                    <div class="col-md-6 mb-3" id="ai_competition_div" style="display:none;">
+                                        <label class="form-label"><strong>AI Competition Category</strong></label>
+                                        <select name="ai_competition_sub_category" id="ai_competition_sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Sub Category</option>
+                                            @foreach ($aiCompetitionCategory as $key => $subCategory)
+                                                <option value="{{ $key }}"
+                                                    {{ $key == $indianPanorama->sub_category ? 'selected' : '' }}>
+                                                    {{ $subCategory }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('ai_competition_sub_category')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    {{-- AI-Non-Competition --}}
+                                    <div class="col-md-6 mb-3" id="ai_non_competition_div" style="display:none;">
+                                        <label class="form-label"><strong>AI Non-Competition Category</strong></label>
+                                        <select name="ai_non_sub_category" id="ai_non_sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Category</option>
+                                            @foreach ($aiNonCompetitionCategory as $key => $subCategory)
+                                                <option value="{{ $key }}"
+                                                    {{ $key == $indianPanorama->sub_category ? 'selected' : '' }}>
+                                                    {{ $subCategory }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="restored_by_nfai" class="form-label">Restored By NFAI</label>
+                                        <input type="text"
+                                            class="form-control @error('restored_by_nfai') is-invalid @enderror"
+                                            id="restored_by_nfai" name="restored_by_nfai"
+                                            value="{{ $indianPanorama->restored_by_nfai }}">
+                                        @error('restored_by_nfai')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="num_of_years" class="form-label">Number Of Years</label>
+                                        <input type="text"
+                                            class="form-control @error('num_of_years') is-invalid @enderror"
+                                            id="num_of_years" name="num_of_years"
+                                            value="{{ $indianPanorama->num_of_years }}">
+                                        @error('num_of_years')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -156,3 +228,38 @@
         </div>
     </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        function toggleCategoryFields() {
+            let value = $('#official_selection_id').val();
+
+            if (value == 4) {
+                $('#general_sub_category_div').show();
+                $('#ai_competition_div').hide();
+                $('#ai_non_competition_div').hide();
+            } else if (value == 7) {
+                $('#general_sub_category_div').hide();
+                $('#ai_competition_div').show();
+                $('#ai_non_competition_div').hide();
+            } else if (value == 8) {
+                $('#general_sub_category_div').hide();
+                $('#ai_competition_div').hide();
+                $('#ai_non_competition_div').show();
+            } else {
+                $('#general_sub_category_div').hide();
+                $('#ai_competition_div').hide();
+                $('#ai_non_competition_div').hide();
+            }
+        }
+
+        // Run when user changes dropdown
+        $('#official_selection_id').on('change', toggleCategoryFields);
+
+        // Run on page load (very important for update)
+        toggleCategoryFields();
+
+    });
+</script>

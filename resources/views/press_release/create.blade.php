@@ -26,7 +26,25 @@
                             @csrf
                             <div class="card-body">
                                 <div class="row">
-                                    
+
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pr_category_id" class="form-label"><strong>Category</strong></label>
+                                        <select name="pr_category_id" id="pr_category_id"
+                                            class="form-select @error('pr_category_id') is-invalid @enderror">
+                                            <option value="" selected>Select Category</option>
+                                            <option value="1" {{ old('pr_category_id') == 1 ? 'selected' : '' }}>
+                                                PRESS RELEASES BY PIB
+                                            </option>
+                                            <option value="2" {{ old('pr_category_id') == 2 ? 'selected' : '' }}>
+                                                MEDIA COVERAGE (NON PIB)
+                                            </option>
+                                        </select>
+                                        @error('pr_category_id')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror"
@@ -50,6 +68,21 @@
                                         <input type="text" class="form-control @error('link') is-invalid @enderror"
                                             id="link" name="link" value="{{ old('link') }}">
                                         @error('link')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="year" class="form-label"><strong>Year</strong></label>
+                                        <select name="year" id="year"
+                                            class="form-select @error('year') is-invalid @enderror">
+                                            <option value="" selected>Select Year</option>
+                                            <option value="2025" {{ old('year') == 2025 ? 'selected' : '' }}>2025
+                                            </option>
+                                            <option value="2024" {{ old('year') == 2024 ? 'selected' : '' }}>2024
+                                            </option>
+                                        </select>
+                                        @error('year')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>

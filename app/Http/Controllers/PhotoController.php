@@ -48,6 +48,7 @@ class PhotoController extends Controller
             'year' => 'required|integer',
             'category_id' => 'required',
             'caption' => 'required_with:video_url',
+            'uploaded_date' => 'nullable',
         ]);
 
         if (isset($payload['video_url']) && !empty($payload['video_url'])) {
@@ -69,6 +70,7 @@ class PhotoController extends Controller
                     $photo->image = $originalFilename;
                     $photo->img_url = $publicUrl;
                     $photo->video_url = null;
+                    $photo->uploaded_date = $payload['uploaded_date'] ?? date('Y-m-d');
                     $photo->save();
                 }
             }
@@ -80,6 +82,7 @@ class PhotoController extends Controller
             $photo->video_url = $request->video_url;
             $photo->image = null;
             $photo->img_url = null;
+            $photo->uploaded_date = $payload['uploaded_date'] ?? date('Y-m-d');
             $photo->save();
         }
         // if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -121,6 +124,7 @@ class PhotoController extends Controller
         $photo->year = $request->year ?? null;
         $photo->category_id = $request->category_id ?? null;
         $photo->img_caption = $request->img_caption ?? null;
+        $photo->uploaded_date = $payload['uploaded_date'] ?? $photo->uploaded_date;
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             if ($photo->img_url) {
