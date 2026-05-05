@@ -21,11 +21,13 @@
             </div>
         </div>
     </div>
+
     <div class="app-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card mb-4">
+
                         <div class="card-header">
                             <h3 class="card-title">
                                 <a href={{ route('news-update.create') }} class="btn btn-sm btn-primary btn-flat">
@@ -49,6 +51,7 @@
                                 </div>
                             </form>
                         </div>
+                        
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
@@ -105,6 +108,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-end">
                                 {{ $newsUpdates->withQueryString()->links() }}
