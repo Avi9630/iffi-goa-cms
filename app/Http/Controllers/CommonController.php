@@ -23,6 +23,7 @@ class CommonController extends Controller
 
     public function downloadSampleCsv($fileName)
     {
+        dd($fileName);
         return response()->download(storage_path('app/CSV/' . $fileName));
     }
 }

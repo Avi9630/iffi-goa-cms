@@ -67,13 +67,17 @@
                                         <select name="year" id="year"
                                             class="form-select @error('year') is-invalid @enderror">
                                             <option value="" selected>Select Year</option>
+                                            <option value="2024"
+                                                {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>
+                                                2024
+                                            </option>
                                             <option value="2025"
                                                 {{ isset($payload['year']) && $payload['year'] == 2025 ? 'selected' : '' }}>
                                                 2025
                                             </option>
-                                            <option value="2024"
-                                                {{ isset($payload['year']) && $payload['year'] == 2024 ? 'selected' : '' }}>
-                                                2024
+                                            <option value="2026"
+                                                {{ isset($payload['year']) && $payload['year'] == 2026 ? 'selected' : '' }}>
+                                                2026
                                             </option>
                                         </select>
                                         @error('year')
