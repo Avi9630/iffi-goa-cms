@@ -87,6 +87,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('full-search', [InternationalCinemaController::class, 'fullSearch'])->name('fullSearch');
         });
 
+    // Route::resource('news-update', NewsUpdateController::class)->except(['show']);
     Route::controller(NewsUpdateController::class)
         ->prefix('news-update')
         ->name('newsUpdate.')

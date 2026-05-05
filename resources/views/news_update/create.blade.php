@@ -14,6 +14,7 @@
             @endforeach
         </div>
     </div>
+
     <div class="app-content mt-2">
         <div class="container-fluid">
             <div class="row g-4">
@@ -26,10 +27,12 @@
                                 </a>
                             </div>
                         </div>
+
                         <form action="{{ route('news-update.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body">
                                 <div class="row">
+
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text" class="form-control @error('title') is-invalid @enderror"
@@ -38,7 +41,7 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    
+
                                     <div class="col-md-6 mb-3">
                                         <label for="title" class="form-label">Description</label>
                                         <textarea name="description" id="description" cols="10" rows="2"
@@ -79,12 +82,12 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="link_title" class="form-label">Link Title</label>
                                         <input type="text" class="form-control @error('link_title') is-invalid @enderror"
-                                            id="link_title" name="link_title"  value="{{ old('link_title') }}">
+                                            id="link_title" name="link_title" value="{{ old('link_title') }}">
                                         @error('link_title')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    
+
                                     <div class="col-md-6 mb-3">
                                         <label for="sort_num" class="form-label">Sort Num</label>
                                         <input type="number" class="form-control @error('sort_num') is-invalid @enderror"
@@ -105,8 +108,10 @@
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
+
                                 </div>
                             </div>
+
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
