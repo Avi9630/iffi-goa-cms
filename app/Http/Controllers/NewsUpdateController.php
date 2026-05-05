@@ -9,15 +9,21 @@ use App\Services\ConvertToWEBP;
 use Illuminate\Http\Request;
 use App\Services\GCSService;
 use App\Models\NewsUpdate;
+use App\Services\NewsUpdateService;
+use Exception;
 
 class NewsUpdateController extends Controller
 {
     use CONSTTrait;
 
-    protected $bucketName;
+    protected NewsUpdateService $news_update_service;
 
-    public function __construct()
+    protected $bucketName;
+    protected $destination;
+
+    public function __construct(NewsUpdateService $news_update_service)
     {
+        $this->news_update_service = $news_update_service;
         $this->destination = env('NEWS_AND_UPDATE');
     }
 
@@ -27,112 +33,84 @@ class NewsUpdateController extends Controller
         return view('news_update.index', compact('newsUpdates'));
     }
 
-    function newsSearch(Request $request)
-    {
-        $payload = $request->all();
-        $searchTerm = $request->input('search');
-        $newsUpdates = NewsUpdate::where('title', 'LIKE', "%{$searchTerm}%")
-            ->orWhere('description', 'LIKE', "%{$searchTerm}%")
-            ->orderBy('id', 'DESC')
-            ->paginate(10);
-        return view('news_update.index', compact('newsUpdates'));
-    }
-
-    function toggleStatus($id)
-    {
-        $newsUpdate = NewsUpdate::findOrFail($id);
-        $newsUpdate->status = $newsUpdate->status === 1 ? 0 : 1;
-        $newsUpdate->save();
-        return redirect()->back()->with('success', 'Status updated successfully.');
-    }
-
-    public function popupToggle($id)
-    {
-        $newsUpdate = NewsUpdate::findOrFail($id);
-        return view('news_update.popup', compact(['newsUpdate']));
-    }
-
-    function popupUpdate(Request $request, $id)
-    {
-        $request->validate([
-            'pop_up_header' => 'nullable|string|max:255',
-            'pop_up_content' => 'nullable|string',
-            // 'sort_num' => 'nullable|integer',
-            'image_name' => 'nullable|string|max:255',
-        ]);
-
-        $data = $request->only(['pop_up_header', 'pop_up_content', 'image_name']);
-
-        $newsUpdate = NewsUpdate::findOrFail($id);
-        $newsUpdate->update($data);
-
-        return redirect()->route('news-update.index')->with('success', 'Popup updated successfully.');
-    }
-
     function create()
     {
         return view('news_update.create');
     }
 
-    function store(Request $request, ConvertToWEBP $webp)
+    public function store(Request $request)
     {
-        $payload = $request->all();
-        $request->validate([
+        $validatedData = $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'image'       => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
             'image_url'   => 'required_without:image|nullable|string|max:255',
-            'link'        => 'nullable|max:255',
+            'link'        => 'nullable|url|max:255',
             'link_title'  => 'nullable|string|max:255',
-            'have_popup'  => 'required|in:0,1',
+            'have_popup'  => 'required|boolean',
             'sort_num'    => 'nullable|integer',
         ]);
 
-        $newsUpdate = new NewsUpdate();
-
-        $newsUpdate->title = $payload['title'];
-        $newsUpdate->description = $payload['description'];
-        $newsUpdate->link = $payload['link'] ?? null;
-        $newsUpdate->link_title = $payload['link_title'] ?? null;
-        $newsUpdate->have_popup = $payload['have_popup'];
-        $newsUpdate->sort_num = $payload['sort_num'] ?? null;
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $originalFilename = $file->getClientOriginalName();
-            // app(ExternalApiService::class)->postData($file, $this->destination);
-            // $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            // if ($convertInWebp) {
-            //     $newsUpdate->image_name = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-            //     $newsUpdate->img_src = pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-            //     // $newsUpdate->image_url = env('IMAGE_UPLOAD_BASE_URL') . $this->destination . '/' . pathinfo($originalFilename, PATHINFO_FILENAME) . '.webp';
-            //     $newsUpdate->image_url = null;
-            // }
-            $extension = strtolower($file->getClientOriginalExtension());
-            $upload = app(ExternalApiService::class)->postData($file, $this->destination);
-            if (!$upload['status']) {
-                return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
-            }
-            $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
-            if ($convertInWebp) {
-                $newsUpdate->image_name = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
-                $newsUpdate->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
-                $newsUpdate->image_url = null;
-            }
-        } else {
-            
-            // if ($request->filled('image_url') && !filter_var($request->image_url, FILTER_VALIDATE_URL)) {
-                $newsUpdate->image_url = $payload['image_url'];
-                $newsUpdate->image_name = null;
-                $newsUpdate->img_src = null;
-            // }
-        }
-        if ($newsUpdate->save()) {
+        try {
+            $this->news_update_service->storeNewsUpdate($validatedData, $request->file('image'));
             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
-        } else {
-            return redirect()->back()->with('error', 'Failed to create News Update. Please try again.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('danger', $e->getMessage());
         }
     }
+
+    // function store(Request $request)
+    // {
+    //     $payload = $request->all();
+    //     $request->validate([
+    //         'title'       => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'image'       => 'required_without:image_url|file|mimes:jpg,jpeg,png,webp|max:2048',
+    //         'image_url'   => 'required_without:image|nullable|string|max:255',
+    //         'link'        => 'nullable|max:255',
+    //         'link_title'  => 'nullable|string|max:255',
+    //         'have_popup'  => 'required|in:0,1',
+    //         'sort_num'    => 'nullable|integer',
+    //     ]);
+
+    //     try {
+    //         $newsUpdate = new NewsUpdate();
+
+    //         $newsUpdate->title          =   $payload['title'];
+    //         $newsUpdate->description    =   $payload['description'];
+    //         $newsUpdate->link           =   $payload['link'] ?? null;
+    //         $newsUpdate->link_title     =   $payload['link_title'] ?? null;
+    //         $newsUpdate->have_popup     =   $payload['have_popup'];
+    //         $newsUpdate->sort_num       =   $payload['sort_num'] ?? null;
+
+    //         if ($request->hasFile('image')) {
+    //             $file = $request->file('image');
+    //             $originalFilename = $file->getClientOriginalName();
+    //             $extension = strtolower($file->getClientOriginalExtension());
+    //             $upload = app(ExternalApiService::class)->postData($file, $this->destination);
+    //             if (!$upload['status']) {
+    //                 return redirect()->back()->with('error', 'Failed to upload image to external service. Please try again.!!');
+    //             }
+    //             $convertInWebp = app(ConvertToWEBP::class)->convert($request->file('image'), $this->destination);
+    //             if ($convertInWebp) {
+    //                 $newsUpdate->image_name = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
+    //                 $newsUpdate->img_src = $extension === 'webp' ? $upload['data']['fileName'] : $convertInWebp;
+    //                 $newsUpdate->image_url = null;
+    //             }
+    //         } else {
+    //             $newsUpdate->image_url = $payload['image_url'];
+    //             $newsUpdate->image_name = null;
+    //             $newsUpdate->img_src = null;
+    //         }
+    //         if ($newsUpdate->save()) {
+    //             return redirect()->route('news-update.index')->with('success', 'News Update created successfully.!!');
+    //         } else {
+    //             return redirect()->back()->with('error', 'Failed to create News Update. Please try again.');
+    //         }
+    //     } catch (Exception $e) {
+    //         return redirect()->back()->with('danger', $e->getMessage());
+    //     }
+    // }
 
     function edit($id)
     {
@@ -207,6 +185,48 @@ class NewsUpdateController extends Controller
         return redirect()->route('news-update.index')->with('success', 'News update and image deleted.');
     }
 
+    function newsSearch(Request $request)
+    {
+        $payload = $request->all();
+        $searchTerm = $request->input('search');
+        $newsUpdates = NewsUpdate::where('title', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+        return view('news_update.index', compact('newsUpdates'));
+    }
+
+    function toggleStatus($id)
+    {
+        $newsUpdate = NewsUpdate::findOrFail($id);
+        $newsUpdate->status = $newsUpdate->status === 1 ? 0 : 1;
+        $newsUpdate->save();
+        return redirect()->back()->with('success', 'Status updated successfully.');
+    }
+
+    public function popupToggle($id)
+    {
+        $newsUpdate = NewsUpdate::findOrFail($id);
+        return view('news_update.popup', compact(['newsUpdate']));
+    }
+
+    function popupUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'pop_up_header' => 'nullable|string|max:255',
+            'pop_up_content' => 'nullable|string',
+            // 'sort_num' => 'nullable|integer',
+            'image_name' => 'nullable|string|max:255',
+        ]);
+
+        $data = $request->only(['pop_up_header', 'pop_up_content', 'image_name']);
+
+        $newsUpdate = NewsUpdate::findOrFail($id);
+        $newsUpdate->update($data);
+
+        return redirect()->route('news-update.index')->with('success', 'Popup updated successfully.');
+    }
+
     public function popupImage()
     {
         $locations = $this->locations();
@@ -217,30 +237,6 @@ class NewsUpdateController extends Controller
         $images = $response['files'] ?? [];
         return view('news_update.image', compact(['images', 'locations']));
     }
-
-    // function popupImageUpload(Request $request)
-    // {
-    //     $payload = $request->all();
-    //     $request->validate([
-    //         'image' => 'required',
-    //         'image.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
-    //     ]);
-    //     $location = $payload['location'] ?? '';
-    //     if ($request->hasFile('image')) {
-    //         foreach ($request->file('image') as $file) {
-    //             if ($file->isValid()) {
-    //                 if (isset($payload['location']) && !empty($payload['location'])) {
-    //                     $location = $payload['location'];
-    //                 } else {
-    //                     $location = $this->destination;
-    //                 }
-    //                 app(ExternalApiService::class)->postData($file, $location);
-    //                 app(ConvertToWEBP::class)->convert($file, $location);
-    //             }
-    //         }
-    //     }
-    //     return redirect()->back()->with('success', 'Image uploaded successfully.');
-    // }
 
     public function popupImageUpload(Request $request, ExternalApiService $externalApiService, ConvertToWEBP $convertToWEBP)
     {
