@@ -74,9 +74,9 @@
                                     @endphp --}}
                                         <tr class="align-middle">
                                             <td>{{ $moderator->id }}</td>
-                                            <td>{{ $moderator->masterTopic->masterDate->date }}</td>
-                                            <td>{{ $moderator->masterTopic->title }}</td>
-                                            <td>{{ $moderator->moderator_name }}</td>
+                                            <td>{{ $moderator->masterTopic->masterDate->date ?? '' }}</td>
+                                            <td>{{ $moderator->masterTopic->title ?? '' }}</td>
+                                            <td>{{ $moderator->moderator_name ?? '' }}</td>
                                             <td>
                                                 <form action="{{ route('moderator.toggleStatus', $moderator->id) }}"
                                                     method="POST" style="display:inline;">

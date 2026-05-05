@@ -1881,6 +1881,7 @@
         },
         {
             "name": "intervention/image",
+<<<<<<< HEAD
             "version": "3.11.5",
             "source": {
                 "type": "git",
@@ -1891,6 +1892,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/Intervention/image/zipball/76e96d3809d53dd8d597005634a733d4b2f6c2c3",
                 "reference": "76e96d3809d53dd8d597005634a733d4b2f6c2c3",
+=======
+            "version": "3.11.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Intervention/image.git",
+                "reference": "5f6d27d9fd56312c47f347929e7ac15345c605a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Intervention/image/zipball/5f6d27d9fd56312c47f347929e7ac15345c605a1",
+                "reference": "5f6d27d9fd56312c47f347929e7ac15345c605a1",
+>>>>>>> ca3ac2c997c287ddeba0ebe08b8edaf2d68f721b
                 "shasum": ""
             },
             "require": {
@@ -1937,7 +1950,11 @@
             ],
             "support": {
                 "issues": "https://github.com/Intervention/image/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/Intervention/image/tree/3.11.5"
+=======
+                "source": "https://github.com/Intervention/image/tree/3.11.6"
+>>>>>>> ca3ac2c997c287ddeba0ebe08b8edaf2d68f721b
             },
             "funding": [
                 {
@@ -1953,7 +1970,11 @@
                     "type": "ko_fi"
                 }
             ],
+<<<<<<< HEAD
             "time": "2025-11-29T11:18:34+00:00"
+=======
+            "time": "2025-12-17T13:38:29+00:00"
+>>>>>>> ca3ac2c997c287ddeba0ebe08b8edaf2d68f721b
         },
         {
             "name": "laravel/framework",
@@ -4402,6 +4423,7 @@
         },
         {
             "name": "psy/psysh",
+<<<<<<< HEAD
             "version": "v0.12.17",
             "source": {
                 "type": "git",
@@ -4412,6 +4434,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/bobthecow/psysh/zipball/85fbbd9f3064e157fc21fe4362b2b5c19f2ea631",
                 "reference": "85fbbd9f3064e157fc21fe4362b2b5c19f2ea631",
+=======
+            "version": "v0.12.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bobthecow/psysh.git",
+                "reference": "ddff0ac01beddc251786fe70367cd8bbdb258196"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/ddff0ac01beddc251786fe70367cd8bbdb258196",
+                "reference": "ddff0ac01beddc251786fe70367cd8bbdb258196",
+>>>>>>> ca3ac2c997c287ddeba0ebe08b8edaf2d68f721b
                 "shasum": ""
             },
             "require": {
@@ -4475,9 +4509,15 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/bobthecow/psysh/tree/v0.12.17"
             },
             "time": "2025-12-15T04:55:34+00:00"
+=======
+                "source": "https://github.com/bobthecow/psysh/tree/v0.12.18"
+            },
+            "time": "2025-12-17T14:35:46+00:00"
+>>>>>>> ca3ac2c997c287ddeba0ebe08b8edaf2d68f721b
         },
         {
             "name": "ralouphie/getallheaders",

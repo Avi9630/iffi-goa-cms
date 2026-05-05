@@ -14,7 +14,7 @@
             @endforeach
         </div>
     </div>
-    
+
     <div class="app-content mt-2">
         <div class="container-fluid">
             <div class="row g-4">
@@ -77,7 +77,8 @@
                                         <input type="text"
                                             class="form-control @error('country_of_origin') is-invalid @enderror"
                                             id="country_of_origin" name="country_of_origin"
-                                            value="{{ old('country_of_origin') }}" placeholder="Enter country of origin.!!" />
+                                            value="{{ old('country_of_origin') }}"
+                                            placeholder="Enter country of origin.!!" />
                                         @error('country_of_origin')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
@@ -108,6 +109,62 @@
                                         <input type="text" class="form-control @error('image_url') is-invalid @enderror"
                                             id="image_url" name="image_url" value="{{ old('image_url') }}">
                                         @error('image_url')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    {{-- General Sub Category --}}
+                                    <div class="col-md-6 mb-3" id="general_sub_category_div" style="display:none;">
+                                        <label class="form-label"><strong>Sub Category</strong></label>
+                                        <select name="sub_category" id="general_sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Sub Category</option>
+                                            @foreach ($specialSubCategory as $key => $subCategory)
+                                                <option value="{{ $key }}">{{ $subCategory }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- AI-Competition --}}
+                                    <div class="col-md-6 mb-3" id="ai_competition_div" style="display:none;">
+                                        <label class="form-label"><strong>AI Competition Category</strong></label>
+                                        <select name="ai_competition_sub_category" id="ai_competition_sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Sub Category</option>
+                                            @foreach ($aiCompetitionCategory as $key => $subCategory)
+                                                <option value="{{ $key }}">{{ $subCategory }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- AI-Non-Competition --}}
+                                    <div class="col-md-6 mb-3" id="ai_non_competition_div" style="display:none;">
+                                        <label class="form-label"><strong>AI Non-Competition Category</strong></label>
+                                        <select name="ai_non_sub_category" id="ai_non_sub_category"
+                                            class="form-select @error('sub_category') is-invalid @enderror">
+                                            <option value="" selected>Select Sub Category</option>
+                                            @foreach ($aiNonCompetitionCategory as $key => $subCategory)
+                                                <option value="{{ $key }}">{{ $subCategory }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="restored_by_nfai" class="form-label">Restored By NFAI</label>
+                                        <input type="text"
+                                            class="form-control @error('restored_by_nfai') is-invalid @enderror"
+                                            id="restored_by_nfai" name="restored_by_nfai"
+                                            value="{{ old('restored_by_nfai') }}">
+                                        @error('restored_by_nfai')
+                                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="num_of_years" class="form-label">Number Of Years</label>
+                                        <input type="text"
+                                            class="form-control @error('num_of_years') is-invalid @enderror"
+                                            id="num_of_years" name="num_of_years" value="{{ old('num_of_years') }}">
+                                        @error('num_of_years')
                                             <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -142,3 +199,32 @@
         </div>
     </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $('#official_selection_id').on('change', function() {
+            let value = $(this).val();
+
+            if (value == 4) {
+                $('#general_sub_category_div').show();
+                $('#ai_competition_div').hide();
+                $('#ai_non_competition_div').hide();
+            } else if (value == 7) {
+                $('#general_sub_category_div').hide();
+                $('#ai_competition_div').show();
+                $('#ai_non_competition_div').hide();
+            } else if (value == 8) {
+                $('#general_sub_category_div').hide();
+                $('#ai_competition_div').hide();
+                $('#ai_non_competition_div').show();
+            } else {
+                $('#general_sub_category_div').hide();
+                $('#ai_competition_div').hide();
+                $('#ai_non_competition_div').hide();
+            }
+        });
+
+    });
+</script>

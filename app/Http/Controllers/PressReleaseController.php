@@ -15,10 +15,10 @@ class PressReleaseController extends Controller
         $this->destination = env('PRESS_RELEASE');
     }
 
-    function index()
+    function index(Request $request)
     {
-        $pressReleases = PressRelease::orderBy('id', 'DESC')->paginate(10);
-        return view('press_release.index', compact('pressReleases'));
+        $pressReleases = PressRelease::where('year',2025)->orderBy('id', 'DESC')->paginate(10);
+        return view('press_release.index', compact(['pressReleases']));
     }
 
     function toggleStatus($id)
@@ -29,6 +29,34 @@ class PressReleaseController extends Controller
         return redirect()->back()->with('success', 'Status updated successfully.');
     }
 
+    public function pressSearch(Request $request)
+    {
+        $payload = $request->only(['pr_category_id', 'title', 'year']);
+        $pressReleases = PressRelease::query()
+            ->when(
+                isset($payload['pr_category_id']),
+                fn($q) =>
+                $q->where('pr_category_id', $payload['pr_category_id'])
+            )
+            ->when(
+                isset($payload['title']),
+                fn($q) =>
+                $q->where('title', 'like', '%' . $payload['title'] . '%')
+            )
+            ->when(
+                isset($payload['year']),
+                fn($q) =>
+                $q->where('year', $payload['year'])
+            )
+            ->orderByDesc('id')
+            ->paginate(10);
+        $prCategory = [
+            1=>'PRESS RELEASES BY PIB',
+            2=>'MEDIA COVERAGE (NON PIB)',
+        ];
+        return view('press_release.index', compact('pressReleases', 'prCategory', 'payload'));
+    }
+
     function create()
     {
         return view('press_release.create');
@@ -37,12 +65,14 @@ class PressReleaseController extends Controller
     function store(Request $request)
     {
         $payload = $request->all();
+        
         $request->validate(
             [
-                'title' => 'required|string|max:255',
-                'image' => 'nullable|mimes:pdf|max:2048|required_without:link',
-                'link' => 'nullable|required_without:image',
-                // 'publish_date' => 'required|date_format:Y-m-d',
+                'pr_category_id'    =>  'required|integer',
+                'title'             =>  'required|string|max:255',
+                'image'             =>  'nullable|mimes:pdf|required_without:link',
+                'link'              =>  'nullable|required_without:image',
+                'year'              =>   'required|integer',
             ],
             [
                 'title.required' => 'Please enter the title.',
@@ -51,14 +81,14 @@ class PressReleaseController extends Controller
                 'image.max' => 'The PDF must not be larger than 2 MB.',
                 'link.required_without' => 'Please provide a link or upload a PDF file.',
                 'link.url' => 'The link format is invalid.',
-                // 'publish_date.required' => 'Publish date is required.!!.',
-                // 'publish_date.date_format' => 'Publish date like:-' . date('Y-m-d'),
             ],
         );
 
         $pressRelease = new PressRelease();
-        $pressRelease->title = $request->title;
-        $pressRelease->publish_date = date('Y-m-d');
+        $pressRelease->title            = $payload['title'];
+        $pressRelease->pr_category_id   = $payload['pr_category_id'];
+        $pressRelease->year             = $payload['year'];
+        $pressRelease->publish_date     = date('Y-m-d');
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
@@ -72,8 +102,12 @@ class PressReleaseController extends Controller
             $pressRelease->img_src = null;
             $pressRelease->image_url = null;
         }
-        $pressRelease->save();
-        return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
+
+        if($pressRelease->save()) {
+            return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
+        }else{
+            return redirect()->back()->with('danger', 'Something went wrong. Please try again.');
+        }
     }
 
     function edit($id)
@@ -107,6 +141,8 @@ class PressReleaseController extends Controller
                         }
                     },
                 ],
+                'pr_category_id'    =>  'required|integer',
+                'year'              =>   'required|integer',
             ],
             [
                 'title.required' => 'Please enter the title.',
@@ -116,7 +152,10 @@ class PressReleaseController extends Controller
             ],
         );
 
-        $pressRelease->title = $payload['title'] ?? $pressRelease->title;
+        $pressRelease->title            =   $payload['title'] ?? $pressRelease->title;
+        $pressRelease->pr_category_id   =   $payload['pr_category_id'] ?? $pressRelease->pr_category_id;
+        $pressRelease->year             =   $payload['year'] ?? $pressRelease->year;
+
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file = $request->file('image');
             $originalFilename = $file->getClientOriginalName();
@@ -129,18 +168,16 @@ class PressReleaseController extends Controller
             $pressRelease->img_src = null;
             $pressRelease->image_url = null;
         }
-        $pressRelease->save();
-        return redirect()->route('press-release.index')->with('success', 'Press Release created successfully.');
+        if($pressRelease->save()){
+            return redirect()->route('press-release.index')->with('success', 'Press Release updated successfully.');
+        }else{
+            return redirect()->back()->with('danger', 'Something went wrong. Please try again.');
+        }
     }
 
     function destroy($id)
     {
         $pressRelease = PressRelease::findOrFail($id);
-        // if (!empty($pressRelease->image_url)) {
-        //     $parsedUrl = parse_url($pressRelease->image_url, PHP_URL_PATH);
-        //     $filePath = ltrim(str_replace("/{$this->bucketName}/", '', $parsedUrl), '/');
-        //     app(GCSService::class)->deleteImageFromGCS($filePath);
-        // }
         $pressRelease->delete();
         return redirect()->route('press-release.index')->with('danger', 'Press Release deleted successfully.!!');
     }
